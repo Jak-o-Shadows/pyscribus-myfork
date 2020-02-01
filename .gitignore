@@ -1,0 +1,12 @@
+*.7z
+*.xml
+*.sla
+*.pyc
+*.png
+*.jpg
+build/*
+__pycache__/*.pyc
+pyscribus/__pycache__/*.pyc
+source/tests/maquette-libre-droits/*
+source/tests/Sources-pages-1-2/*
+source/tests-outputs/*
