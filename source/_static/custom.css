@@ -1,0 +1,43 @@
+/* vim: set wrap breakindent: */
+
+html {
+    background-color: #1f2532;
+}
+
+body {
+    font-family: Ubuntu, Cantarell, sans-serif;
+}
+
+@media only screen and (min-width: 768px) {
+    .wy-body-for-nav {
+        max-width: 1100px;
+        margin: 0 auto;
+    }
+}
+
+@media only screen and (min-width: 768px) {
+    .wy-nav-side {
+        left: inherit;
+    }
+}
+
+.wy-menu-vertical a:hover {
+    background-color: #252c3c;
+
+}
+
+.wy-side-nav-search {
+    background-color: white;
+}
+
+.wy-side-nav-search > div.version {
+    color: black;
+}
+
+.wy-side-nav-search a {
+    color: black;
+}
+
+.wy-nav-side {
+    background-color: #2172a5;
+}
