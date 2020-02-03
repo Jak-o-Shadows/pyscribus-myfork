@@ -192,14 +192,3 @@ pyscribus.papers.ansi
     :undoc-members:
     :show-inheritance:
 
-Extras
-======
-
-pyscribus.wireframe
--------------------
-
-.. automodule:: pyscribus.extra.wireframe
-    :members:
-    :undoc-members:
-    :show-inheritance:
-

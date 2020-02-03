@@ -267,8 +267,9 @@ class Wireframe:
         | output           | File path of the output file          | str                       | False   |
         +------------------+---------------------------------------+---------------------------+---------+
         | stylesheet       | Fill and outline setting according to | boolean or dict           | False   |
-        |                  | the type of object to draw. True for  |                           |         |
-        |                  | default stylesheet.                   | (as Wireframe.stylesheet) |         |
+        |                  | the type of object to draw.           |                           |         |
+        |                  |                                       | (as Wireframe.stylesheet) |         |
+        |                  | True for default stylesheet.          |                           |         |
         +------------------+---------------------------------------+---------------------------+---------+
         | landmark         | Draw landmark lines at 0,0.           | boolean                   | True    |
         +------------------+---------------------------------------+---------------------------+---------+

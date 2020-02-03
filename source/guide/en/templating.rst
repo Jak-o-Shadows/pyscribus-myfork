@@ -31,8 +31,31 @@ defined.
 +-----------------------+---------------------------+---------------+
 | templatingPattern     | compiled regex to find    | \^%\w+%$      |
 |                       | templated elements        |               |
+|                       |                           |               |
 |                       | (ex: %TITLE%)             |               |
 +-----------------------+---------------------------+---------------+
 
 Load data
 ---------
+
+  ::
+
+   # Getting all stories with template-able content
+   # Return a list of stories
+   stories = parsed.templatable_stories()
+
+   datas = [
+       {
+           "%Title%": "My title",
+           "%Text%": "Lorem ipsum"
+       }
+   ]
+
+   # For each stories, we replace/feed the placeholders with their contents
+
+   for index, templatable_story in enumerate(stories):
+       templatable_story.feed_templatable(datas[index])
+
+   # Saving the templated document as a new one
+
+   template.save("templated.sla")
