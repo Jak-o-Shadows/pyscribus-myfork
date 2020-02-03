@@ -25,25 +25,30 @@ Berliner, Belgian, Tabloid, Broadsheet formats.
 
 # Imports ===============================================================#
 
-from pyscribus.common.math import PICA_TO_MM
+from pyscribus.common.math import FloatEnum, PICA_TO_MM
 
 # Variables globales ====================================================#
 
 __author__ = "Etienne Nadji <etnadji@eml.cc>"
 
-BERLINER_WIDTH = 320 / PICA_TO_MM
-BERLINER_HEIGHT = 470 / PICA_TO_MM
+class Berliner(FloatEnum):
+    WIDTH = 320 / PICA_TO_MM
+    HEIGHT = 470 / PICA_TO_MM
 
-BROADSHEET_WIDTH = 410 / PICA_TO_MM
-BROADSHEET_HEIGHT = 575 / PICA_TO_MM
+class Broadsheet(FloatEnum):
+    WIDTH = 410 / PICA_TO_MM
+    HEIGHT = 575 / PICA_TO_MM
 
-BELGIAN_WIDTH = 365 / PICA_TO_MM
-BELGIAN_HEIGHT = 520 / PICA_TO_MM
+class Belgian(FloatEnum):
+    WIDTH = 365 / PICA_TO_MM
+    HEIGHT = 520 / PICA_TO_MM
 
-BELGIAN_50_WIDTH = 370 / PICA_TO_MM
-BELGIAN_50_HEIGHT = 500 / PICA_TO_MM
+class Belgian50(FloatEnum):
+    WIDTH = 370 / PICA_TO_MM
+    HEIGHT = 500 / PICA_TO_MM
 
-TABLOID_WIDTH = 290 / PICA_TO_MM
-TABLOID_HEIGHT = 410 / PICA_TO_MM
+class Tabloid(FloatEnum):
+    WIDTH = 290 / PICA_TO_MM
+    HEIGHT = 410 / PICA_TO_MM
 
 # vim:set shiftwidth=4 softtabstop=4 spl=en:

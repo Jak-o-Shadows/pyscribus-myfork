@@ -446,10 +446,10 @@ class Dim:
             self.set_unit("pica")
 
             if default == "letter-width":
-                self.value = ansipaper.LETTER.WIDTH
+                self.value = ansipaper.Letter.WIDTH
 
             if default == "letter-height":
-                self.value = ansipaper.LETTER.HEIGHT
+                self.value = ansipaper.Letter.HEIGHT
 
         return True
 

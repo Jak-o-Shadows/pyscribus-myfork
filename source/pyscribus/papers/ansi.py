@@ -38,7 +38,7 @@ __author__ = "Etienne Nadji <etnadji@eml.cc>"
 # NOTE Dimensions are first converted into milimeters
 #      because inches makes no sense to my european being.
 
-class LETTER(FloatEnum):
+class Letter(FloatEnum):
     """Letter format. Same as ANSI A."""
 
     WIDTH = (8.5 * INCH_TO_MM) / PICA_TO_MM

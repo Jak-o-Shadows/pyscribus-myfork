@@ -34,98 +34,114 @@ For more common and international paper sizes, see iso216paper module.
 
 # Imports ===============================================================#
 
-from pyscribus.dimensions import PICA_TO_MM
+from pyscribus.common.math import FloatEnum, PICA_TO_MM
 
 # Variables globales ====================================================#
 
 __author__ = "Etienne Nadji <etnadji@eml.cc>"
 
-CLOCHE_WIDTH = 300 / PICA_TO_MM
-CLOCHE_HEIGHT = 400 / PICA_TO_MM
+class Cloche(FloatEnum):
+    WIDTH = 300 / PICA_TO_MM
+    HEIGHT = 400 / PICA_TO_MM
 
-POT_WIDTH = 310 / PICA_TO_MM
-POT_HEIGHT = 400 / PICA_TO_MM
+class Pot(FloatEnum):
+    """
+    Pot paper size. Same as Ecolier.
+    """
 
-ECOLIER_WIDTH = POT_WIDTH
-ECOLIER_HEIGHT = POT_HEIGHT
+    WIDTH = 310 / PICA_TO_MM
+    HEIGHT = 400 / PICA_TO_MM
 
-TELLIERE_WIDTH = 340 / PICA_TO_MM
-TELLIERE_HEIGHT = 440 / PICA_TO_MM
+class Ecolier(FloatEnum):
+    """
+    Ecolier paper size. Same as Pot.
+    """
 
-COURONNE_ECRITURE_WIDTH = 360 / PICA_TO_MM
-COURONNE_ECRITURE_HEIGHT = 460 / PICA_TO_MM
+    WIDTH = 310 / PICA_TO_MM
+    HEIGHT = 400 / PICA_TO_MM
 
-COURONNE_EDITION_WIDTH = 370 / PICA_TO_MM
-COURONNE_EDITION_HEIGHT = 470 / PICA_TO_MM
+class Telliere(FloatEnum):
+    WIDTH = 340 / PICA_TO_MM
+    HEIGHT = 440 / PICA_TO_MM
 
-ROBERTO_WIDTH = 390 / PICA_TO_MM
-ROBERTO_HEIGHT = 500 / PICA_TO_MM
+class CouronneEcriture(FloatEnum):
+    WIDTH = 360 / PICA_TO_MM
+    HEIGHT = 460 / PICA_TO_MM
 
-ECU_WIDTH = 400 / PICA_TO_MM
-ECU_HEIGHT = 520 / PICA_TO_MM
+class CouronneEdition(FloatEnum):
+    WIDTH = 370 / PICA_TO_MM
+    HEIGHT = 470 / PICA_TO_MM
 
-COQUILLE_WIDTH = 440 / PICA_TO_MM
-COQUILLE_HEIGHT = 560 / PICA_TO_MM
+class Roberto(FloatEnum):
+    WIDTH = 390 / PICA_TO_MM
+    HEIGHT = 500 / PICA_TO_MM
 
-CARRE_WIDTH = 450 / PICA_TO_MM
-CARRE_HEIGHT = 560 / PICA_TO_MM
+class Ecu(FloatEnum):
+    WIDTH = 400 / PICA_TO_MM
+    HEIGHT = 520 / PICA_TO_MM
 
-CAVALIER_WIDTH = 460 / PICA_TO_MM
-CAVALIER_HEIGHT = 620 / PICA_TO_MM
+class Coquille(FloatEnum):
+    WIDTH = 440 / PICA_TO_MM
+    HEIGHT = 560 / PICA_TO_MM
 
-RAISIN_WIDTH = 500 / PICA_TO_MM
-RAISIN_HEIGHT = 650 / PICA_TO_MM
+class Carre(FloatEnum):
+    WIDTH = 450 / PICA_TO_MM
+    HEIGHT = 560 / PICA_TO_MM
 
-DEMI_RAISIN_WIDTH = 325 / PICA_TO_MM
-DEMI_RAISIN_HEIGHT = 500 / PICA_TO_MM
+class Cavalier(FloatEnum):
+    WIDTH = 460 / PICA_TO_MM
+    HEIGHT = 620 / PICA_TO_MM
 
-DOUBLE_RAISIN_WIDTH = 650 / PICA_TO_MM
-DOUBLE_RAISIN_HEIGHT = 1000 / PICA_TO_MM
+class Raisin(FloatEnum):
+    WIDTH = 500 / PICA_TO_MM
+    HEIGHT = 650 / PICA_TO_MM
 
-JESUS_WIDTH = 560 / PICA_TO_MM
-JESUS_HEIGHT = 760 / PICA_TO_MM
+class DemiRaisin(FloatEnum):
+    WIDTH = 325 / PICA_TO_MM
+    HEIGHT = 500 / PICA_TO_MM
 
-# jesus-petit
-# 1559.0551181102364
-# 1984.2519685039372
+class DoubleRaisin(FloatEnum):
+    WIDTH = 650 / PICA_TO_MM
+    HEIGHT = 1000 / PICA_TO_MM
 
-# jesus-grand
-# 1587.4015748031497
-# 2154.3307086614177
+class Jesus(FloatEnum):
+    WIDTH = 560 / PICA_TO_MM
+    HEIGHT = 720 / PICA_TO_MM
 
-SOLEIL_WIDTH = 600 / PICA_TO_MM
-SOLEIL_HEIGHT = 800 / PICA_TO_MM
+class PetitJesus(FloatEnum):
+    WIDTH = 550 / PICA_TO_MM
+    HEIGHT = 700 / PICA_TO_MM
 
-COLOMBIER_AFFICHE_WIDTH = 600 / PICA_TO_MM
-COLOMBIER_AFFICHE_HEIGHT = 800 / PICA_TO_MM
+class GrandJesus(FloatEnum):
+    WIDTH = 560 / PICA_TO_MM
+    HEIGHT = 760 / PICA_TO_MM
 
-COLOMBIER_COMMERCIAL_WIDTH = 630 / PICA_TO_MM
-COLOMBIER_COMMERCIAL_HEIGHT = 900 / PICA_TO_MM
+class Soleil(FloatEnum):
+    WIDTH = 600 / PICA_TO_MM
+    HEIGHT = 800 / PICA_TO_MM
 
-PETIT_AIGLE_WIDTH = 700 / PICA_TO_MM
-PETIT_AIGLE_HEIGHT = 940 / PICA_TO_MM
+class ColombierAffiche(FloatEnum):
+    WIDTH = 600 / PICA_TO_MM
+    HEIGHT = 800 / PICA_TO_MM
 
-# Grand Aigle
-# 750 × 1067
-# ou 750 × 1050
-# ou parfois 750 × 1108
+class ColombierCommercial(FloatEnum):
+    WIDTH = 630 / PICA_TO_MM
+    HEIGHT = 900 / PICA_TO_MM
 
-# aigle-grand-1
-# 2125.984251968504
-# 3004.724409448819
+class PetitAigle(FloatEnum):
+    WIDTH = 700 / PICA_TO_MM
+    HEIGHT = 940 / PICA_TO_MM
 
-# aigle-grand-2
-# 2125.984251968504
-# 2976.377952755906
+class GrandAigle(FloatEnum):
+    WIDTH = 750 / PICA_TO_MM
+    HEIGHT = 1060 / PICA_TO_MM
 
-# aigle-grand-3
-# 2125.984251968504
-# 3118.110236220473
+class GrandMonde(FloatEnum):
+    WIDTH = 900 / PICA_TO_MM
+    HEIGHT = 1260 / PICA_TO_MM
 
-GRAND_MONDE_WIDTH = 900 / PICA_TO_MM
-GRAND_MONDE_HEIGHT = 1260 / PICA_TO_MM
-
-UNIVERS_WIDTH = 1000 / PICA_TO_MM
-UNIVERS_HEIGHT = 1300 / PICA_TO_MM
+class Univers(FloatEnum):
+    WIDTH = 1000 / PICA_TO_MM
+    HEIGHT = 1300 / PICA_TO_MM
 
 # vim:set shiftwidth=4 softtabstop=4 spl=en:
