@@ -1164,11 +1164,21 @@ class LatexObject(RenderObject):
 # Cell object for table =================================================#
 
 class TableCell(xmlc.PyScribusElement):
+    """
+    Cell in a table object (PAGEOBJECT/TableData/Cell)
+
+    :type pgo_parent: pyscribus.pageobjects.PageObject
+    :param pgo_parent: Parent page object instance.
+
+    :ivar integer row: Cell row
+    :ivar integer column: Cell column
+    """
 
     # TextColumns="1" 
     # TextColGap="0" 
     # TextDistLeft="0" TextDistTop="0" TextDistBottom="0" TextDistRight="0" 
     # Flop="0" 
+
 
     vertical_align = {"top": "0", "center": "1", "bottom": "2"}
 
@@ -1222,6 +1232,13 @@ class TableCell(xmlc.PyScribusElement):
 
     def fromxml(self, xml):
         """
+        Parses XML of a SLA table cell.
+
+        :type xml: lxml._Element
+        :param xml: SLA table cell as lxml._Element
+
+        :rtype: bool
+        :returns: bool
         """
 
         if xml.tag == "Cell":
@@ -1310,6 +1327,9 @@ class TableCell(xmlc.PyScribusElement):
 
     def toxml(self):
         """
+        Return the cell as XML element.
+
+        :rtype: lxml._Element
         """
 
         xml = ET.Element("Cell")

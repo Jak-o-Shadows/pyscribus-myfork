@@ -234,18 +234,18 @@ class OrphanElement(PyScribusElement):
 
 # Fonctions =============================================================#
 
-# We need to have a better typology of functions here :
+# We need a better typology of functions here :
 #
-# +---------------------+------------------+---------+---------------------------------+------------
-# | Function name       |                  | Returns | Manipulation                    | Side
-# +---------------------+------------------+---------+---------------------------------+------------
-# | float_or_int_string | out_cleanfloat   | string  | number without useless decimals | xml
-# | str_or_nonestr      | out_str_nonestr  | string  | string or "None"                | xml ?
-# | bool_to_num         | out_num_boolean  | string  | boolean as "0" or "1"           | xml
-# | num_to_bool         | in_num_boolean   | boolean | "0" or "1" as boolean           | pyscribus
-# | bool_or_else_to_num | out_zero_string  | string  | "0" if not(v) or v              | xml
-# | none_or_str         | out_empty_string | string  | "" if v is None or v            | xml ?
-# +---------------------+------------------+---------+---------------------------------+------------
+# +---------------------+------------------+---------+---------------------------------+-----------+
+# | Function name       | New name ?       | Returns | Manipulation                    | Side      |
+# +---------------------+------------------+---------+---------------------------------+-----------+
+# | float_or_int_string | out_cleanfloat   | string  | number without useless decimals | xml       |
+# | str_or_nonestr      | out_str_nonestr  | string  | string or "None"                | xml ?     |
+# | bool_to_num         | out_num_boolean  | string  | boolean as "0" or "1"           | xml       |
+# | num_to_bool         | in_num_boolean   | boolean | "0" or "1" as boolean           | pyscribus |
+# | bool_or_else_to_num | out_zero_string  | string  | "0" if not(v) or v              | xml       |
+# | none_or_str         | out_empty_string | string  | "" if v is None or v            | xml ?     |
+# +---------------------+------------------+---------+---------------------------------+-----------+
 
 def float_or_int_string(f):
 
