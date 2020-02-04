@@ -781,6 +781,8 @@ class Story(PyScribusElement):
     :param sla_parent: Parent SLA instance.
     :type doc_parent: pyscribus.document.Document
     :param doc_parent: Parent Document instance.
+    :type pageobject_parent: pyscribus.pageobjects.PageObject
+    :param pageobject_parent: Parent page object instance.
 
     :ivar pyscribus.sla.SLA sla_parent: Parent SLA instance.
     :ivar pyscribus.document.Document doc_parent: Parent Document instance.
@@ -789,13 +791,14 @@ class Story(PyScribusElement):
         NonBreakingHyphen, StoryVariable
     """
 
-    def __init__(self, sla_parent=False, doc_parent=False):
+    def __init__(self, sla_parent=False, doc_parent=False, pgo_parent=False):
         super().__init__()
 
         self.sequence = []
 
         self.sla_parent = sla_parent
         self.doc_parent = doc_parent
+        self.pgo_parent = pgo_parent
 
     def _without_ending(self):
         temp = []

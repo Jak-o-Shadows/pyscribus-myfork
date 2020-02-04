@@ -34,6 +34,7 @@ import pyscribus.exceptions as exceptions
 import pyscribus.dimensions as dimensions
 import pyscribus.itemattribute as itemattribute
 import pyscribus.stories as stories
+import pyscribus.styles as pstyles
 
 # Variables globales ====================================================#
 
@@ -133,6 +134,23 @@ class PageObject(xmlc.PyScribusElement):
 
                 elif ptype == "symbol":
                     self.pattern = None
+
+                elif ptype == "table":
+                    self.style = None
+
+                    self.fill = {
+                        "color": "None",
+                        "shade": None
+                    }
+
+                    self.borders = {
+                        "left": None,
+                        "right": None,
+                        "top": None,
+                        "bottom": None
+                    }
+
+                    self.cells = []
 
                 elif ptype == "text":
                     self.stories = []
@@ -443,6 +461,47 @@ class PageObject(xmlc.PyScribusElement):
 
             # Page object childs
 
+            if self.ptype == "table":
+
+                border_tags = [
+                    i for i in pstyles.TableBorder.sides_xml.values()
+                ]
+
+                for element in xml:
+
+                    if element.tag == "TableData":
+
+                        style = element.get("Style")
+                        fill_color = element.get("FillColor")
+                        fill_shade = element.get("FillShade")
+
+                        if style is not None:
+                            self.style = style
+
+                        if fill_color is not None:
+                            self.fill["color"] = fill_color
+
+                        if fill_shade is not None:
+                            self.fill["shade"] = dimensions.Dim(
+                                float(fill_shade), "pc"
+                            )
+
+                        for sub in element:
+
+                            if sub.tag in border_tags:
+                                bx = pstyles.TableBorder()
+                                success = bx.fromxml(sub)
+
+                                if success:
+                                    self.borders[bx.side] = bx
+
+                            if sub.tag == "Cell":
+                                cx = TableCell(self)
+                                success = cx.fromxml(sub)
+
+                                if success:
+                                    self.cells.append(cx)
+
             if self.ptype == "group":
 
                 for element in xml:
@@ -678,7 +737,7 @@ class PageObject(xmlc.PyScribusElement):
 
     def _quick_setup(self, settings):
         """
-        Method for defining style settings from class
+        Method for defining page object settings from class
         instanciation kwargs.
 
         :type settings: dict
@@ -944,6 +1003,211 @@ class LatexObject(RenderObject):
 
     def __init__(self, sla_parent=False, doc_parent=False):
         RenderObject.__init__(self, sla_parent, doc_parent)
+
+# Cell object for table =================================================#
+
+class TableCell(xmlc.PyScribusElement):
+
+    # TextColumns="1" 
+    # TextColGap="0" 
+    # TextDistLeft="0" TextDistTop="0" TextDistBottom="0" TextDistRight="0" 
+    # Flop="0" 
+
+    vertical_align = {"top": "0", "center": "1", "bottom": "2"}
+
+    def __init__(self, pgo_parent=False):
+        super().__init__()
+
+        self.pgo_parent = pgo_parent
+
+        self.style = None
+
+        self.fill = {
+            "color": "None",
+            "shade": None
+        }
+
+        self.borders = {
+            "left": None,
+            "right": None,
+            "top": None,
+            "bottom": None
+        }
+
+        self.padding = {
+            "left": None,
+            "right": None,
+            "top": None,
+            "bottom": None
+        }
+
+        self.align = None
+
+        self.story = None
+
+        self.row = None
+        self.column = None
+
+    def fromdefault(self):
+
+        if self.pgo_parent:
+            self.story = stories.Story(
+                self.pgo_parent.sla_parent,
+                self.pgo_parent.doc_parent,
+                self
+            )
+        else:
+            self.story = stories.Story()
+
+        self.story.fromdefault()
+
+        self.padding = {
+            "left": dimensions.Dim(1),
+            "right": dimensions.Dim(1),
+            "top": dimensions.Dim(1),
+            "bottom": dimensions.Dim(1)
+        }
+
+        self.align = "top"
+
+    def fromxml(self, xml):
+        """
+        """
+
+        if xml.tag == "Cell":
+            border_tags = [
+                i for i in pstyles.TableBorder.sides_xml.values()
+            ]
+
+            # Position of the cell -----------------------------------
+
+            row = xml.get("Row")
+            column = xml.get("Column")
+
+            if row is None or column is None:
+                raise exceptions.InsaneSLAValue(
+                    "A table cell has no @Row or @Column attribute."
+                )
+            else:
+                self.row = int(row)
+                self.column = int(column)
+
+            # Cell attributes ----------------------------------------
+
+            style = xml.get("Style")
+            fill_color = xml.get("FillColor")
+            fill_shade = xml.get("FillShade")
+            align = xml.get("TextVertAlign")
+
+            if style is not None:
+                self.style = style
+
+            if align is not None:
+
+                for human,code in TableCell.vertical_align.items():
+                    if align == code:
+                        self.align = human
+                        break
+
+            if fill_color is not None:
+                self.fill["color"] = fill_color
+
+            if fill_shade is not None:
+                self.fill["shade"] = dimensions.Dim(
+                    float(fill_shade), "pc"
+                )
+
+            for side in ["left", "right", "top", "bottom"]:
+                att_name = "{}Padding".format(side.capitalize())
+                att = xml.get(att_name)
+
+                if att is not None:
+                    self.padding[side] = dimensions.Dim(float(att))
+
+            for element in xml:
+
+                # Story of the cell --------------------------------------
+
+                if element.tag == "StoryText":
+
+                    if self.pgo_parent:
+                        story = stories.Story(
+                            self.pgo_parent.sla_parent,
+                            self.pgo_parent.doc_parent,
+                            self
+                        )
+                    else:
+                        story = stories.Story(pgo_parent=self)
+
+                    success = story.fromxml(element)
+
+                    if success:
+                        self.story = story
+
+                # Borders of the cell if they are different of the table -
+                # borders.
+
+                if element.tag in border_tags:
+                    bx = pstyles.TableBorder()
+                    success = bx.fromxml(element)
+
+                    if success:
+                        self.borders[bx.side] = bx
+
+            return True
+
+        return False
+
+    def toxml(self):
+        """
+        """
+
+        xml = ET.Element("Cell")
+
+        # Attributes ---------------------------------------------
+
+        xml.attrib["FillColor"] = self.fill["color"]
+
+        if self.style is None:
+            xml.attrib["Style"] = ""
+        else:
+            xml.attrib["Style"] = self.style
+
+        if self.align is None:
+            xml.attrib["TextVertAlign"] = TableCell.vertical_align["top"]
+        else:
+            xml.attrib["TextVertAlign"] = TableCell.vertical_align[self.align]
+
+        if self.fill["shade"] is None:
+            xml.attrib["FillShade"] = "100"
+        else:
+            xml.attrib["FillShade"] = self.fill["shade"].toxmlstr()
+
+        for side in ["left", "right", "top", "bottom"]:
+            att_name = "{}Padding".format(side.capitalize())
+
+            if self.padding[side] is not None:
+                xml.attrib[att_name] = self.padding[side].toxmlstr(True)
+
+        # Cell borders -------------------------------------------
+
+        for side in ["left", "right", "top", "bottom"]:
+            if self.borders[side] is not None:
+                bx = self.borders[side].toxml()
+                xml.append(bx)
+
+        # Story of the cell --------------------------------------
+
+        if self.story is None:
+            story = stories.Story()
+            story.fromdefault()
+
+        sx = self.story.toxml()
+        xml.append(sx)
+
+        # --------------------------------------------------------
+
+        return xml
 
 # Render buffer and render properties ===================================#
 

@@ -989,12 +989,15 @@ class TableBorder(xmlc.PyScribusElement):
 
         self.lines = []
 
+        self.width = None
+
     def fromxml(self, xml):
         self.side = False
 
         # Find the side of the table border -------------------------
 
         if xml.tag in TableBorder.sides_xml.values():
+
             for h,x in TableBorder.sides_xml.items():
                 if x == xml.tag:
                     self.side = h
@@ -1013,6 +1016,15 @@ class TableBorder(xmlc.PyScribusElement):
 
         # If the table border's side was found ----------------------
 
+        # -------------------------------------------------
+
+        width = xml.get("Width")
+
+        if width is not None:
+            self.width = dimensions.Dim(float(width))
+
+        # -------------------------------------------------
+
         for line in xml:
 
             if line.tag == "TableBorderLine":
@@ -1026,6 +1038,9 @@ class TableBorder(xmlc.PyScribusElement):
 
     def toxml(self):
         xml = ET.Element(TableBorder.sides_xml[self.side])
+
+        if self.width is not None:
+            xml.attrib["Width"] = self.width.toxmlstr(True)
 
         for line in self.lines:
             lx = line.toxml()
