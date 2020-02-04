@@ -781,8 +781,8 @@ class Story(PyScribusElement):
     :param sla_parent: Parent SLA instance.
     :type doc_parent: pyscribus.document.Document
     :param doc_parent: Parent Document instance.
-    :type pageobject_parent: pyscribus.pageobjects.PageObject
-    :param pageobject_parent: Parent page object instance.
+    :type pgo_parent: pyscribus.pageobjects.PageObject
+    :param pgo_parent: Parent page object instance.
 
     :ivar pyscribus.sla.SLA sla_parent: Parent SLA instance.
     :ivar pyscribus.document.Document doc_parent: Parent Document instance.
