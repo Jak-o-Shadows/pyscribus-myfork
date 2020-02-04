@@ -8,7 +8,8 @@
 build/*
 __pycache__/*.pyc
 pyscribus/__pycache__/*.pyc
-source/tests/maquette-libre-droits/*
-source/tests/Sources-pages-1-2/*
-source/tests-outputs/*
 source/_templates/*
+source/tests-outputs/*
+source/tests/test-samples/*
+source/tests/Sources-pages-1-2/*
+source/tests/maquette-libre-droits/*
