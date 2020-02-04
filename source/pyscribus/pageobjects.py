@@ -98,89 +98,51 @@ class PageObject(xmlc.PyScribusElement):
 
         super().__init__()
 
+        # --- Page object parents ------------------------------------
+
         self.sla_parent = sla_parent
         self.doc_parent = doc_parent
 
-        self.layer = 0
-        self.name = ""
+        # --- --------------------------------------------------------
 
+        self.name = ""
+        self.layer = 0
         self.attributes = []
+
+        # --- Page object boxes --------------------------------------
 
         self.box = dimensions.DimBox()
         self.rotated_box = dimensions.DimBox()
         self.rotated = False
 
-        self.have_stories = False
-        self.on_master_page = False
+        # --- Page object own_page and linking/id --------------------
+
+        # NOTE FIXME Implemented because without it Scribus crashes, but
+        #            I don't understand the meaning of this attribute.
+        self.own_page = False
 
         self.object_id = False
 
-        # NOTE FIXME Implémenté car sinon plantage mais je comprends pas à
-        # quoi sert cet attribut
-        self.own_page = False
-
         self.linked = {"next": False, "previous": False}
+
+        # --- --------------------------------------------------------
+
+        self.on_master_page = False
+        self.have_stories = False
+
+        # --- Page object paths --------------------------------------
 
         self.path = None
         self.copath = None
 
-        if ptype:
+        # --- --------------------------------------------------------
 
-            if ptype in po_type_xml.keys():
-                self.ptype = ptype
-
-                if ptype == "group":
-                    self.group_objects = []
-
-                elif ptype == "symbol":
-                    self.pattern = None
-
-                elif ptype == "table":
-                    self.style = None
-
-                    self.fill = {
-                        "color": "None",
-                        "shade": None
-                    }
-
-                    self.borders = {
-                        "left": None,
-                        "right": None,
-                        "top": None,
-                        "bottom": None
-                    }
-
-                    self.cells = []
-
-                elif ptype == "text":
-                    self.stories = []
-
-                    self.columns = {
-                        "gap": dimensions.Dim(0),
-                        "count": 0
-                    }
-
-                    self.alignment = None
-
-                elif ptype == "image":
-                    # ImageData
-                    self.data = ""
-                    self.data_type = ""
-                    # PFILE
-                    self.filepath = ""
-
-                elif ptype == "line":
-                    self.line_type = "solid"
-
-                    self.line_fill = "Black"
-                    self.line_stroke = "Black"
-                    self.line_thickness = dimensions.Dim(1)
-
-                else:
-                    self.ptype = None
-
+        if ptype and ptype in po_type_xml.keys():
+            self.ptype = ptype
         else:
             self.ptype = None
+
+        # --- Quick setup --------------------------------------------
 
         if kwargs:
             self._quick_setup(kwargs)
@@ -268,7 +230,7 @@ class PageObject(xmlc.PyScribusElement):
 
             # --- Object path and copath ---------------------------------
 
-            # NOTE FIXME Currently working for rectangular shapes
+            # NOTE FIXME Currently only working for rectangular shapes
 
             for case in ["path", "copath"]:
                 att = xml.get(case)
@@ -342,21 +304,11 @@ class PageObject(xmlc.PyScribusElement):
                         "PageObject @LAYER value should be an integer."
                     )
 
-            # --- Image attribute ----------------------------------------
-
-            if self.ptype == "image":
-                idata = xml.get("ImageData")
-                ipath = xml.get("PFILE")
-                idata_ext = xml.get("inlineImageExt")
-
-                if idata is not None and idata:
-                    self.data = idata
-
-                if idata_ext is not None and idata_ext:
-                    self.data_type = idata_ext
-
-                if ipath is not None and ipath:
-                    self.filepath = ipath
+            # --- Type specific attributes -------------------------------
+            # Moved to ImageObject
+            # Moved to TextObject
+            # Moved to LineObject
+            # Moved to TableObject
 
             # --- Symbol attributes --------------------------------------
 
@@ -366,205 +318,21 @@ class PageObject(xmlc.PyScribusElement):
                 if pattern is not None:
                     self.pattern = pattern
 
-            # --- Text attributes ----------------------------------------
-
-            if self.ptype == "text":
-                columns = xml.get("COLUMNS")
-                columnsgap = xml.get("COLGAPS")
-                alignment = xml.get("ALIGN")
-
-                if columns is not None:
-                    self.columns["count"] = int(columns)
-
-                if columnsgap is not None:
-                    self.columns["gap"].value = float(columnsgap)
-
-                if alignment is not None:
-                    for human, code in xmlc.alignment.items():
-                        if alignment == code:
-                            self.alignment = human
-                            break
-
-            # --- Line attributes ----------------------------------------
-
-            if self.ptype == "line":
-                fill = xml.get("PCOLOR")
-                stroke = xml.get("PCOLOR2")
-                thickness = xml.get("PWIDTH")
-                line_type = xml.get("PLINEART")
-
-                # TODO Walrus operator
-                # if (line_type := xml.get("PLINEART") is not None:
-                if line_type is not None:
-                    for human, code in PageObject.line_type_xml.items():
-                        if line_type == code:
-                            self.line_type = human
-                            break
-
-                # TODO Walrus operator
-                # if (fill := xml.get("PCOLOR") is not None:
-                if fill is not None:
-                    self.line_fill = fill
-
-                # TODO Walrus operator
-                # if (stroke := xml.get("PCOLOR2") is not None:
-                if stroke is not None:
-                    self.line_stroke = stroke
-
-                # TODO Walrus operator
-                # if (thickness := xml.get("PWIDTH") is not None:
-                if thickness is not None:
-                    self.line_thickness.value = float(thickness)
 
             # --- Text object attributes ---------------------------------
 
+            # FIXME FIXME FIXME Gné ? C’est déjà dans TextObject
             if self.ptype == "text":
-                cols = xml.get("COLUMNS")
                 colsgap = xml.get("COLGAP")
-
-                if cols is not None:
-                    self.columns["count"] = int(cols)
 
                 if colsgap is not None:
                     self.columns["gap"].value = float(colsgap)
 
-            # ------------------------------------------------------------
-
-            if self.ptype == "table":
-                # Rows="4" Columns="3"
-
-                # RowPositions="0 28.9378 57.8756 86.8134"
-                # RowHeights="28.9378 28.9378 28.9378 28.9378"
-                # ColumnPositions="0 48.0087 96.0174"
-                # ColumnWidths="48.0087 48.0087 48.0087"
-
-                rows = xml.get("Rows")
-                cols = xml.get("Columns")
-
-                # Les cellules sont listées de gauche à droite et de haut
-                # en bas.
-
-                rows_y = xml.get("RowPositions")
-                # Hauteur (pas position)
-                rows_h = xml.get("RowHeights")
-
-                cols_x = xml.get("ColumnPositions")
-                # Largeur (pas position)
-                cols_w = xml.get("ColumnWidths")
-
-                for posdim in [rows_y, rows_h, cols_x, cols_w]:
-                    if posdim is not None:
-                        posdim = [float(p.strip()) for p in posdim.split()]
-                        print(posdim)
-
-            # ------------------------------------------------------------
-
-            # Page object childs
-
-            if self.ptype == "table":
-
-                border_tags = [
-                    i for i in pstyles.TableBorder.sides_xml.values()
-                ]
-
-                for element in xml:
-
-                    if element.tag == "TableData":
-
-                        style = element.get("Style")
-                        fill_color = element.get("FillColor")
-                        fill_shade = element.get("FillShade")
-
-                        if style is not None:
-                            self.style = style
-
-                        if fill_color is not None:
-                            self.fill["color"] = fill_color
-
-                        if fill_shade is not None:
-                            self.fill["shade"] = dimensions.Dim(
-                                float(fill_shade), "pc"
-                            )
-
-                        for sub in element:
-
-                            if sub.tag in border_tags:
-                                bx = pstyles.TableBorder()
-                                success = bx.fromxml(sub)
-
-                                if success:
-                                    self.borders[bx.side] = bx
-
-                            if sub.tag == "Cell":
-                                cx = TableCell(self)
-                                success = cx.fromxml(sub)
-
-                                if success:
-                                    self.cells.append(cx)
-
-            if self.ptype == "group":
-
-                for element in xml:
-
-                    element_ptype = element.get("PTYPE")
-
-                    if element_ptype is not None:
-
-                        try:
-                            po = new_from_type(
-                                element_ptype, self.sla_parent,
-                                self.doc_parent
-                            )
-
-                            success = po.fromxml(element)
-
-                            if success:
-                                self.group_objects.append(po)
-
-                        except ValueError:
-                            pass
-
-            for element in xml:
-
-                if self.ptype == "image":
-                    # NOTE No childs in image object
-                    pass
-
-                if self.ptype == "text":
-
-                    if element.tag == "PageItemAttributes":
-
-                        for sub in element:
-
-                            if sub.tag == "ItemAttribute":
-                                iatt = itemattribute.PageObjectAttribute()
-                                success = iatt.fromxml(sub)
-
-                                if success:
-                                    self.attributes.append(iatt)
-
-                    if element.tag == "WeldEntry":
-                        wo = WeldEntry()
-                        success = wo.fromxml(element)
-
-                        if wo:
-                            # TODO FIXME Comment gérér les WeldEntry dans les
-                            # instances PageObject ?
-                            pass
-
-                    if element.tag == "StoryText":
-                        story = stories.Story()
-
-                        story.sla_parent = self.sla_parent
-                        story.doc_parent = self.doc_parent
-
-                        success = story.fromxml(element)
-
-                        if success:
-                            if not self.stories:
-                                self.have_stories = True
-
-                            self.stories.append(story)
+            # --- Page objects specific children -------------------------
+            # Moved in TableObject
+            # Moved in TableObject
+            # Moved in TableObject
+            # NOTE No childs in image object
 
             #--- FIXME This records undocumented attributes --------------
 
@@ -662,27 +430,23 @@ class PageObject(xmlc.PyScribusElement):
                     sx = story.toxml()
                     xml.append(sx)
 
-        # ------------------------------------------------------------
+        # --- Previous / Next item -----------------------------------
 
-        # NOTE NEXTITEM contient le n° de l'item linké suivant (qui doit
-        # exister sinon plantage de Scribus) ou -1
-        # wiki.scribus.net/canvas/(FR)_Introdution_au_Format_de_fichier_SLA_pour_Scribus_1.4
+        # NOTE @NEXTITEM must be the @ItemID of the next EXISTING item
+        #      (if the item doesn't exists, Scribus crashes), or -1
 
         if self.linked["next"]:
             xml.attrib["NEXTITEM"] = self.linked["next"]
         else:
             xml.attrib["NEXTITEM"] = "-1"
 
-        # NOTE BACKITEM contient le n° de l'item linké précédent (qui doit
-        # exister sinon plantage de Scribus) ou -1
-        # wiki.scribus.net/canvas/(FR)_Introdution_au_Format_de_fichier_SLA_pour_Scribus_1.4
+        # NOTE @BACKITEM must be the @ItemID of the next EXISTING item
+        #      (if the item doesn't exists, Scribus crashes), or -1
 
         if self.linked["previous"]:
             xml.attrib["BACKITEM"] = self.linked["previous"]
         else:
             xml.attrib["BACKITEM"] = "-1"
-
-        # TODO
 
         #--- FIXME This exports undocumented attributes -------
 
@@ -764,22 +528,6 @@ class PageObject(xmlc.PyScribusElement):
                 if setting_name == "layer":
                     self.layer = setting_value
 
-                if self.ptype == "text":
-
-                    if setting_name == "columns":
-                        self.columns["count"] = int(setting_value)
-
-                    if setting_name == "columnsgap":
-                        self.columns["gap"].value = float(setting_value)
-
-                if self.ptype == "image":
-
-                    if setting_name == "filepath":
-                        self.filepath = setting_value
-
-                    if setting_name == "filedata":
-                        self.data = setting_value
-
 # Inherited from PageObject =============================================#
 
 class TableObject(PageObject):
@@ -796,8 +544,173 @@ class TableObject(PageObject):
 
     def __init__(self, sla_parent=False, doc_parent=False, **kwargs):
         PageObject.__init__(self, "table", sla_parent, doc_parent)
+
+        #--- Specific attributes to this subclass ------------------------
+
+        self.rows = 0
+        self.columns = 0
+
+        self.style = None
+
+        self.fill = {
+            "color": "None",
+            "shade": None
+        }
+
+        self.borders = {
+            "left": None,
+            "right": None,
+            "top": None,
+            "bottom": None
+        }
+
+        self.cells = []
+
+        #--- Then, quick setup -------------------------------------------
+
         PageObject._quick_setup(self, kwargs)
 
+    def _update_rowcols_count(self):
+        self.rows = max([cell.row for cell in self.cells]) + 1
+        self.columns = max([cell.column for cell in self.cells]) + 1
+
+    def toxml(self):
+        xml = PageObject.toxml(self)
+
+        if xml:
+            # --- Attributes ---------------------------------------------
+
+            self._update_rowcols_count()
+
+            if self.rows > 0:
+                xml.attrib["Rows"] = self.rows
+            else:
+                raise ValueError("Table object has zero rows.")
+
+            if self.columns > 0:
+                xml.attrib["Columns"] = self.columns
+            else:
+                raise ValueError("Table object has zero columns.")
+
+            # --- Children -----------------------------------------------
+
+            # TableData attributes
+
+            table_data = ET.Element("TableData")
+
+            if self.style is None:
+                table_data.attrib["Style"] = ""
+            else:
+                table_data.attrib["Style"] = self.style
+
+            table_data.attrib["FillColor"] = self.fill["color"]
+
+            if self.fill["shade"] is None:
+                table_data.attrib["FillShade"] = "100"
+            else:
+                table_data.attrib["FillShade"] = self.fill["shade"].toxmlstr(True)
+
+            # TableData children
+
+            for side in ["left", "right", "top", "bottom"]:
+
+                if self.borders[side] is not None:
+                    bx = self.borders[side].toxml()
+                    table_data.append(bx)
+
+            for cell in self.cells:
+                cx = cell.toxml()
+                TableData.append(cx)
+
+            return xml
+
+        return False
+
+    def fromxml(self, xml):
+        succeed = PageObject.fromxml(self, xml)
+
+        if succeed:
+
+            # --- Attributes ---------------------------------------------
+
+            rows = xml.get("Rows") # Number of rows
+            cols = xml.get("Columns") # Number of columns
+
+            if rows is not None:
+                self.rows = int(rows)
+
+            if cols is not None:
+                self.columns = int(cols)
+
+            # RowPositions="0 28.9378 57.8756 86.8134"
+            # RowHeights="28.9378 28.9378 28.9378 28.9378"
+            # ColumnPositions="0 48.0087 96.0174"
+            # ColumnWidths="48.0087 48.0087 48.0087"
+
+            # Les cellules sont listées de gauche à droite et de haut
+            # en bas.
+
+            rows_y = xml.get("RowPositions")
+            # Hauteur (dimension, not position)
+            rows_h = xml.get("RowHeights")
+
+            cols_x = xml.get("ColumnPositions")
+            # Largeur (dimension, not position)
+            cols_w = xml.get("ColumnWidths")
+
+            for posdim in [rows_y, rows_h, cols_x, cols_w]:
+                if posdim is not None:
+                    posdim = [float(p.strip()) for p in posdim.split()]
+                    print(posdim)
+
+            # --- Children -----------------------------------------------
+
+            border_tags = [
+                i for i in pstyles.TableBorder.sides_xml.values()
+            ]
+
+            for element in xml:
+
+                if element.tag == "TableData":
+
+                    style = element.get("Style")
+                    fill_color = element.get("FillColor")
+                    fill_shade = element.get("FillShade")
+
+                    if style is not None:
+                        self.style = style
+
+                    if fill_color is not None:
+                        self.fill["color"] = fill_color
+
+                    if fill_shade is not None:
+                        self.fill["shade"] = dimensions.Dim(
+                            float(fill_shade), "pc"
+                        )
+
+                    for sub in element:
+
+                        if sub.tag in border_tags:
+                            bx = pstyles.TableBorder()
+                            success = bx.fromxml(sub)
+
+                            if success:
+                                self.borders[bx.side] = bx
+
+                        if sub.tag == "Cell":
+                            cx = TableCell(self)
+                            success = cx.fromxml(sub)
+
+                            if success:
+                                self.cells.append(cx)
+
+            # ------------------------------------------------------------
+
+            self._update_rowcols_count()
+
+            return True
+
+        return False
 
 class GroupObject(PageObject):
     """
@@ -815,7 +728,43 @@ class GroupObject(PageObject):
 
     def __init__(self, sla_parent=False, doc_parent=False, **kwargs):
         PageObject.__init__(self, "group", sla_parent, doc_parent)
+
+        #--- Specific attributes to this subclass ------------------------
+
+        self.group_objects = []
+
+        #--- Then, quick setup -------------------------------------------
+
         PageObject._quick_setup(self, kwargs)
+
+    def fromxml(self, xml):
+        succeed = PageObject.fromxml(self, xml)
+
+        if succeed:
+
+            for element in xml:
+
+                element_ptype = element.get("PTYPE")
+
+                if element_ptype is not None:
+
+                    try:
+                        po = new_from_type(
+                            element_ptype, self.sla_parent,
+                            self.doc_parent
+                        )
+
+                        success = po.fromxml(element)
+
+                        if success:
+                            self.group_objects.append(po)
+
+                    except ValueError:
+                        pass
+
+            return True
+
+        return False
 
 
 class SymbolObject(PageObject):
@@ -832,6 +781,13 @@ class SymbolObject(PageObject):
 
     def __init__(self, sla_parent=False, doc_parent=False, **kwargs):
         PageObject.__init__(self, "symbol", sla_parent, doc_parent)
+
+        #--- Specific attributes to this subclass ------------------------
+
+        self.pattern = None
+
+        #--- Then, quick setup -------------------------------------------
+
         PageObject._quick_setup(self, kwargs)
 
 
@@ -861,7 +817,41 @@ class TextObject(PageObject):
 
     def __init__(self, sla_parent=False, doc_parent=False, **kwargs):
         PageObject.__init__(self, "text", sla_parent, doc_parent)
-        PageObject._quick_setup(self, kwargs)
+
+        #--- Specific attributes to this subclass ------------------------
+
+        self.stories = []
+
+        self.columns = {
+            "gap": dimensions.Dim(0),
+            "count": 0
+        }
+
+        self.alignment = None
+
+        #--- Then, quick setup -------------------------------------------
+
+        self._quick_setup(kwargs)
+
+    def _quick_setup(self, settings):
+        """
+        Method for defining page object settings from class
+        instanciation kwargs.
+
+        :type settings: dict
+        :param settings: Kwargs dictionnary
+        """
+
+        if settings:
+            PageObject._quick_setup(self, settings)
+
+            for setting_name, setting_value in settings.items():
+
+                if setting_name == "columns":
+                    self.columns["count"] = int(setting_value)
+
+                if setting_name == "columnsgap":
+                    self.columns["gap"].value = float(setting_value)
 
     def fromdefault(self, default="with-story"):
         story = stories.Story()
@@ -886,6 +876,71 @@ class TextObject(PageObject):
                     stories.append(story)
 
         return stories
+
+    def fromxml(self, xml):
+        succeed = PageObject.fromxml(self, xml)
+
+        if succeed:
+
+            # --- Attributes ---------------------------------------------
+
+            columns = xml.get("COLUMNS")
+            columnsgap = xml.get("COLGAPS")
+            alignment = xml.get("ALIGN")
+
+            if columns is not None:
+                self.columns["count"] = int(columns)
+
+            if columnsgap is not None:
+                self.columns["gap"].value = float(columnsgap)
+
+            if alignment is not None:
+                for human, code in xmlc.alignment.items():
+                    if alignment == code:
+                        self.alignment = human
+                        break
+
+            # --- Childs -------------------------------------------------
+
+            for element in xml:
+
+                if element.tag == "PageItemAttributes":
+
+                    for sub in element:
+
+                        if sub.tag == "ItemAttribute":
+                            iatt = itemattribute.PageObjectAttribute()
+                            success = iatt.fromxml(sub)
+
+                            if success:
+                                self.attributes.append(iatt)
+
+                if element.tag == "WeldEntry":
+                    wo = WeldEntry()
+                    success = wo.fromxml(element)
+
+                    if wo:
+                        # TODO FIXME Comment gérér les WeldEntry dans les
+                        # instances PageObject ?
+                        pass
+
+                if element.tag == "StoryText":
+                    story = stories.Story()
+
+                    story.sla_parent = self.sla_parent
+                    story.doc_parent = self.doc_parent
+
+                    success = story.fromxml(element)
+
+                    if success:
+                        if not self.stories:
+                            self.have_stories = True
+
+                        self.stories.append(story)
+
+            return True
+
+        return False
 
 
 class TextOnPathObject(PageObject):
@@ -931,7 +986,62 @@ class ImageObject(PageObject):
 
     def __init__(self, sla_parent=False, doc_parent=False, **kwargs):
         PageObject.__init__(self, "image", sla_parent, doc_parent)
-        PageObject._quick_setup(self, kwargs)
+
+        #--- Specific attributes to this subclass ------------------------
+
+        self.data = "" # ImageData
+        self.data_type = ""
+        self.filepath = "" # PFILE
+
+        #--- Then, quick setup -------------------------------------------
+
+        self._quick_setup(kwargs)
+
+    def fromxml(self, xml):
+        succeed = PageObject.fromxml(self, xml)
+
+        if succeed:
+
+            # --- Attributes ---------------------------------------------
+
+            idata = xml.get("ImageData")
+            ipath = xml.get("PFILE")
+            idata_ext = xml.get("inlineImageExt")
+
+            if idata is not None and idata:
+                self.data = idata
+
+            if idata_ext is not None and idata_ext:
+                self.data_type = idata_ext
+
+            if ipath is not None and ipath:
+                self.filepath = ipath
+
+            # ------------------------------------------------------------
+
+            return True
+
+        return False
+
+    def _quick_setup(self, settings):
+        """
+        Method for defining page object settings from class
+        instanciation kwargs.
+
+        :type settings: dict
+        :param settings: Kwargs dictionnary
+        """
+
+        if settings:
+            PageObject._quick_setup(self, settings)
+
+            for setting_name, setting_value in settings.items():
+
+                if setting_name == "filepath":
+                    self.filepath = setting_value
+
+                if setting_name == "filedata":
+                    self.data = setting_value
 
 
 class LineObject(PageObject):
@@ -944,6 +1054,53 @@ class LineObject(PageObject):
 
     def __init__(self, sla_parent=False, doc_parent=False):
         PageObject.__init__(self, "line", sla_parent, doc_parent)
+
+        #--- Specific attributes to this subclass ------------------------
+
+        self.line_type = "solid"
+        self.line_fill = "Black"
+        self.line_stroke = "Black"
+        self.line_thickness = dimensions.Dim(1)
+
+        #--- Then, quick setup -------------------------------------------
+
+        PageObject._quick_setup(self, kwargs)
+
+    def fromxml(self, xml):
+        succeed = PageObject.fromxml(self, xml)
+
+        if succeed:
+            fill = xml.get("PCOLOR")
+            stroke = xml.get("PCOLOR2")
+            thickness = xml.get("PWIDTH")
+            line_type = xml.get("PLINEART")
+
+            # TODO Walrus operator
+            # if (line_type := xml.get("PLINEART") is not None:
+            if line_type is not None:
+                for human, code in PageObject.line_type_xml.items():
+                    if line_type == code:
+                        self.line_type = human
+                        break
+
+            # TODO Walrus operator
+            # if (fill := xml.get("PCOLOR") is not None:
+            if fill is not None:
+                self.line_fill = fill
+
+            # TODO Walrus operator
+            # if (stroke := xml.get("PCOLOR2") is not None:
+            if stroke is not None:
+                self.line_stroke = stroke
+
+            # TODO Walrus operator
+            # if (thickness := xml.get("PWIDTH") is not None:
+            if thickness is not None:
+                self.line_thickness.value = float(thickness)
+
+            return True
+
+        return False
 
 
 class PolylineObject(PageObject):
@@ -1022,23 +1179,16 @@ class TableCell(xmlc.PyScribusElement):
 
         self.style = None
 
-        self.fill = {
-            "color": "None",
-            "shade": None
-        }
+        self.fill = {"color": "None", "shade": None}
 
         self.borders = {
-            "left": None,
-            "right": None,
-            "top": None,
-            "bottom": None
+            "left": None, "right": None,
+            "top": None, "bottom": None
         }
 
         self.padding = {
-            "left": None,
-            "right": None,
-            "top": None,
-            "bottom": None
+            "left": None, "right": None,
+            "top": None, "bottom": None
         }
 
         self.align = None
