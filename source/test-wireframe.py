@@ -9,7 +9,7 @@ import pyscribus.sla as sla
 import pyscribus.extra.wireframe as wire
 
 if __name__ == "__main__":
-    slafile = sla.SLA("tests/images.sla", "1.5.5")
+    slafile = sla.SLA("tests/wireframe.sla", "1.5.5")
 
     wireframe = wire.Wireframe()
     wireframe.from_sla(slafile)
