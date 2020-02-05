@@ -403,7 +403,7 @@ class Document(PyScribusElement):
 
     #=== Setting defaults methods ===========================================
 
-    def default_profiles(self):
+    def _default_profiles(self):
         """
         Add default checking profiles.
         """
@@ -419,38 +419,38 @@ class Document(PyScribusElement):
             ]:
             self.profiles.append(p)
 
-    def default_layer(self):
+    def _default_layer(self):
         """
         Add default layer.
         """
         self.layers.append(Layer(default=True))
 
-    def default_layers(self):
+    def _default_layers(self):
         """
         Add default checking profiles.
 
         Alias for add_default_layer()
         """
 
-        self.default_layer()
+        self._default_layer()
 
-    def default_snapping(self):
+    def _default_snapping(self):
         """
         Set default UI snapping options.
         """
 
         self.ui_snapping = {"guides": True, "grid": False, "element": True}
 
-    def default_note_style(self):
+    def _default_note_style(self):
         ns = styles.NoteStyle()
         ns.fromdefault()
 
         self.styles["note"].append(ns)
 
-    def default_note_styles(self):
-        self.default_note_style()
+    def _default_note_styles(self):
+        self._default_note_style()
 
-    def default_pages(self):
+    def _default_pages(self):
         """
         Add default page.
         """
@@ -461,16 +461,16 @@ class Document(PyScribusElement):
 
         return True
 
-    def default_page(self):
+    def _default_page(self):
         """
         Alias of default_pages()
 
         .. sealso: default_pages()
         """
 
-        self.default_pages()
+        self._default_pages()
 
-    def default_icc(self):
+    def _default_icc(self):
         """
         Set default ICC colors profiles.
         """
@@ -482,7 +482,7 @@ class Document(PyScribusElement):
             "printer": "ISO Coated v2 300% (basICColor)",
         }
 
-    def default_ui_show(self):
+    def _default_ui_show(self):
         """
         Set default UI view options.
         """
@@ -498,7 +498,7 @@ class Document(PyScribusElement):
             "rulers": True
         }
 
-    def default_calligraphic_pen(self):
+    def _default_calligraphic_pen(self):
         """
         Set default calligraphic pen options.
         """
@@ -514,7 +514,7 @@ class Document(PyScribusElement):
             "fill_shade": dimensions.Dim(100, "perc", True),
         }
 
-    def default_pagesets(self):
+    def _default_pagesets(self):
         """
         Set default page sets.
         """
@@ -528,7 +528,7 @@ class Document(PyScribusElement):
             if success:
                 self.page_sets.append(ps)
 
-    def default_colors(self):
+    def _default_colors(self):
         """
         Set default colors.
         """
@@ -543,7 +543,7 @@ class Document(PyScribusElement):
             if success:
                 self.colors.append(co)
 
-    def default_pdfsettings(self):
+    def _default_pdfsettings(self):
         """
         Add default PDF settings.
         """
@@ -552,7 +552,7 @@ class Document(PyScribusElement):
         pdf.fromdefault()
         self.pdf_settings = [pdf]
 
-    def default_section(self):
+    def _default_section(self):
         """
         Alias of default_sections()
 
@@ -561,7 +561,7 @@ class Document(PyScribusElement):
 
         self.default_sections()
 
-    def default_sections(self):
+    def _default_sections(self):
         """
         Add default section.
         """
@@ -570,13 +570,13 @@ class Document(PyScribusElement):
         sec.fromdefault()
         self.sections = [sec]
 
-    def default_paragraph_styles(self):
+    def _default_paragraph_styles(self):
         self.styles["paragraph"].append(
             styles.ParagraphStyle(self, default=True)
         )
         self.styles["paragraph"][-1].is_default = True
 
-    def default_character_styles(self):
+    def _default_character_styles(self):
         self.styles["character"].append(
             styles.CharacterStyle(self, default=True)
         )
@@ -631,20 +631,20 @@ class Document(PyScribusElement):
         """
 
         features = {
-            "colors": self.default_colors,
-            "cpen": self.default_calligraphic_pen,
-            "icc": self.default_icc,
-            "layers": self.default_layers,
-            "nstyles": self.default_note_styles,
-            "pstyles": self.default_paragraph_styles,
-            "cstyles": self.default_character_styles,
-            "page": self.default_page,
-            "pagesets": self.default_pagesets,
-            "pdf": self.default_pdfsettings,
-            "profiles": self.default_profiles,
-            "section": self.default_sections,
-            "uisnapping": self.default_snapping,
-            "uishow": self.default_ui_show,
+            "colors": self._default_colors,
+            "cpen": self._default_calligraphic_pen,
+            "icc": self._default_icc,
+            "layers": self._default_layers,
+            "nstyles": self._default_note_styles,
+            "pstyles": self._default_paragraph_styles,
+            "cstyles": self._default_character_styles,
+            "page": self._default_page,
+            "pagesets": self._default_pagesets,
+            "pdf": self._default_pdfsettings,
+            "profiles": self._default_profiles,
+            "section": self._default_sections,
+            "uisnapping": self._default_snapping,
+            "uishow": self._default_ui_show,
         }
 
         plurals = {
