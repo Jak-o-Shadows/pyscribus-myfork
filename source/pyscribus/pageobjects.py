@@ -642,10 +642,23 @@ class TableObject(PageObject):
             if cols is not None:
                 self.columns = int(cols)
 
-            # RowPositions="0 28.9378 57.8756 86.8134"
-            # RowHeights="28.9378 28.9378 28.9378 28.9378"
-            # ColumnPositions="0 48.0087 96.0174"
-            # ColumnWidths="48.0087 48.0087 48.0087"
+            # Table of 3 cols, 4 rows
+            # ColumnPositions = "0       48.0087 96.0174"
+            # ColumnWidths    = "48.0087 48.0087 48.0087"
+            # RowPositions    = "0       28.9378 57.8756 86.8134"
+            # RowHeights      = "28.9378 28.9378 28.9378 28.9378"
+
+            #     A      B       C  Row positions  Column positions
+            #  f  +------+-------+  0 (=yD) yE     0 (=xA) xB xC
+            #  d  |   G  |    I  |  Row heights    Column widths
+            #     +------+-------+  hD hE          lAB lBC
+            #  e  |   H  |    J  |
+            #  k  +------+-------+  fA = 0,0
+            #
+            #                       G = 0,0 : lAB, yD->yE
+            #                       I = 1,0 : lBC, yD->yE
+            #                       H = 0,1 : lAB, yE->yk
+            #                       J = 1,1 : lBC, yE->yk
 
             # Les cellules sont listées de gauche à droite et de haut
             # en bas.

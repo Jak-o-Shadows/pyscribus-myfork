@@ -516,8 +516,8 @@ class DimBox:
     :param kwargs: kwargs (see kwargs table)
 
     :ivar dict dims: Width and height of the box as Dim objects
-    :ivar dict coords: Coordinates of the box, list of Dim objects
-        ([x, y]) for each corner
+    :ivar dict coords: Coordinates of the box, dict of list of
+        Dim objects ([x, y]) for each point
     :ivar Dim rotation: Rotation angle of the box as Dim object
         (unit : degree)
     :ivar dict rotated_coords: Coordinates of the box when rotated by
@@ -543,10 +543,6 @@ class DimBox:
     | Box height              | height     |
     +-------------------------+------------+
     """
-
-    all_case =  ["top_lx", "top_ly", "bottom_rx", "bottom_ry"]
-    from_tl_case = ["top_lx", "top_ly", "width", "height"]
-    from_tr_case = ["top_rx", "top_ry", "width", "height"]
 
     def __init__(self,**kwargs):
         # X,Y coordinates
@@ -577,6 +573,83 @@ class DimBox:
 
     #--- Box modification ------------------------------------------------
 
+    def move(self, posx=0, posy=0, refpoint="top-left"):
+        """
+        Move the box at posx, posy position.
+
+        :type posx: float
+        :param posx: New X position
+        :type posy: float
+        :param posy: New Y position
+        :type refpoint: string
+        :param refpoint: Coordinate point of reference (DimBox.coords key)
+        :rtype: boolean
+        """
+
+        origin_x,origin_y = None,None
+
+        if refpoint in self.coords.keys():
+            origin_x = self.coords[refpoint][0].value
+            origin_y = self.coords[refpoint][1].value
+
+        if origin_x is not None and origin_y is not None:
+
+            if origin_x != posx or origin_y != posy:
+                # Noving the box according to the reference point
+
+                if refpoint == "top-left":
+                    self.set_box(
+                        top_lx=posx, top_ly=posy,
+                        width=self.dims["width"].value,
+                        height=self.dims["height"].value,
+                    )
+
+                    return True
+
+            else:
+                # Moving the box at the exact same position is not a mistake
+                # even if it's useless
+                return True
+
+        return False
+
+    def translate(self, amountx=0, amounty=0, refpoint="top-left"):
+        """
+        Move the box by an amount of amountx, amounty
+
+        :type amountx: float
+        :param amountx: Amount of X translation
+        :type amounty: float
+        :param amounty: Amount of Y translation
+        :type refpoint: string
+        :param refpoint: Coordinate point of reference (DimBox.coords key)
+        :rtype: boolean
+        """
+
+        origin_x,origin_y = None,None
+
+        if refpoint in self.coords.keys():
+            origin_x = self.coords[refpoint][0].value
+            origin_y = self.coords[refpoint][1].value
+
+        if origin_x is not None and origin_y is not None:
+
+            # Translating the box by amountx, amounty
+
+            if refpoint == "topleft":
+                npx = self.coords["top-left"][0].value + amountx
+                npy = self.coords["top-left"][1].value + amounty
+
+                self.set_box(
+                    top_lx=npx, top_ly=npy,
+                    width=self.dims["width"].value,
+                    height=self.dims["height"].value,
+                )
+
+                return True
+
+        return False
+
     def set_box(self, **kwargs):
         """
         Set all coordinates of the box from a set a coordinates
@@ -602,18 +675,21 @@ class DimBox:
         | Box height              | height     |
         +-------------------------+------------+
 
-        :type side: dict
-        :param side: kwargs
+        :rtype: boolean
         """
 
         def all_case(obj, kwargs):
             """
+            Define DimBox points from all corners.
+
             X-------X
             |       |
             |       |
             X-------X
 
             Height and width are deduced
+
+            rtype: pyscribus.dimensions.DimBox
             """
 
             tlx,tly = kwargs["top_lx"],kwargs["top_ly"]
@@ -635,10 +711,14 @@ class DimBox:
 
         def from_tr(obj, kwargs):
             """
+            Define DimBox points from top-right corner.
+
             <--------X
                      |
                      |
                      v
+
+            rtype: pyscribus.dimensions.DimBox
             """
 
             # Troy to avoid using try and "tory".
@@ -664,10 +744,14 @@ class DimBox:
 
         def from_tl(obj, kwargs):
             """
+            Define DimBox points from top-left corner.
+
             X------->
             |
             |
             v
+
+            rtype: pyscribus.dimensions.DimBox
             """
 
             tlx = float(kwargs["top_lx"])
@@ -689,17 +773,38 @@ class DimBox:
 
             return obj
 
-        def check_case(kwargs, case, casename):
-            met = 0
+        def check_case(kwargs, casename):
+            """
+            Check if there is any enough kwargs arguments to set the box
+            according to a specific box setting scenario / case.
 
-            for k in case:
-                if k in kwargs:
-                    met += 1
+            :rtype: string,boolean
+            :returns: casename or False
+            """
 
-            if met == len(case):
-                return casename
-            else:
-                return False
+            case = False
+
+            if casename == "set_from_all":
+                case =  ["top_lx", "top_ly", "bottom_rx", "bottom_ry"]
+
+            if casename == "set_from_tl":
+                case = ["top_lx", "top_ly", "width", "height"]
+
+            if casename == "set_from_tr":
+                case = ["top_rx", "top_ry", "width", "height"]
+
+            if case:
+
+                met = 0
+
+                for k in case:
+                    if k in kwargs:
+                        met += 1
+
+                if met == len(case):
+                    return casename
+
+            return False
 
         if kwargs is not None:
             case = False
@@ -710,15 +815,15 @@ class DimBox:
                 rotation_deg = kwargs["rotation"]
 
             # Setting from top left corner ?
-            case = check_case(kwargs, DimBox.from_tl_case, "set_from_tl")
+            case = check_case(kwargs, "set_from_tl")
 
             if not case:
                 # Setting from top right corner ?
-                case = check_case(kwargs, DimBox.from_tr_case, "set_from_tr")
+                case = check_case(kwargs, "set_from_tr")
 
             if not case:
                 # Setting from top left and bottom right corner
-                case = check_case(kwargs, DimBox.all_case, "set_from_all")
+                case = check_case(kwargs, "set_from_all")
 
             if case:
 
