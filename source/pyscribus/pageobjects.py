@@ -540,6 +540,10 @@ class TableObject(PageObject):
     :param doc_parent: SLA DOCUMENT instance
     :type kwargs: dict
     :param kwargs: Quick setting (see kwargs table)
+
+    :ivar list cells: Table cells (TableCell instances)
+    :ivar integer rows: Number of rows
+    :ivar integer columns: Number of columns
     """
 
     def __init__(self, sla_parent=False, doc_parent=False, **kwargs):
@@ -550,21 +554,16 @@ class TableObject(PageObject):
         self.rows = 0
         self.columns = 0
 
+        self.cells = []
+
         self.style = None
 
-        self.fill = {
-            "color": "None",
-            "shade": None
-        }
+        self.fill = {"color": "None", "shade": None}
 
         self.borders = {
-            "left": None,
-            "right": None,
-            "top": None,
-            "bottom": None
+            "left": None, "right": None,
+            "top": None, "bottom": None
         }
-
-        self.cells = []
 
         #--- Then, quick setup -------------------------------------------
 
@@ -574,6 +573,31 @@ class TableObject(PageObject):
         self.rows = max([cell.row for cell in self.cells]) + 1
         self.columns = max([cell.column for cell in self.cells]) + 1
 
+    def _update_cells_geometry(self, cols, rows):
+        """
+        Set each cell box according its row's position & height and its
+        column's position and width.
+        """
+
+        colsdict,rowsdict = {},{}
+
+        for col in cols:
+            colsdict[col[0]] = {"position": col[1], "width": col[2]}
+
+        for row in rows:
+            rowsdict[row[0]] = {"position": row[1], "height": row[2]}
+
+        for cell in self.cells:
+            r = rowsdict[cell.row]
+            c = colsdict[cell.column]
+
+            cell.box.set_box(
+                top_lx=r["position"],
+                top_ly=c["position"],
+                width=c["width"],
+                height=r["height"]
+            )
+
     def toxml(self):
         xml = PageObject.toxml(self)
 
@@ -581,6 +605,8 @@ class TableObject(PageObject):
             # --- Attributes ---------------------------------------------
 
             self._update_rowcols_count()
+
+            # Number of rows and columns
 
             if self.rows > 0:
                 xml.attrib["Rows"] = self.rows
@@ -592,23 +618,30 @@ class TableObject(PageObject):
             else:
                 raise ValueError("Table object has zero columns.")
 
+            # Columns and rows datas
+
+            # TODO RowPositions
+            # TODO RowHeights
+            # TODO ColumnPositions
+            # TODO ColumnWidths
+
             # --- Children -----------------------------------------------
 
             # TableData attributes
 
-            table_data = ET.Element("TableData")
+            tabdata = ET.Element("TableData")
 
             if self.style is None:
-                table_data.attrib["Style"] = ""
+                tabdata.attrib["Style"] = ""
             else:
-                table_data.attrib["Style"] = self.style
+                tabdata.attrib["Style"] = self.style
 
-            table_data.attrib["FillColor"] = self.fill["color"]
+            tabdata.attrib["FillColor"] = self.fill["color"]
 
             if self.fill["shade"] is None:
-                table_data.attrib["FillShade"] = "100"
+                tabdata.attrib["FillShade"] = "100"
             else:
-                table_data.attrib["FillShade"] = self.fill["shade"].toxmlstr(True)
+                tabdata.attrib["FillShade"] = self.fill["shade"].toxmlstr(True)
 
             # TableData children
 
@@ -616,11 +649,14 @@ class TableObject(PageObject):
 
                 if self.borders[side] is not None:
                     bx = self.borders[side].toxml()
-                    table_data.append(bx)
+                    tabdata.append(bx)
 
             for cell in self.cells:
                 cx = cell.toxml()
-                TableData.append(cx)
+                tabdata.append(cx)
+
+            # Adding TableData as xml child
+            xml.append(tabdata)
 
             return xml
 
@@ -633,8 +669,10 @@ class TableObject(PageObject):
 
             # --- Attributes ---------------------------------------------
 
-            rows = xml.get("Rows") # Number of rows
-            cols = xml.get("Columns") # Number of columns
+            # Number of rows and columns
+
+            rows = xml.get("Rows")
+            cols = xml.get("Columns")
 
             if rows is not None:
                 self.rows = int(rows)
@@ -642,39 +680,47 @@ class TableObject(PageObject):
             if cols is not None:
                 self.columns = int(cols)
 
-            # Table of 3 cols, 4 rows
-            # ColumnPositions = "0       48.0087 96.0174"
-            # ColumnWidths    = "48.0087 48.0087 48.0087"
-            # RowPositions    = "0       28.9378 57.8756 86.8134"
-            # RowHeights      = "28.9378 28.9378 28.9378 28.9378"
+            # Rows and columns widths and heights -------------------
 
-            #     A      B       C  Row positions  Column positions
-            #  f  +------+-------+  0 (=yD) yE     0 (=xA) xB xC
-            #  d  |   G  |    I  |  Row heights    Column widths
-            #     +------+-------+  hD hE          lAB lBC
-            #  e  |   H  |    J  |
-            #  k  +------+-------+  fA = 0,0
-            #
-            #                       G = 0,0 : lAB, yD->yE
-            #                       I = 1,0 : lBC, yD->yE
-            #                       H = 0,1 : lAB, yE->yk
-            #                       J = 1,1 : lBC, yE->yk
+            # Getting rows datas -------------------------------
 
-            # Les cellules sont listées de gauche à droite et de haut
-            # en bas.
+            # Y position of the row, with the top-left corner
+            # of the first cell of the first row is at 0
+            row_y = xml.get("RowPositions")
 
-            rows_y = xml.get("RowPositions")
-            # Hauteur (dimension, not position)
-            rows_h = xml.get("RowHeights")
+            if row_y is not None:
+                row_y = [float(i) for i in row_y.split()]
 
-            cols_x = xml.get("ColumnPositions")
-            # Largeur (dimension, not position)
-            cols_w = xml.get("ColumnWidths")
+            # Height (dimension, not position)
+            row_h = xml.get("RowHeights")
 
-            for posdim in [rows_y, rows_h, cols_x, cols_w]:
-                if posdim is not None:
-                    posdim = [float(p.strip()) for p in posdim.split()]
-                    print(posdim)
+            if row_h is not None:
+                row_h = [float(i) for i in row_h.split()]
+
+            # Getting columns datas ----------------------------
+
+            # X position of the column, with the top-left corner
+            # of the first cell of the first row is at 0
+            col_x = xml.get("ColumnPositions")
+
+            if col_x is not None:
+                col_x = [float(i) for i in col_x.split()]
+
+            # Width (dimension, not position)
+            col_w = xml.get("ColumnWidths")
+
+            if col_w is not None:
+                col_w = [float(i) for i in col_w.split()]
+
+            # Mixing datas together ----------------------------
+
+            cols_datas = [
+                i for i in zip([x for x in range(len(col_x))], col_x, col_w)
+            ]
+
+            rows_datas = [
+                i for i in zip([y for y in range(len(row_y))], rowy, row_h)
+            ]
 
             # --- Children -----------------------------------------------
 
@@ -718,6 +764,8 @@ class TableObject(PageObject):
                                 self.cells.append(cx)
 
             # ------------------------------------------------------------
+
+            self._update_cells_geometry(cols_datas, rows_datas)
 
             self._update_rowcols_count()
 
@@ -1151,10 +1199,112 @@ class RenderObject(PageObject):
     :param sla_parent: SLA parent instance
     :type doc_parent: pyscribus.document.Document
     :param doc_parent: SLA DOCUMENT instance
+
+    :ivar pyscribus.pageobjects.RenderBuffer buffer: Content and properties of
+        the render frame.
     """
 
     def __init__(self, sla_parent=False, doc_parent=False):
         PageObject.__init__(self, "render", sla_parent, doc_parent)
+        self.buffer = None
+
+    # -----------------------------------------------------------------------
+
+    def fromxml(self, xml):
+        succeed = PageObject.fromxml(self, xml)
+
+        if succeed:
+
+            # ------------------------------------------------------------
+
+            for child in xml:
+
+                if child.tag == "LATEX":
+                    bfr = RenderBuffer()
+                    success = bfr.fromxml(child)
+
+                    if success:
+                        self.buffer = bfr
+
+            # ------------------------------------------------------------
+
+            return True
+
+        return False
+
+    def toxml(self):
+        xml = PageObject.toxml(self)
+
+        if xml:
+            # --- Children -----------------------------------------------
+
+            bfrx = self.buffer.toxml()
+            xml.append(bfrx)
+
+            return xml
+
+        return False
+
+    # --- RenderBuffer methods aliases --------------------------------------
+
+    def has_package(self, name):
+        """
+        Check if package name exists in the LaTeX preamble of the render frame
+        buffer.
+
+        :type name: string
+        :param name: Name of the package
+        :rtype: boolean
+        :returns: True if the package exists
+        :raise pyscribus.exceptions.UnknownRenderBufferProperty: If the LaTeX 
+            preamble property (HeadersRenderProperty) doesn't exists.
+        """
+
+        if self.buffer is not None:
+            return self.buffer.has_package(name)
+
+    def append_package(self, name, options=""):
+        """
+        Append a package in the LaTeX preamble of the render frame buffer.
+
+        :type name: str
+        :param name: Name of the package
+        :type options: str
+        :param options: Package's options
+        :rtype: boolean
+        :returns: True if package appending succeed
+
+        ..note:: As LaTeX additional headers is managed with 
+            pageobjects.HeadersRenderProperty, it is better to use this 
+            method than editing RenderBuffer.properties.
+
+        Example:
+
+          render_buffer.append_package("csquotes", "strict=true")
+
+          is the equivalent of :
+
+          \\usepackage[strict=true]{csquotes}
+        """
+
+        if self.buffer is not None:
+            return self.buffer.append_package(name, options)
+
+    def set_fontsize(self, fontsize):
+        """
+        Set the font size of the render buffer content.
+
+        :type fontsize: float, int
+        :param fontsize: Font size in points
+
+        .. note:: As fontsize is a standard render frame property, it is better
+            to use this method than editing RenderBuffer.properties.
+        """
+
+        if self.buffer is not None:
+            return self.buffer.set_fontsize(fontsize)
+
+    # -----------------------------------------------------------------------
 
 
 class LatexObject(RenderObject):
@@ -1192,13 +1342,20 @@ class TableCell(xmlc.PyScribusElement):
     # TextDistLeft="0" TextDistTop="0" TextDistBottom="0" TextDistRight="0" 
     # Flop="0" 
 
-
     vertical_align = {"top": "0", "center": "1", "bottom": "2"}
 
     def __init__(self, pgo_parent=False):
         super().__init__()
 
         self.pgo_parent = pgo_parent
+
+        # Row, column, box -----------------------------------------------
+
+        self.row = None
+        self.column = None
+        self.box = dimensions.DimBox()
+
+        # Appearance of the cell -----------------------------------------
 
         self.style = None
 
@@ -1216,10 +1373,10 @@ class TableCell(xmlc.PyScribusElement):
 
         self.align = None
 
+        # Content of the cell --------------------------------------------
+
         self.story = None
 
-        self.row = None
-        self.column = None
 
     def fromdefault(self):
 

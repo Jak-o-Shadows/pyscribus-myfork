@@ -13,13 +13,13 @@ if __name__ == "__main__":
 
     for po in sla.documents[0].page_objects:
         if isinstance(po, pageobjects.TableObject):
-            print(po)
+            # print(po)
 
-            print("Borders :")
-            print(po.borders)
+            # print("Borders :")
+            # print(po.borders)
 
             print("Cells :")
             for c in po.cells:
-                print(c.row, c.column, c.story.rawtext())
+                print(c.row, c.column, c.story.rawtext(), "|", c.box)
 
 # vim:set shiftwidth=4 softtabstop=4:
