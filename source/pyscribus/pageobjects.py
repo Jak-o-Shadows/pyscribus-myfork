@@ -1274,9 +1274,9 @@ class RenderObject(PageObject):
         :rtype: boolean
         :returns: True if package appending succeed
 
-        ..note:: As LaTeX additional headers is managed with 
-            pageobjects.HeadersRenderProperty, it is better to use this 
-            method than editing RenderBuffer.properties.
+        .. note:: As LaTeX additional headers is managed with 
+            pageobjects.HeadersRenderProperty, it is better to use this method 
+            than editing RenderBuffer.properties.
 
         Example:
 
@@ -1618,9 +1618,9 @@ class RenderBuffer(xmlc.PyScribusElement):
         :rtype: boolean
         :returns: True if package appending succeed
 
-        ..note:: As LaTeX additional headers is managed with 
-            pageobjects.HeadersRenderProperty, it is better to use this 
-            method than editing RenderBuffer.properties.
+        .. note:: As LaTeX additional headers is managed with 
+            pageobjects.HeadersRenderProperty, it is better to use this method 
+            than editing RenderBuffer.properties.
 
         Example:
 
