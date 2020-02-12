@@ -88,6 +88,12 @@ class PageObject(xmlc.PyScribusElement):
         "dash-dot-dot": 5
     }
 
+    shape_type_xml = {
+        "rectangle": "0",
+        "ellipse": "1",
+        "rounded-rectangle": "2",
+        "free": "3",
+    }
 
     def __init__(
             self, ptype=False,
@@ -109,11 +115,12 @@ class PageObject(xmlc.PyScribusElement):
         self.layer = 0
         self.attributes = []
 
-        # --- Page object boxes --------------------------------------
+        # --- Page object shape and boxes ----------------------------
 
         self.box = dimensions.DimBox()
         self.rotated_box = dimensions.DimBox()
         self.rotated = False
+        self.shape = {"type": None, "edited": None}
 
         # --- Page object own_page and linking/id --------------------
 
@@ -146,6 +153,9 @@ class PageObject(xmlc.PyScribusElement):
 
         if kwargs:
             self._quick_setup(kwargs)
+
+    def fromdefault(self):
+        self.shape = {"type": "rectangle", "edited": False}
 
     def fromxml(self, xml, arbitrary_tag=False):
         """
@@ -228,7 +238,20 @@ class PageObject(xmlc.PyScribusElement):
                     except ValueError:
                         pass
 
-            # --- Object path and copath ---------------------------------
+            # --- Object path, copath and shape --------------------------
+
+            editedshape = xml.get("CLIPEDIT")
+            shapetype = xml.get("FRTYPE")
+
+            if editedshape is not None:
+                self.shape["edited"] = xmlc.num_to_bool(editedshape)
+
+            if shapetype is not None:
+
+                for human,code in PageObject.shape_type_xml.items():
+                    if shapetype == code:
+                        self.shape["type"] = human
+                        break
 
             # NOTE FIXME Currently only working for rectangular shapes
 
@@ -386,6 +409,18 @@ class PageObject(xmlc.PyScribusElement):
 
         # ------------------------------------------------------------
 
+        if self.shape["type"] is None:
+            # If the shape type is not defined, we assume the frame has
+            # a rectangular shape, as it is the most common
+            xml.attrib["FRTYPE"] = PageObject.shape_type_xml["rectangle"]
+        else:
+            xml.attrib["FRTYPE"] = PageObject.shape_type_xml[self.shape["type"]]
+
+        if self.shape["edited"] is None:
+            ml.attrib["CLIPEDIT"] = "0"
+        else:
+            xml.attrib["CLIPEDIT"] = xmlc.bool_to_num(self.shape["edited"])
+
         if self.path is None:
 
             if self.ptype not in ["line", "polyline", "textonpath"]:
@@ -450,16 +485,17 @@ class PageObject(xmlc.PyScribusElement):
 
         #--- FIXME This exports undocumented attributes -------
 
-        try:
-            # xml = undocumented_to_xml(xml, self.undocumented)
-            xml, undoc_attribs = xmlc.all_undocumented_to_xml(
-                xml, self.undocumented, True,
-                self.ptype + "frame '" + self.name + "'"
-            )
+        if self.ptype not in ["table"]:
 
-        except AttributeError:
-            # NOTE If fromxml was not used
-            pass
+            try:
+                xml, undoc_attribs = xmlc.all_undocumented_to_xml(
+                    xml, self.undocumented, True,
+                    self.ptype + " frame '" + self.name + "'"
+                )
+
+            except AttributeError:
+                # NOTE If fromxml was not used
+                pass
 
         return xml
 
@@ -601,29 +637,66 @@ class TableObject(PageObject):
     def toxml(self):
         xml = PageObject.toxml(self)
 
-        if xml:
+        if isinstance(xml, ET._Element):
             # --- Attributes ---------------------------------------------
 
             self._update_rowcols_count()
 
-            # Number of rows and columns
+            # Number of rows and columns ----------------------------
 
             if self.rows > 0:
-                xml.attrib["Rows"] = self.rows
+                xml.attrib["Rows"] = str(self.rows)
             else:
                 raise ValueError("Table object has zero rows.")
 
             if self.columns > 0:
-                xml.attrib["Columns"] = self.columns
+                xml.attrib["Columns"] = str(self.columns)
             else:
                 raise ValueError("Table object has zero columns.")
 
-            # Columns and rows datas
+            # Columns and rows datas --------------------------------
+
+            rowsh,colsw = {},{}
+            rowsp,colsp = {},{}
+
+            for cell in self.cells:
+
+                if cell.row not in rowsh:
+                    rowsh[cell.row] = cell.box.dims["height"].toxmlstr(True)
+
+                if cell.row not in rowsp:
+                    rowsp[cell.row] = cell.box.coords["top-left"][1].toxmlstr(True)
+
+                if cell.column not in colsw:
+                    colsw[cell.column] = cell.box.dims["width"].toxmlstr(True)
+
+                if cell.column not in colsp:
+                    colsp[cell.column] = cell.box.coords["top-left"][0].toxmlstr(True)
+
+            print(rowsp)
+            print(colsp)
+
+            cols_widths = " ".join(colsw[n] for n in sorted(colsw.keys()))
+            rows_heights = " ".join(rowsh[n] for n in sorted(rowsh.keys()))
 
             # TODO RowPositions
-            # TODO RowHeights
+            # RowHeights
+            xml.attrib["RowHeights"] = rows_heights
             # TODO ColumnPositions
-            # TODO ColumnWidths
+            # ColumnWidths
+            xml.attrib["ColumnWidths"] = cols_widths
+
+            #--- FIXME This exports undocumented attributes --------------
+
+            try:
+                xml, undoc_attribs = xmlc.all_undocumented_to_xml(
+                    xml, self.undocumented, True,
+                    self.ptype + " frame '" + self.name + "'"
+                )
+
+            except AttributeError:
+                # NOTE If fromxml was not used
+                pass
 
             # --- Children -----------------------------------------------
 
@@ -719,7 +792,7 @@ class TableObject(PageObject):
             ]
 
             rows_datas = [
-                i for i in zip([y for y in range(len(row_y))], rowy, row_h)
+                i for i in zip([y for y in range(len(row_y))], row_y, row_h)
             ]
 
             # --- Children -----------------------------------------------
@@ -772,6 +845,7 @@ class TableObject(PageObject):
             return True
 
         return False
+
 
 class GroupObject(PageObject):
     """
@@ -1506,6 +1580,9 @@ class TableCell(xmlc.PyScribusElement):
 
         # Attributes ---------------------------------------------
 
+        xml.attrib["Row"] = str(self.row)
+        xml.attrib["Column"] = str(self.column)
+
         xml.attrib["FillColor"] = self.fill["color"]
 
         if self.style is None:
@@ -1521,7 +1598,7 @@ class TableCell(xmlc.PyScribusElement):
         if self.fill["shade"] is None:
             xml.attrib["FillShade"] = "100"
         else:
-            xml.attrib["FillShade"] = self.fill["shade"].toxmlstr()
+            xml.attrib["FillShade"] = self.fill["shade"].toxmlstr(True)
 
         for side in ["left", "right", "top", "bottom"]:
             att_name = "{}Padding".format(side.capitalize())
