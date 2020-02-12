@@ -22,4 +22,6 @@ if __name__ == "__main__":
             for c in po.cells:
                 print(c.row, c.column, c.story.rawtext(), "|", c.box)
 
+    sla.save("tests-outputs/tables.sla")
+
 # vim:set shiftwidth=4 softtabstop=4:
