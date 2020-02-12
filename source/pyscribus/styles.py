@@ -379,9 +379,7 @@ class StyleAbstract(xmlc.PyScribusElement):
             if self.style_type == "cell":
 
                 for case in ["left", "right", "top", "bottom"]:
-                    att_name = xml.get("{}Padding".format(case.capitalize()))
-
-                    att = xml.get(att_name)
+                    att = xml.get("{}Padding".format(case.capitalize()))
 
                     if att is not None:
                         self.padding[case] = att
