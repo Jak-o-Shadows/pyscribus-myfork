@@ -305,7 +305,7 @@ class Color(xmlc.PyScribusElement):
                 xml.attrib[color] = str(color_value)
 
         if self.register:
-            xml.attrib["REGISTER"] = "1"
+            xml.attrib["Register"] = "1"
 
         return xml
 
