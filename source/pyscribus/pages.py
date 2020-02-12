@@ -400,9 +400,9 @@ class PageAbstract(PyScribusElement):
 
         #--- Borders ------------------------------------------
 
-        for b in self.borders.keys():
+        for b in ["left", "right", "top", "bottom"]:
             att = "BORDER{}".format(b.upper())
-            xml.attrib[att] = self.borders[b].toxml()
+            xml.attrib[att] = self.borders[b].toxmlstr(True)
 
          #--- Page number --------------------------------------
 
