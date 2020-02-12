@@ -136,7 +136,8 @@ class Document(PyScribusElement):
             "note": [],
             "paragraph": [],
             "character": [],
-            "table": []
+            "table": [],
+            "cell": [],
         }
 
         #-----------------------------------------------
@@ -842,7 +843,12 @@ class Document(PyScribusElement):
                 if success:
                     self.styles["table"].append(tstyle)
 
-            # TODO cellstyle
+            if child.tag == "CellStyle":
+                cstyle = styles.CellStyle(self)
+                success = cstyle.fromxml(child)
+
+                if success:
+                    self.styles["cell"].append(cstyle)
 
             if child.tag == "LAYERS":
                 l = Layer()
@@ -1091,25 +1097,23 @@ class Document(PyScribusElement):
 
         # TODO hyphen
 
-        # TODO style
+        # Styles ------------------------------------------
 
         for pstyle in self.styles["paragraph"]:
             pstylex = pstyle.toxml()
             xml.append(pstylex)
 
-        # TODO charstyle
-
         for cstyle in self.styles["character"]:
             cstylex = cstyle.toxml()
             xml.append(cstylex)
-
-        # TODO tablestyle
 
         for tstyle in self.styles["table"]:
             tstylex = tstyle.toxml()
             xml.append(tstylex)
 
-        # TODO cellstyle
+        for cstyle in self.styles["cell"]:
+            cstylex = cstyle.toxml()
+            xml.append(cstylex)
 
         # Layers ------------------------------------------
 
