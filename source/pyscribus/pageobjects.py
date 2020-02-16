@@ -420,7 +420,7 @@ class PageObject(xmlc.PyScribusElement):
             xml.attrib["FRTYPE"] = PageObject.shape_type_xml[self.shape["type"]]
 
         if self.shape["edited"] is None:
-            ml.attrib["CLIPEDIT"] = "0"
+            xml.attrib["CLIPEDIT"] = "0"
         else:
             xml.attrib["CLIPEDIT"] = xmlc.bool_to_num(self.shape["edited"])
 
