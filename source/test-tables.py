@@ -9,20 +9,19 @@ import pyscribus.sla as sla
 import pyscribus.pageobjects as pageobjects
 
 if __name__ == "__main__":
-    sla = sla.SLA("tests/tables.sla", "1.5.5")
+    slafile = sla.SLA("tests/tables.sla", "1.5.5")
 
-    for po in sla.document.page_objects:
+    tables = slafile.pageobjects("table")
 
-        if isinstance(po, pageobjects.TableObject):
-            # print(po)
+    print("Cells :")
 
-            # print("Borders :")
-            # print(po.borders)
+    last = tables[-1]
 
-            print("Cells :")
-            for c in po.cells:
-                print(c.row, c.column, c.story.rawtext(), "|", c.box)
+    for c in last.cells:
+        print(c.row, c.column, c.story.rawtext(), "|", c.box)
 
-    sla.save("tests-outputs/tables.sla")
+    last.append_column()
+
+    slafile.save("tests-outputs/tables.sla")
 
 # vim:set shiftwidth=4 softtabstop=4:
