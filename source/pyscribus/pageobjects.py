@@ -130,7 +130,7 @@ class PageObject(xmlc.PyScribusElement):
 
         self.object_id = False
 
-        self.linked = {"next": False, "previous": False}
+        self.linked = {"next": None, "previous": None}
 
         # --- --------------------------------------------------------
 
@@ -234,6 +234,8 @@ class PageObject(xmlc.PyScribusElement):
 
                         if rdegree > 0:
                             self.rotated_box.rotate(rdegree)
+                        else:
+                            self.rotated_box.rotation.value = 0
 
                     except ValueError:
                         pass
@@ -278,9 +280,10 @@ class PageObject(xmlc.PyScribusElement):
             own_page = xml.get("OwnPage")
 
             for link_id in zip(["next", "previous"], [next_id, prev_id]):
+
                 if link_id[1] is not None:
                     if link_id[1] == "-1":
-                        self.linked[link_id[0]] = False
+                        self.linked[link_id[0]] = None
                     else:
                         self.linked[link_id[0]] = link_id[1]
 
@@ -388,7 +391,7 @@ class PageObject(xmlc.PyScribusElement):
         xml.attrib["WIDTH"] = self.box.dims["width"].toxmlstr()
         xml.attrib["HEIGHT"] = self.box.dims["height"].toxmlstr()
 
-        xml.attrib["ROT"] = self.rotated_box.rotation.toxmlstr()
+        xml.attrib["ROT"] = self.rotated_box.rotation.toxmlstr(True)
 
         # NOTE ANNAME is optional
         if self.name is not None:
@@ -470,18 +473,18 @@ class PageObject(xmlc.PyScribusElement):
         # NOTE @NEXTITEM must be the @ItemID of the next EXISTING item
         #      (if the item doesn't exists, Scribus crashes), or -1
 
-        if self.linked["next"]:
-            xml.attrib["NEXTITEM"] = self.linked["next"]
-        else:
+        if self.linked["next"] is None:
             xml.attrib["NEXTITEM"] = "-1"
+        else:
+            xml.attrib["NEXTITEM"] = self.linked["next"]
 
         # NOTE @BACKITEM must be the @ItemID of the next EXISTING item
         #      (if the item doesn't exists, Scribus crashes), or -1
 
-        if self.linked["previous"]:
-            xml.attrib["BACKITEM"] = self.linked["previous"]
-        else:
+        if self.linked["previous"] is None:
             xml.attrib["BACKITEM"] = "-1"
+        else:
+            xml.attrib["BACKITEM"] = self.linked["previous"]
 
         #--- FIXME This exports undocumented attributes -------
 
@@ -618,23 +621,30 @@ class TableObject(PageObject):
         colsdict,rowsdict = {},{}
 
         for col in cols:
-            colsdict[col[0]] = {"position": col[1], "width": col[2]}
+            col_index,col_x,col_width = col
+            colsdict[col_index] = {"position": col_x, "width": col_width}
 
         for row in rows:
-            rowsdict[row[0]] = {"position": row[1], "height": row[2]}
+            row_index,row_y,row_height = row
+            rowsdict[row_index] = {"position": row_y, "height": row_height}
 
         for cell in self.cells:
-            r = rowsdict[cell.row]
-            c = colsdict[cell.column]
+            row = rowsdict[cell.row]
+            column = colsdict[cell.column]
 
             cell.box.set_box(
-                top_lx=r["position"],
-                top_ly=c["position"],
-                width=c["width"],
-                height=r["height"]
+                top_lx=column["position"],
+                top_ly=row["position"],
+                width=column["width"],
+                height=row["height"]
             )
 
     def toxml(self):
+        """
+        :rtype: lxml._Element
+        :returns: Table object as LXML element
+        """
+
         xml = PageObject.toxml(self)
 
         if isinstance(xml, ET._Element):
@@ -673,18 +683,13 @@ class TableObject(PageObject):
                 if cell.column not in colsp:
                     colsp[cell.column] = cell.box.coords["top-left"][0].toxmlstr(True)
 
-            print(rowsp)
-            print(colsp)
+            for case in [
+                    ["RowPositions", rowsp], ["RowHeights", rowsh],
+                    ["ColumnPositions", colsp], ["ColumnWidths", colsw]]:
 
-            cols_widths = " ".join(colsw[n] for n in sorted(colsw.keys()))
-            rows_heights = " ".join(rowsh[n] for n in sorted(rowsh.keys()))
-
-            # TODO RowPositions
-            # RowHeights
-            xml.attrib["RowHeights"] = rows_heights
-            # TODO ColumnPositions
-            # ColumnWidths
-            xml.attrib["ColumnWidths"] = cols_widths
+                xml.attrib[case[0]] = " ".join(
+                    case[1][n] for n in sorted(case[1].keys())
+                )
 
             #--- FIXME This exports undocumented attributes --------------
 
@@ -760,6 +765,7 @@ class TableObject(PageObject):
             # Y position of the row, with the top-left corner
             # of the first cell of the first row is at 0
             row_y = xml.get("RowPositions")
+            print("positions Y", row_y)
 
             if row_y is not None:
                 row_y = [float(i) for i in row_y.split()]
@@ -775,6 +781,7 @@ class TableObject(PageObject):
             # X position of the column, with the top-left corner
             # of the first cell of the first row is at 0
             col_x = xml.get("ColumnPositions")
+            print("positions X", col_x)
 
             if col_x is not None:
                 col_x = [float(i) for i in col_x.split()]
@@ -786,6 +793,8 @@ class TableObject(PageObject):
                 col_w = [float(i) for i in col_w.split()]
 
             # Mixing datas together ----------------------------
+            # cols datas: index, X, width
+            # rows dataa: index, Y, height
 
             cols_datas = [
                 i for i in zip([x for x in range(len(col_x))], col_x, col_w)
