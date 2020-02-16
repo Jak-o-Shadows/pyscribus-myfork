@@ -765,7 +765,6 @@ class TableObject(PageObject):
             # Y position of the row, with the top-left corner
             # of the first cell of the first row is at 0
             row_y = xml.get("RowPositions")
-            print("positions Y", row_y)
 
             if row_y is not None:
                 row_y = [float(i) for i in row_y.split()]
@@ -781,7 +780,6 @@ class TableObject(PageObject):
             # X position of the column, with the top-left corner
             # of the first cell of the first row is at 0
             col_x = xml.get("ColumnPositions")
-            print("positions X", col_x)
 
             if col_x is not None:
                 col_x = [float(i) for i in col_x.split()]
