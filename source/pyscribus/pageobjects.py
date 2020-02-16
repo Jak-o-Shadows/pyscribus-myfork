@@ -1187,7 +1187,7 @@ class LineObject(PageObject):
     :param doc_parent: SLA DOCUMENT instance
     """
 
-    def __init__(self, sla_parent=False, doc_parent=False):
+    def __init__(self, sla_parent=False, doc_parent=False, **kwargs):
         PageObject.__init__(self, "line", sla_parent, doc_parent)
 
         #--- Specific attributes to this subclass ------------------------
