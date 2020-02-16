@@ -233,6 +233,14 @@ if __name__ == "__main__":
 
     slafile.append(text_frame)
 
+    # ----------------------------------------------------------
+
+    slafile.document.metadata["title"] = "ONIX notice of {}".format(
+        titles[0]["text"]
+    )
+
+    # ----------------------------------------------------------
+
     slafile.save("tests-outputs/test-onix.sla")
 
 # vim:set shiftwidth=4 softtabstop=4:
