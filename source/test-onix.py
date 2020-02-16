@@ -167,37 +167,35 @@ if __name__ == "__main__":
 
     # --- Styles -----------------------------------------------
 
-    document = slafile.documents[0]
-
     # As all defined styles will inherit Scribus default paragraph style,
     # we set its leading mode to "automatic".
-    document.styles["paragraph"][0].leading["mode"] = "automatic"
+    slafile.document.styles["paragraph"][0].leading["mode"] = "automatic"
 
     # Defining paragraph styles, with quick settings
 
     title_style = pstyles.ParagraphStyle(
-        document,
+        slafile.document,
         name="Title", fontsize=18, alignment="center", spaceafter=10,
     )
 
     title_h2 = pstyles.ParagraphStyle(
-        document,
+        slafile.document,
         name="H2", fontsize=14, spacebefore=5, spaceafter=10,
     )
 
     normal_style = pstyles.ParagraphStyle(
-        document,
+        slafile.document,
         name="Normal", fontsize=12, alignment="left",
     )
 
     summary_style = pstyles.ParagraphStyle(
-        document,
+        slafile.document,
         name="Summary", font="Arial Italic", fontsize=12,
         alignment="justify-left",
     )
 
     detail_style = pstyles.ParagraphStyle(
-        document,
+        slafile.document,
         name="Detail", fontsize=10,
     )
 

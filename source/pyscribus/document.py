@@ -1236,7 +1236,7 @@ class Document(PyScribusElement):
 
     #========================================================================
 
-    def get_pageobjects(self, object_type=False, templatable=False):
+    def pageobjects(self, object_type=False, templatable=False):
         pos_ret = []
 
         # If there is a object type filter, we filter before checking
@@ -1288,16 +1288,6 @@ class Document(PyScribusElement):
                 pos_ret = self.page_objects
 
         return pos_ret
-
-    def images(self):
-        """
-        Returns all images frames (ImageObject) in the document.
-
-        :rtype: list
-        :returns: List of image frames
-        """
-
-        return self.get_pageobjects("image")
 
     def stories(self):
         """

@@ -75,7 +75,7 @@ class SLA(xmlc.PyScribusElement):
         if version:
             self.version = version.split(".")
 
-        self.documents = []
+        self.document = None
 
         self.templating = {
             "active": False,
@@ -130,7 +130,7 @@ class SLA(xmlc.PyScribusElement):
 
         return True
 
-    def append(self, sla_object, document_index=-1):
+    def append(self, sla_object):
         """
         Add the document to SLA Documents and set its sla_parent as self
 
@@ -144,14 +144,14 @@ class SLA(xmlc.PyScribusElement):
 
         if isinstance(sla_object, document.Document):
             sla_object.sla_parent = self
-            self.documents.append(sla_object)
+            self.document = sla_object
 
             return True
         else:
-            try:
-                return self.documents[document_index].append(sla_object)
-            except IndexError:
+            if self.document is None:
                 return False
+            else:
+                return self.document.append(sla_object)
 
     def save(self, filepath):
         """
@@ -191,26 +191,15 @@ class SLA(xmlc.PyScribusElement):
 
         xml.attrib["Version"] = ".".join(self.version)
 
-        for document in self.documents:
-            dx = document.toxml(optional)
+        if self.document is None:
+            raise exceptions.InsaneSLAValue(
+                "SLA file has no SCRIBUSUTF8NEW/DOCUMENT"
+            )
+        else:
+            dx = self.document.toxml(optional)
             xml.append(dx)
 
         return xml
-
-    def images(self):
-        """
-        Returns all images frames (ImageObject) in SLA.
-
-        :returns: List of pyscribus.pageobjects.ImageObject
-        :rtype: list
-        """
-
-        images = []
-
-        for document in self.documents:
-            images.extend(document.images())
-
-        return images
 
     def stories(self, templatable=False):
         """
@@ -223,10 +212,7 @@ class SLA(xmlc.PyScribusElement):
         :rtype: list
         """
 
-        stories = []
-
-        for document in self.documents:
-            stories.extend(document.stories())
+        stories = self.document.stories()
 
         if templatable:
 
@@ -238,12 +224,10 @@ class SLA(xmlc.PyScribusElement):
         return stories
 
     def pageobjects(self, object_type=False, templatable=False):
-        obj = []
+        """
+        """
 
-        for document in self.documents:
-            obj.extend(document.get_pageobjects(object_type, templatable))
-
-        return obj
+        return self.document.pageobjects(object_type, templatable)
 
     def templatable_stories(self):
         """
@@ -296,7 +280,7 @@ class SLA(xmlc.PyScribusElement):
                         success = doc.fromxml(element)
 
                         if success:
-                            obj.documents.append(doc)
+                            obj.document = doc
 
                 return True, obj
 

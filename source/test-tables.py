@@ -11,7 +11,8 @@ import pyscribus.pageobjects as pageobjects
 if __name__ == "__main__":
     sla = sla.SLA("tests/tables.sla", "1.5.5")
 
-    for po in sla.documents[0].page_objects:
+    for po in sla.document.page_objects:
+
         if isinstance(po, pageobjects.TableObject):
             # print(po)
 

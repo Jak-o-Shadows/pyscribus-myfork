@@ -9,7 +9,6 @@ import pyscribus.sla as sla
 if __name__ == "__main__":
     slafile = sla.SLA("tests/images.sla")
 
-    print(slafile.images())
     print(slafile.pageobjects("image"))
 
 # vim:set shiftwidth=4 softtabstop=4:

@@ -18,7 +18,7 @@ if __name__ == "__main__":
     testfile.fromdefault()
 
     # Add the imported files to it
-    testfile.documents[0].styles = s
+    testfile.documents.styles = s
 
     # Save the new file
     testfile.save("tests-outputs/test-styles-import.sla")
