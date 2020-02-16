@@ -608,6 +608,8 @@ class TableObject(PageObject):
 
         PageObject._quick_setup(self, kwargs)
 
+    #--- Cells update methods -----------------------------------------------
+
     def _update_rowcols_count(self):
         self.rows = max([cell.row for cell in self.cells]) + 1
         self.columns = max([cell.column for cell in self.cells]) + 1
@@ -638,6 +640,89 @@ class TableObject(PageObject):
                 width=column["width"],
                 height=row["height"]
             )
+
+    #--- --------------------------------------------------------------------
+
+    def append_columns(self, number=1, width=False):
+        added = 0
+
+        for add in range(number):
+            success = self.append_column(width)
+
+            if success:
+                added += 1
+
+        if added == number:
+            return True
+        else:
+            return False
+
+    def append_column(self, width=False):
+        self._update_rowcols_count()
+
+        # --- Getting rows informations ------------------------------
+
+        rows = {}
+
+        for cell in self.cells:
+
+            if cell.row not in rows:
+                rows[cell.row] = {
+                    "y": float(cell.box.dims["height"]),
+                    "height": float(cell.box.coords["top-left"][1])
+                }
+
+        # --- Getting the last column x and width --------------------
+
+        last_x,last_width = None,None
+
+        for cell in self.cells:
+
+            if cell.column == (self.columns - 1):
+                last_x = cell.box.coords["top-left"][0].value
+                last_width = cell.box.dims["width"].value
+
+                break
+
+        # --- Adding the new column ----------------------------------
+
+        if last_x is not None and last_width is not None:
+
+            new_x = last_x + last_width
+
+            if width:
+                new_width = float(width)
+            else:
+                new_width = last_width
+
+            self.box.dims["width"] += float(new_width)
+
+            # --- Adding the cell in each row of the new column ------
+
+            for row_index, datas in rows.items():
+                cell = TableCell(self)
+                cell.fromdefault()
+                cell.column = self.columns
+                cell.row = row_index
+
+                cell.box.set_box(
+                    top_lx=new_x,
+                    top_ly=datas["y"],
+                    width=new_width,
+                    height=datas["height"]
+                )
+
+                self.cells.append(cell)
+
+            self._update_rowcols_count()
+
+            return True
+
+        # ------------------------------------------------------------
+
+        return False
+
+    #--- PyScribus standard methods -----------------------------------------
 
     def toxml(self):
         """
