@@ -237,6 +237,14 @@ class SLA(xmlc.PyScribusElement):
 
         return stories
 
+    def pageobjects(self, object_type=False, templatable=False):
+        obj = []
+
+        for document in self.documents:
+            obj.extend(document.get_pageobjects(object_type, templatable))
+
+        return obj
+
     def templatable_stories(self):
         """
         Returns stories from text frames (TextObject) in SLA which contains

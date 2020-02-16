@@ -1297,17 +1297,17 @@ class Document(PyScribusElement):
         :returns: List of image frames
         """
 
-        images = [p for p in self.page_objects if isinstance(p, ImageObject)]
-
-        return images
+        return self.get_pageobjects("image")
 
     def stories(self):
         """
-        Returns all stories from text frames (TextObject) in the document.
+        Returns all stories in the document.
 
         :rtype: list
         :returns: List of stories
         """
+
+        #--- Text frames stories -----------------------------------------
 
         stories,filtered = [], [
             po for po in self.page_objects
@@ -1316,6 +1316,21 @@ class Document(PyScribusElement):
 
         for po in filtered:
             stories.extend(po.stories)
+
+        #--- Table cells stories -----------------------------------------
+
+        cells,tables = [], [
+            po for po in self.page_objects if po.ptype == "table"
+        ]
+
+        for po in tables:
+            cells.extend(po.cells)
+
+        for cell in cells:
+            if cell.story is not None:
+                stories.append(cell.story)
+
+        #-----------------------------------------------------------------
 
         return stories
 

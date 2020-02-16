@@ -23,13 +23,13 @@
         <HYPHEN/>
         <STYLE NAME="Default Paragraph Style" DefaultStyle="1" ALIGN="0" DIRECTION="0" LINESPMode="1" LINESP="15" INDENT="0" RMARGIN="0" FIRST="0" VOR="0" NACH="0" ParagraphEffectOffset="0" DROP="0" DROPLIN="2" Bullet="0" Numeration="0" HyphenConsecutiveLines="2" BCOLOR="None" BSHADE="100" CPARENT="Default Character Style"/>
         <STYLE NAME="JournalTitle" ALIGN="1" NACH="2" CPARENT="Default Character Style" FONTSIZE="55" FONTFEATURES="-clig,+dlig,+hlig" FEATURES="smallcaps" TXTSHX="5" TXTSHY="-5" TXTOUT="1" TXTULP="-0.1" TXTULW="-0.1" TXTSTP="-0.1" TXTSTW="-0.1"/>
-        <STYLE NAME="JournalMotto" ALIGN="1" CPARENT="Default Character Style" FONT="Linux Libertine G Italic" FONTFEATURES="-clig"/>
+        <STYLE NAME="JournalMotto" ALIGN="1" CPARENT="Default Character Style" FONT="Linux Libertine Italic" FONTFEATURES="-clig"/>
         <STYLE NAME="AdPlaceholder" ALIGN="1" CPARENT="Default Character Style" FEATURES="allcaps" TXTSHX="5" TXTSHY="-5" TXTOUT="1" TXTULP="-0.1" TXTULW="-0.1" TXTSTP="-0.1" TXTSTW="-0.1"/>
-        <STYLE NAME="ArticleTitle" CPARENT="Default Character Style" FONT="Linux Libertine G Bold" FONTSIZE="15" FONTFEATURES="-clig"/>
-        <STYLE NAME="ArticleLead" LINESPMode="1" VOR="2" NACH="3" CPARENT="Default Character Style" FONT="Linux Libertine G Italic" FONTSIZE="13" FONTFEATURES="-clig"/>
+        <STYLE NAME="ArticleTitle" CPARENT="Default Character Style" FONT="Linux Libertine Semibold" FONTSIZE="18" FONTFEATURES="-clig"/>
+        <STYLE NAME="ArticleLead" LINESPMode="1" VOR="2" NACH="3" CPARENT="Default Character Style" FONTSIZE="13"/>
         <STYLE NAME="ArticleText" ALIGN="3" CPARENT="Default Character Style"/>
         <STYLE NAME="ArticleFollowing" ALIGN="2" VOR="2" LANGUAGE="fr"/>
-        <CHARSTYLE CNAME="Default Character Style" DefaultStyle="1" FONT="Linux Libertine G Regular" FONTSIZE="12" FONTFEATURES="-clig" FEATURES="inherit" FCOLOR="Black" FSHADE="100" HyphenWordMin="3" SCOLOR="Black" BGCOLOR="None" BGSHADE="100" SSHADE="100" TXTSHX="5" TXTSHY="-5" TXTOUT="1" TXTULP="-0.1" TXTULW="-0.1" TXTSTP="-0.1" TXTSTW="-0.1" SCALEH="100" SCALEV="100" BASEO="0" KERN="0" LANGUAGE="fr"/>
+        <CHARSTYLE CNAME="Default Character Style" DefaultStyle="1" FONT="Linux Libertine Regular" FONTSIZE="12" FONTFEATURES="-clig" FEATURES="inherit" FCOLOR="Black" FSHADE="100" HyphenWordMin="3" SCOLOR="Black" BGCOLOR="None" BGSHADE="100" SSHADE="100" TXTSHX="5" TXTSHY="-5" TXTOUT="1" TXTULP="-0.1" TXTULW="-0.1" TXTSTP="-0.1" TXTSTW="-0.1" SCALEH="100" SCALEV="100" BASEO="0" KERN="0" LANGUAGE="fr"/>
         <TableStyle NAME="Default Table Style" DefaultStyle="1" FillColor="None" FillShade="100">
             <TableBorderLeft>
                 <TableBorderLine Width="1" PenStyle="1" Color="Black" Shade="100"/>
@@ -61,6 +61,7 @@
         <LAYERS NUMMER="0" LEVEL="0" NAME="Fond de page" SICHTBAR="1" DRUCKEN="1" EDIT="1" SELECT="0" FLOW="1" TRANS="1" BLEND="0" OUTL="0" LAYERC="#000000"/>
         <Printer firstUse="1" toFile="0" useAltPrintCommand="0" outputSeparations="0" useSpotColors="0" useColor="0" mirrorH="0" mirrorV="0" useICC="0" doGCR="0" doClip="0" setDevParam="0" useDocBleeds="0" cropMarks="0" bleedMarks="0" registrationMarks="0" colorMarks="0" includePDFMarks="0" PSLevel="0" PDLanguage="0" markLength="0" markOffset="0" BleedTop="0" BleedLeft="0" BleedRight="0" BleedBottom="0" printer="" filename="" separationName="" printerCommand=""/>
         <PDF firstUse="1" Thumbnails="0" Articles="0" Bookmarks="0" Compress="1" CMethod="0" Quality="0" EmbedPDF="0" MirrorH="0" MirrorV="0" Clip="0" rangeSel="0" rangeTxt="" RotateDeg="0" PresentMode="0" RecalcPic="0" FontEmbedding="0" Grayscale="0" RGBMode="1" UseProfiles="0" UseProfiles2="0" Binding="0" PicRes="300" Resolution="300" Version="14" Intent="1" Intent2="0" SolidP="sRGB display profile (ICC v2.2)" ImageP="sRGB display profile (ICC v2.2)" PrintP="ISO Coated v2 300% (basICColor)" InfoString="" BTop="0" BLeft="0" BRight="0" BBottom="0" useDocBleeds="1" cropMarks="0" bleedMarks="0" registrationMarks="0" colorMarks="0" docInfoMarks="0" markLength="20" markOffset="0" ImagePr="0" PassOwner="" PassUser="" Permissions="-4" Encrypt="0" UseLayers="0" UseLpi="0" UseSpotColors="1" doMultiFile="0" displayBookmarks="0" displayFullscreen="0" displayLayers="0" displayThumbs="0" hideMenuBar="0" hideToolBar="0" fitWindow="0" openAfterExport="0" PageLayout="0" openAction="">
+            <LPI Color="" Frequency="0" Angle="0" SpotFunction="0"/>
             <LPI Color="Black" Frequency="133" Angle="45" SpotFunction="3"/>
             <LPI Color="Cyan" Frequency="133" Angle="105" SpotFunction="3"/>
             <LPI Color="Magenta" Frequency="133" Angle="75" SpotFunction="3"/>
@@ -95,7 +96,7 @@
         </Sections>
         <MASTERPAGE PAGEXPOS="100" PAGEYPOS="20" PAGEWIDTH="595.275590551181" PAGEHEIGHT="841.889763779528" BORDERLEFT="28.3464566929134" BORDERRIGHT="28.3464566929134" BORDERTOP="28.3464566929134" BORDERBOTTOM="28.3464566929134" NUM="0" NAM="Normal" MNAM="" Size="A4" Orientation="0" LEFT="0" PRESET="0" VerticalGuides="" HorizontalGuides="" AGhorizontalAutoGap="0" AGverticalAutoGap="0" AGhorizontalAutoCount="0" AGverticalAutoCount="0" AGhorizontalAutoRefer="0" AGverticalAutoRefer="0" AGSelection="0 0 0 0" pageEffectDuration="1" pageViewDuration="1" effectType="0" Dm="0" M="0" Di="0"/>
         <PAGE PAGEXPOS="100" PAGEYPOS="20" PAGEWIDTH="595.275590551181" PAGEHEIGHT="841.889763779528" BORDERLEFT="28.3464566929134" BORDERRIGHT="28.3464566929134" BORDERTOP="28.3464566929134" BORDERBOTTOM="28.3464566929134" NUM="0" NAM="" MNAM="Normal" Size="A4" Orientation="0" LEFT="0" PRESET="0" VerticalGuides="" HorizontalGuides="" AGhorizontalAutoGap="0" AGverticalAutoGap="0" AGhorizontalAutoCount="0" AGverticalAutoCount="0" AGhorizontalAutoRefer="0" AGverticalAutoRefer="0" AGSelection="0 0 0 0" pageEffectDuration="1" pageViewDuration="1" effectType="0" Dm="0" M="0" Di="0"/>
-        <PAGEOBJECT XPOS="128.346456692913" YPOS="48.3464566929134" OwnPage="0" ItemID="206599760" PTYPE="4" WIDTH="538.582677165354" HEIGHT="170.07874015748" FRTYPE="0" CLIPEDIT="0" PWIDTH="1" PLINEART="1" ANNAME="JournalHeader" LOCALSCX="1" LOCALSCY="1" LOCALX="0" LOCALY="0" LOCALROT="0" PICART="1" SCALETYPE="1" RATIO="1" COLUMNS="1" COLGAP="0" AUTOTEXT="0" EXTRA="0" TEXTRA="0" BEXTRA="0" REXTRA="0" VAlign="1" FLOP="0" PLTSHOW="0" BASEOF="0" textPathType="0" textPathFlipped="0" path="M0 0 L538.583 0 L538.583 170.079 L0 170.079 L0 0 Z" copath="M0 0 L538.583 0 L538.583 170.079 L0 170.079 L0 0 Z" gXpos="128.346456692913" gYpos="48.3464566929134" gWidth="0" gHeight="0" LAYER="0" NEXTITEM="-1" BACKITEM="-1">
+        <PAGEOBJECT XPOS="128.346456692913" YPOS="48.3464566929134" OwnPage="0" ItemID="2068738925" PTYPE="4" WIDTH="538.582677165354" HEIGHT="170.07874015748" FRTYPE="0" CLIPEDIT="0" PWIDTH="1" PLINEART="1" ANNAME="JournalHeader" LOCALSCX="1" LOCALSCY="1" LOCALX="0" LOCALY="0" LOCALROT="0" PICART="1" SCALETYPE="1" RATIO="1" COLUMNS="1" COLGAP="0" AUTOTEXT="0" EXTRA="0" TEXTRA="0" BEXTRA="0" REXTRA="0" VAlign="1" FLOP="0" PLTSHOW="0" BASEOF="0" textPathType="0" textPathFlipped="0" path="M0 0 L538.583 0 L538.583 170.079 L0 170.079 L0 0 Z" copath="M0 0 L538.583 0 L538.583 170.079 L0 170.079 L0 0 Z" gXpos="128.346456692913" gYpos="48.3464566929134" gWidth="0" gHeight="0" LAYER="0" NEXTITEM="-1" BACKITEM="-1">
             <StoryText>
                 <DefaultStyle/>
                 <ITEXT CH="The Template"/>
@@ -110,7 +111,7 @@
                 <trail ALIGN="1"/>
             </StoryText>
         </PAGEOBJECT>
-        <PAGEOBJECT XPOS="128.346456692913" YPOS="218.425196850394" OwnPage="0" ItemID="206616752" PTYPE="4" WIDTH="269.291338582677" HEIGHT="501.732283464567" FRTYPE="0" CLIPEDIT="1" PWIDTH="1" PLINEART="1" ANNAME="MainArticle" LOCALSCX="1" LOCALSCY="1" LOCALX="0" LOCALY="0" LOCALROT="0" PICART="1" SCALETYPE="1" RATIO="1" COLUMNS="1" COLGAP="0" AUTOTEXT="0" EXTRA="0" TEXTRA="0" BEXTRA="0" REXTRA="5.66929133858268" VAlign="0" FLOP="0" PLTSHOW="0" BASEOF="0" textPathType="0" textPathFlipped="0" path="M0 0 L269.291 0 L269.291 501.732 L0 501.732 L0 0 Z" copath="M0 0 L269.291 0 L269.291 501.732 L0 501.732 L0 0 Z" gXpos="0" gYpos="-51.9212598425197" gWidth="538.582755931833" gHeight="156.404" LAYER="0" NEXTITEM="-1" BACKITEM="-1">
+        <PAGEOBJECT XPOS="128.346456692913" YPOS="218.425196850394" OwnPage="0" ItemID="2066528861" PTYPE="4" WIDTH="269.291338582677" HEIGHT="250.866141732283" FRTYPE="0" CLIPEDIT="1" PWIDTH="1" PLINEART="1" ANNAME="MainArticle" LOCALSCX="1" LOCALSCY="1" LOCALX="0" LOCALY="0" LOCALROT="0" PICART="1" SCALETYPE="1" RATIO="1" COLUMNS="1" COLGAP="0" AUTOTEXT="0" EXTRA="0" TEXTRA="0" BEXTRA="0" REXTRA="5.66929133858268" VAlign="0" FLOP="0" PLTSHOW="0" BASEOF="0" textPathType="0" textPathFlipped="0" path="M0 0 L269.291 0 L269.291 250.866 L0 250.866 L0 0 Z" copath="M0 0 L269.291 0 L269.291 250.866 L0 250.866 L0 0 Z" gXpos="0" gYpos="-51.9212598425197" gWidth="538.582755931833" gHeight="156.404" LAYER="0" NEXTITEM="-1" BACKITEM="-1">
             <StoryText>
                 <DefaultStyle/>
                 <ITEXT CH="%Title%"/>
@@ -123,14 +124,14 @@
                 <trail PARENT="ArticleFollowing"/>
             </StoryText>
         </PAGEOBJECT>
-        <PAGEOBJECT XPOS="128.346456692914" YPOS="720.157480314961" OwnPage="0" ItemID="206608256" PTYPE="4" WIDTH="538.582677165354" HEIGHT="113.385826771654" FRTYPE="0" CLIPEDIT="0" PWIDTH="1" PLINEART="1" ANNAME="Ad" LOCALSCX="1" LOCALSCY="1" LOCALX="0" LOCALY="0" LOCALROT="0" PICART="1" SCALETYPE="1" RATIO="1" COLUMNS="1" COLGAP="0" AUTOTEXT="0" EXTRA="0" TEXTRA="5.66929133858268" BEXTRA="5.66929133858268" REXTRA="0" VAlign="1" FLOP="0" PLTSHOW="0" BASEOF="0" textPathType="0" textPathFlipped="0" path="M0 0 L538.583 0 L538.583 113.386 L0 113.386 L0 0 Z" copath="M0 0 L538.583 0 L538.583 113.386 L0 113.386 L0 0 Z" gXpos="128.346456692913" gYpos="720.157480314961" gWidth="0" gHeight="0" LAYER="0" NEXTITEM="-1" BACKITEM="-1">
+        <PAGEOBJECT XPOS="128.346456692914" YPOS="720.157480314961" OwnPage="0" ItemID="2052077693" PTYPE="4" WIDTH="538.582677165354" HEIGHT="113.385826771654" FRTYPE="0" CLIPEDIT="0" PWIDTH="1" PLINEART="1" ANNAME="Ad" LOCALSCX="1" LOCALSCY="1" LOCALX="0" LOCALY="0" LOCALROT="0" PICART="1" SCALETYPE="1" RATIO="1" COLUMNS="1" COLGAP="0" AUTOTEXT="0" EXTRA="0" TEXTRA="5.66929133858268" BEXTRA="5.66929133858268" REXTRA="0" VAlign="1" FLOP="0" PLTSHOW="0" BASEOF="0" textPathType="0" textPathFlipped="0" path="M0 0 L538.583 0 L538.583 113.386 L0 113.386 L0 0 Z" copath="M0 0 L538.583 0 L538.583 113.386 L0 113.386 L0 0 Z" gXpos="128.346456692913" gYpos="720.157480314961" gWidth="0" gHeight="0" LAYER="0" NEXTITEM="-1" BACKITEM="-1">
             <StoryText>
                 <DefaultStyle/>
                 <ITEXT CH="Advertisement for useless stuff here"/>
                 <trail PARENT="AdPlaceholder"/>
             </StoryText>
         </PAGEOBJECT>
-        <PAGEOBJECT XPOS="397.637795275591" YPOS="218.14141162219" OwnPage="0" ItemID="206596928" PTYPE="4" WIDTH="269.291338582677" HEIGHT="251.149926960487" FRTYPE="0" CLIPEDIT="1" PWIDTH="1" PLINEART="1" ANNAME="Article1" LOCALSCX="1" LOCALSCY="1" LOCALX="0" LOCALY="0" LOCALROT="0" PICART="1" SCALETYPE="1" RATIO="1" COLUMNS="1" COLGAP="0" AUTOTEXT="0" EXTRA="5.66929133858268" TEXTRA="0" BEXTRA="0" REXTRA="0" VAlign="0" FLOP="0" PLTSHOW="0" BASEOF="0" textPathType="0" textPathFlipped="0" path="M0 0 L269.291 0 L269.291 251.15 L0 251.15 L0 0 Z" copath="M0 0 L269.291 0 L269.291 251.15 L0 251.15 L0 0 Z" gXpos="-59" gYpos="-0.283785228203953" gWidth="270.291338582677" gHeight="501.732283464567" LAYER="0" NEXTITEM="-1" BACKITEM="-1">
+        <PAGEOBJECT XPOS="397.637795275591" YPOS="218.14141162219" OwnPage="0" ItemID="2066513629" PTYPE="4" WIDTH="269.291338582677" HEIGHT="251.149926960487" FRTYPE="0" CLIPEDIT="1" PWIDTH="1" PLINEART="1" ANNAME="Article1" LOCALSCX="1" LOCALSCY="1" LOCALX="0" LOCALY="0" LOCALROT="0" PICART="1" SCALETYPE="1" RATIO="1" COLUMNS="1" COLGAP="0" AUTOTEXT="0" EXTRA="5.66929133858268" TEXTRA="0" BEXTRA="0" REXTRA="0" VAlign="0" FLOP="0" PLTSHOW="0" BASEOF="0" textPathType="0" textPathFlipped="0" path="M0 0 L269.291 0 L269.291 251.15 L0 251.15 L0 0 Z" copath="M0 0 L269.291 0 L269.291 251.15 L0 251.15 L0 0 Z" gXpos="-59" gYpos="-0.283785228203953" gWidth="270.291338582677" gHeight="501.732283464567" LAYER="0" NEXTITEM="-1" BACKITEM="-1">
             <StoryText>
                 <DefaultStyle/>
                 <ITEXT CH="%Title%"/>
@@ -143,7 +144,7 @@
                 <trail PARENT="ArticleFollowing"/>
             </StoryText>
         </PAGEOBJECT>
-        <PAGEOBJECT XPOS="397.637795275591" YPOS="469.007553354474" OwnPage="0" ItemID="206628080" PTYPE="4" WIDTH="269.291338582677" HEIGHT="251.149926960487" FRTYPE="0" CLIPEDIT="1" PWIDTH="1" PLINEART="1" ANNAME="Article2" LOCALSCX="1" LOCALSCY="1" LOCALX="0" LOCALY="0" LOCALROT="0" PICART="1" SCALETYPE="1" RATIO="1" COLUMNS="1" COLGAP="0" AUTOTEXT="0" EXTRA="5.66929133858268" TEXTRA="0" BEXTRA="0" REXTRA="0" VAlign="0" FLOP="0" PLTSHOW="0" BASEOF="0" textPathType="0" textPathFlipped="0" path="M0 0 L269.291 0 L269.291 251.15 L0 251.15 L0 0 Z" copath="M0 0 L269.291 0 L269.291 251.15 L0 251.15 L0 0 Z" gXpos="-59" gYpos="250.58235650408" gWidth="270.291338582677" gHeight="501.732283464567" LAYER="0" NEXTITEM="-1" BACKITEM="-1">
+        <PAGEOBJECT XPOS="397.637795275591" YPOS="469.007553354474" OwnPage="0" ItemID="2066561629" PTYPE="4" WIDTH="269.291338582677" HEIGHT="251.149926960487" FRTYPE="0" CLIPEDIT="1" PWIDTH="1" PLINEART="1" ANNAME="Article2" LOCALSCX="1" LOCALSCY="1" LOCALX="0" LOCALY="0" LOCALROT="0" PICART="1" SCALETYPE="1" RATIO="1" COLUMNS="1" COLGAP="0" AUTOTEXT="0" EXTRA="5.66929133858268" TEXTRA="0" BEXTRA="0" REXTRA="0" VAlign="0" FLOP="0" PLTSHOW="0" BASEOF="0" textPathType="0" textPathFlipped="0" path="M0 0 L269.291 0 L269.291 251.15 L0 251.15 L0 0 Z" copath="M0 0 L269.291 0 L269.291 251.15 L0 251.15 L0 0 Z" gXpos="-59" gYpos="250.58235650408" gWidth="270.291338582677" gHeight="501.732283464567" LAYER="0" NEXTITEM="-1" BACKITEM="-1">
             <StoryText>
                 <DefaultStyle/>
                 <ITEXT CH="%Title%"/>
@@ -155,6 +156,117 @@
                 <ITEXT CH="%Following%"/>
                 <trail PARENT="ArticleFollowing"/>
             </StoryText>
+        </PAGEOBJECT>
+        <PAGEOBJECT XPOS="128.346456692913" YPOS="474.677165354331" OwnPage="0" ItemID="2075171741" PTYPE="16" WIDTH="263.622047244094" HEIGHT="240.825826771654" FRTYPE="0" CLIPEDIT="0" PWIDTH="0" PLINEART="1" Rows="5" Columns="1" RowPositions="0 47.9652 95.9303 143.895 191.861" RowHeights="47.9652 47.9652 47.9652 47.9652 47.9652" ColumnPositions="0" ColumnWidths="262.622" CellAreas="" TableStyle="" path="M0 0 L263.622 0 L263.622 240.826 L0 240.826 L0 0 Z" copath="M0 0 L263.622 0 L263.622 240.826 L0 240.826 L0 0 Z" gXpos="128.346456692913" gYpos="474.677165354331" gWidth="0" gHeight="0" LAYER="0">
+            <TableData Style="" FillColor="None" FillShade="100">
+                <TableBorderLeft>
+                    <TableBorderLine Width="1" PenStyle="1" Color="Black" Shade="100"/>
+                </TableBorderLeft>
+                <TableBorderRight>
+                    <TableBorderLine Width="1" PenStyle="1" Color="Black" Shade="100"/>
+                </TableBorderRight>
+                <TableBorderTop>
+                    <TableBorderLine Width="1" PenStyle="1" Color="Black" Shade="100"/>
+                </TableBorderTop>
+                <TableBorderBottom>
+                    <TableBorderLine Width="1" PenStyle="1" Color="Black" Shade="100"/>
+                </TableBorderBottom>
+                <Cell Row="0" Column="0" Style="" TextColumns="1" TextColGap="0" TextDistLeft="0" TextDistTop="0" TextDistBottom="0" TextDistRight="0" TextVertAlign="1" Flop="0" FillColor="None" FillShade="100" LeftPadding="1" RightPadding="1" TopPadding="1" BottomPadding="1">
+                    <TableBorderLeft Width="1">
+                        <TableBorderLine Width="1" PenStyle="1" Color="Black" Shade="100"/>
+                    </TableBorderLeft>
+                    <TableBorderRight Width="1">
+                        <TableBorderLine Width="1" PenStyle="1" Color="Black" Shade="100"/>
+                    </TableBorderRight>
+                    <TableBorderTop Width="1">
+                        <TableBorderLine Width="1" PenStyle="1" Color="Black" Shade="100"/>
+                    </TableBorderTop>
+                    <TableBorderBottom Width="1">
+                        <TableBorderLine Width="1" PenStyle="1" Color="Black" Shade="100"/>
+                    </TableBorderBottom>
+                    <StoryText>
+                        <DefaultStyle/>
+                        <ITEXT CH="Boring Table"/>
+                        <trail ALIGN="1"/>
+                    </StoryText>
+                </Cell>
+                <Cell Row="1" Column="0" Style="" TextColumns="1" TextColGap="0" TextDistLeft="0" TextDistTop="0" TextDistBottom="0" TextDistRight="0" TextVertAlign="1" Flop="0" FillColor="None" FillShade="100" LeftPadding="1" RightPadding="1" TopPadding="1" BottomPadding="1">
+                    <TableBorderLeft Width="1">
+                        <TableBorderLine Width="1" PenStyle="1" Color="Black" Shade="100"/>
+                    </TableBorderLeft>
+                    <TableBorderRight Width="1">
+                        <TableBorderLine Width="1" PenStyle="1" Color="Black" Shade="100"/>
+                    </TableBorderRight>
+                    <TableBorderTop Width="1">
+                        <TableBorderLine Width="1" PenStyle="1" Color="Black" Shade="100"/>
+                    </TableBorderTop>
+                    <TableBorderBottom Width="1">
+                        <TableBorderLine Width="1" PenStyle="1" Color="Black" Shade="100"/>
+                    </TableBorderBottom>
+                    <StoryText>
+                        <DefaultStyle/>
+                        <ITEXT CH="%Cell1%"/>
+                        <trail/>
+                    </StoryText>
+                </Cell>
+                <Cell Row="2" Column="0" Style="" TextColumns="1" TextColGap="0" TextDistLeft="0" TextDistTop="0" TextDistBottom="0" TextDistRight="0" TextVertAlign="1" Flop="0" FillColor="None" FillShade="100" LeftPadding="1" RightPadding="1" TopPadding="1" BottomPadding="1">
+                    <TableBorderLeft Width="1">
+                        <TableBorderLine Width="1" PenStyle="1" Color="Black" Shade="100"/>
+                    </TableBorderLeft>
+                    <TableBorderRight Width="1">
+                        <TableBorderLine Width="1" PenStyle="1" Color="Black" Shade="100"/>
+                    </TableBorderRight>
+                    <TableBorderTop Width="1">
+                        <TableBorderLine Width="1" PenStyle="1" Color="Black" Shade="100"/>
+                    </TableBorderTop>
+                    <TableBorderBottom Width="1">
+                        <TableBorderLine Width="1" PenStyle="1" Color="Black" Shade="100"/>
+                    </TableBorderBottom>
+                    <StoryText>
+                        <DefaultStyle/>
+                        <ITEXT CH="%Cell2%"/>
+                        <trail/>
+                    </StoryText>
+                </Cell>
+                <Cell Row="3" Column="0" Style="" TextColumns="1" TextColGap="0" TextDistLeft="0" TextDistTop="0" TextDistBottom="0" TextDistRight="0" TextVertAlign="1" Flop="0" FillColor="None" FillShade="100" LeftPadding="1" RightPadding="1" TopPadding="1" BottomPadding="1">
+                    <TableBorderLeft Width="1">
+                        <TableBorderLine Width="1" PenStyle="1" Color="Black" Shade="100"/>
+                    </TableBorderLeft>
+                    <TableBorderRight Width="1">
+                        <TableBorderLine Width="1" PenStyle="1" Color="Black" Shade="100"/>
+                    </TableBorderRight>
+                    <TableBorderTop Width="1">
+                        <TableBorderLine Width="1" PenStyle="1" Color="Black" Shade="100"/>
+                    </TableBorderTop>
+                    <TableBorderBottom Width="1">
+                        <TableBorderLine Width="1" PenStyle="1" Color="Black" Shade="100"/>
+                    </TableBorderBottom>
+                    <StoryText>
+                        <DefaultStyle/>
+                        <ITEXT CH="%Cell3%"/>
+                        <trail/>
+                    </StoryText>
+                </Cell>
+                <Cell Row="4" Column="0" Style="" TextColumns="1" TextColGap="0" TextDistLeft="0" TextDistTop="0" TextDistBottom="0" TextDistRight="0" TextVertAlign="1" Flop="0" FillColor="None" FillShade="100" LeftPadding="1" RightPadding="1" TopPadding="1" BottomPadding="1">
+                    <TableBorderLeft Width="1">
+                        <TableBorderLine Width="1" PenStyle="1" Color="Black" Shade="100"/>
+                    </TableBorderLeft>
+                    <TableBorderRight Width="1">
+                        <TableBorderLine Width="1" PenStyle="1" Color="Black" Shade="100"/>
+                    </TableBorderRight>
+                    <TableBorderTop Width="1">
+                        <TableBorderLine Width="1" PenStyle="1" Color="Black" Shade="100"/>
+                    </TableBorderTop>
+                    <TableBorderBottom Width="1">
+                        <TableBorderLine Width="1" PenStyle="1" Color="Black" Shade="100"/>
+                    </TableBorderBottom>
+                    <StoryText>
+                        <DefaultStyle/>
+                        <ITEXT CH="%Cell4%"/>
+                        <trail/>
+                    </StoryText>
+                </Cell>
+            </TableData>
         </PAGEOBJECT>
     </DOCUMENT>
 </SCRIBUSUTF8NEW>
