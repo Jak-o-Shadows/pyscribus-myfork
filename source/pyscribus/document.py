@@ -1307,28 +1307,34 @@ class Document(PyScribusElement):
         :returns: List of stories
         """
 
+        stories = []
+
         #--- Text frames stories -----------------------------------------
 
-        stories,filtered = [], [
-            po for po in self.page_objects
-            if po.have_stories and po.stories
+        filtered = [
+            po for po in self.page_objects if po.have_stories and po.stories
         ]
 
-        for po in filtered:
-            stories.extend(po.stories)
+        if filtered:
+
+            for po in filtered:
+                stories.extend(po.stories)
 
         #--- Table cells stories -----------------------------------------
 
-        cells,tables = [], [
+        tables = [
             po for po in self.page_objects if po.ptype == "table"
         ]
 
-        for po in tables:
-            cells.extend(po.cells)
+        if tables:
+            cells = []
 
-        for cell in cells:
-            if cell.story is not None:
-                stories.append(cell.story)
+            for po in tables:
+                cells.extend(po.cells)
+
+            for cell in cells:
+                if cell.story is not None:
+                    stories.append(cell.story)
 
         #-----------------------------------------------------------------
 
