@@ -477,35 +477,57 @@ class Dim:
             self.value, self.unit, self.is_int
         )
 
-    def __iadd__(self, dim):
-        if dim.unit == self.unit:
-            self.value += dim.value
-        else:
-            raise exceptions.IncompatibleDim()
-
-    def __add__(self, dim):
-        self.__iadd__(dim)
-
-    def __isub__(self, dim):
-        if dim.unit == self.unit:
-            self.value -= dim.value
-        else:
-            raise exceptions.IncompatibleDim()
-
-    def __sub__(self, dim):
-        self.__isub__(dim)
-
-    def __imul__(self, dim):
-        if dim.unit == self.unit:
-            self.value *= dim.value
-        else:
-            raise exceptions.IncompatibleDim()
-
     def __float__(self):
         return float(self.value)
 
     def __int__(self):
         return int(self.value)
+
+    def __iadd__(self, dim):
+
+        if isinstance(dim, float):
+            self.value += dim
+
+        if isinstance(dim, Dim):
+            if dim.unit == self.unit:
+                self.value += dim.value
+            else:
+                raise exceptions.IncompatibleDim()
+
+        return self
+
+    def __isub__(self, dim):
+
+        if isinstance(dim, float):
+            self.value -= dim
+
+        if isinstance(dim, Dim):
+            if dim.unit == self.unit:
+                self.value -= dim.value
+            else:
+                raise exceptions.IncompatibleDim()
+
+        return self
+
+    def __imul__(self, dim):
+
+        if isinstance(dim, float):
+            self.value *= dim
+
+        if isinstance(dim, Dim):
+            if dim.unit == self.unit:
+                self.value *= dim.value
+            else:
+                raise exceptions.IncompatibleDim()
+
+    def __sub__(self, dim):
+        return self.__isub__(dim)
+
+    def __add__(self, dim):
+        return self.__iadd__(dim)
+
+    def __mul__(self, dim):
+        return self.__imul__(dim)
 
 
 class DimBox:
