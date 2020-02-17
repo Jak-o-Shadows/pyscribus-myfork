@@ -643,11 +643,32 @@ class TableObject(PageObject):
 
     #--- --------------------------------------------------------------------
 
-    def append_columns(self, number=1, width=False):
+    def append_row(self, height=False):
+        self._update_rowcols_count()
+
+        # --- Getting columns informations ---------------------------
+
+        # --- Getting the last row y and height ----------------------
+
+        last_y,last_height = None,None
+
+        # --- Adding the new row -------------------------------------
+
+        if last_y is not None and last_height is not None:
+
+            self._update_rowcols_count()
+
+            return True
+
+        # ------------------------------------------------------------
+
+        return False
+
+    def append_rows(self, number=1, height=False):
         added = 0
 
         for add in range(number):
-            success = self.append_column(width)
+            success = self.append_row(height)
 
             if success:
                 added += 1
@@ -658,6 +679,15 @@ class TableObject(PageObject):
             return False
 
     def append_column(self, width=False):
+        """
+        Append a column at the end of the table.
+
+        :type width: boolean,float
+        :param width: Width of the news columns
+        :rtype: boolean
+        :returns: True if column were added
+        """
+
         self._update_rowcols_count()
 
         # --- Getting rows informations ------------------------------
@@ -700,16 +730,11 @@ class TableObject(PageObject):
             # --- Adding the cell in each row of the new column ------
 
             for row_index, datas in rows.items():
-                cell = TableCell(self)
-                cell.fromdefault()
-                cell.column = self.columns
-                cell.row = row_index
-
-                cell.box.set_box(
-                    top_lx=new_x,
-                    top_ly=datas["y"],
-                    width=new_width,
-                    height=datas["height"]
+                cell = TableCell(
+                    self, default=True,
+                    column = self.columns, row = row_index,
+                    posx=new_x, posy=datas["y"],
+                    width=new_width, height=datas["height"]
                 )
 
                 self.cells.append(cell)
@@ -721,6 +746,31 @@ class TableObject(PageObject):
         # ------------------------------------------------------------
 
         return False
+
+    def append_columns(self, number=1, width=False):
+        """
+        Append columns at the end of the table.
+
+        :type number: integer
+        :param number: Number of colums to append
+        :type width: boolean,float
+        :param width: Width of the news columns
+        :rtype: boolean
+        :returns: True if all columns were added
+        """
+
+        added = 0
+
+        for add in range(number):
+            success = self.append_column(width)
+
+            if success:
+                added += 1
+
+        if added == number:
+            return True
+        else:
+            return False
 
     #--- PyScribus standard methods -----------------------------------------
 
@@ -1510,7 +1560,7 @@ class TableCell(xmlc.PyScribusElement):
 
     vertical_align = {"top": "0", "center": "1", "bottom": "2"}
 
-    def __init__(self, pgo_parent=False):
+    def __init__(self, pgo_parent=False, **kwargs):
         super().__init__()
 
         self.pgo_parent = pgo_parent
@@ -1543,6 +1593,10 @@ class TableCell(xmlc.PyScribusElement):
 
         self.story = None
 
+        # --- Quick setup --------------------------------------------
+
+        if kwargs:
+            self._quick_setup(kwargs)
 
     def fromdefault(self):
 
@@ -1565,6 +1619,38 @@ class TableCell(xmlc.PyScribusElement):
         }
 
         self.align = "top"
+
+    def _quick_setup(self, settings):
+        """
+        Method for defining table cell settings from class instanciation
+        kwargs.
+
+        :type settings: dict
+        :param settings: Kwargs dictionnary
+        """
+
+        if settings:
+            xmlc.PyScribusElement._quick_setup(self, settings)
+
+            for setting_name, setting_value in settings.items():
+
+                if setting_name == "row":
+                    self.row = setting_value
+
+                if setting_name == "column":
+                    self.column = setting_value
+
+                if setting_name == "posx":
+                    self.box.coords["top-left"][0].value = float(setting_value)
+
+                if setting_name == "posy":
+                    self.box.coords["top-left"][1].value = float(setting_value)
+
+                if setting_name == "width":
+                    self.box.dims["width"].value = float(setting_value)
+
+                if setting_name == "height":
+                    self.box.dims["height"].value = float(setting_value)
 
     def fromxml(self, xml):
         """
