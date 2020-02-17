@@ -649,8 +649,8 @@ class TableObject(PageObject):
 
         :type height: boolean,float
         :param height: Height of the news columns
-        :rtype: boolean
-        :returns: True if column were added
+        :rtype: list
+        :returns: List of new cells
         """
 
         self._update_rowcols_count()
@@ -665,6 +665,11 @@ class TableObject(PageObject):
                 columns[cell.column] = {
                     "x": float(cell.box.coords["top-left"][0]),
                     "width": float(cell.box.dims["width"]),
+                    "borders": cell.borders,
+                    "padding": cell.padding,
+                    "fill": cell.fill,
+                    "align": cell.align,
+                    "style": cell.style
                 }
 
         # --- Getting the last row y and height ----------------------
@@ -694,32 +699,53 @@ class TableObject(PageObject):
 
             # --- Adding the cell in each column of the new row ------
 
+            new_cells = []
+
             for column_index, datas in columns.items():
                 cell = TableCell(
                     self, default=True,
                     column = column_index, row = self.rows,
                     posx=datas["x"], posy=new_y,
-                    width=datas["width"], height=new_height
+                    width=datas["width"], height=new_height,
+                    fillcolor=datas["fill"]["color"],
+                    fillshade=datas["fill"]["shade"],
+                    padding=datas["padding"],
+                    borders=datas["borders"],
+                    alignment=datas["align"],
+                    style=datas["style"],
                 )
 
                 self.cells.append(cell)
+                new_cells.append(self.cells[-1])
 
             self._update_rowcols_count()
 
-            return True
+            return new_cells
 
         # ------------------------------------------------------------
 
         return False
 
     def append_rows(self, number=1, height=False):
-        added = 0
+        """
+        Append rows at the end of the table.
+
+        :type number: integer
+        :param number: Number of colums to append
+        :type height: boolean,float
+        :param height: Height of the news columns
+        :rtype: list
+        :returns: List of new cells by rows
+        """
+
+        new_cells,added = [],0
 
         for add in range(number):
-            success = self.append_row(height)
+            cells = self.append_row(height)
 
-            if success:
+            if cells:
                 added += 1
+                new_cells.append(cells)
 
         if added == number:
             return True
@@ -732,8 +758,8 @@ class TableObject(PageObject):
 
         :type width: boolean,float
         :param width: Width of the news columns
-        :rtype: boolean
-        :returns: True if column were added
+        :rtype: list
+        :returns: List of new cells
         """
 
         self._update_rowcols_count()
@@ -748,6 +774,11 @@ class TableObject(PageObject):
                 rows[cell.row] = {
                     "y": float(cell.box.coords["top-left"][1]),
                     "height": float(cell.box.dims["height"]),
+                    "borders": cell.borders,
+                    "padding": cell.padding,
+                    "fill": cell.fill,
+                    "align": cell.align,
+                    "style": cell.style
                 }
 
         # --- Getting the last column x and width --------------------
@@ -777,19 +808,28 @@ class TableObject(PageObject):
 
             # --- Adding the cell in each row of the new column ------
 
+            new_cells = []
+
             for row_index, datas in rows.items():
                 cell = TableCell(
                     self, default=True,
                     column = self.columns, row = row_index,
                     posx=new_x, posy=datas["y"],
-                    width=new_width, height=datas["height"]
+                    width=new_width, height=datas["height"],
+                    fillcolor=datas["fill"]["color"],
+                    fillshade=datas["fill"]["shade"],
+                    padding=datas["padding"],
+                    borders=datas["borders"],
+                    alignment=datas["align"],
+                    style=datas["style"],
                 )
 
                 self.cells.append(cell)
+                new_cells.append(self.cells[-1])
 
             self._update_rowcols_count()
 
-            return True
+            return new_cells
 
         # ------------------------------------------------------------
 
@@ -803,17 +843,18 @@ class TableObject(PageObject):
         :param number: Number of colums to append
         :type width: boolean,float
         :param width: Width of the news columns
-        :rtype: boolean
-        :returns: True if all columns were added
+        :rtype: list
+        :returns: List of new cells by columns
         """
 
-        added = 0
+        new_cells,added = [],0
 
         for add in range(number):
-            success = self.append_column(width)
+            cells = self.append_column(width)
 
-            if success:
+            if cells:
                 added += 1
+                new_cells.append(cells)
 
         if added == number:
             return True
@@ -1596,9 +1637,104 @@ class TableCell(xmlc.PyScribusElement):
 
     :type pgo_parent: pyscribus.pageobjects.PageObject
     :param pgo_parent: Parent page object instance.
+    :type kwargs: dict
+    :param kwargs: Quick setting (see kwargs table)
 
     :ivar integer row: Cell row
     :ivar integer column: Cell column
+    :ivar string align: Cell vertical alignment
+
+    +---------------+--------------------------------+-----------+
+    | Kwargs        | Setting                        | Type      |
+    +===============+================================+===========+
+    | default       | Equivalent to a fromdefault    | boolean   |
+    |               | call, value being True or the  | or string |
+    |               | default name                   |           |
+    +---------------+--------------------------------+-----------+
+    | row           | Row number (ranging from 0)    | integer   |
+    +---------------+--------------------------------+-----------+
+    | column        | Column number (ranging from 0) | integer   |
+    +---------------+--------------------------------+-----------+
+    | posx          | X position of the page         | float     |
+    +---------------+--------------------------------+-----------+
+    | posy          | Y position of the page         | float     |
+    +---------------+--------------------------------+-----------+
+    | width         | Page width                     | float     |
+    +---------------+--------------------------------+-----------+
+    | height        | Page height                    | float     |
+    +---------------+--------------------------------+-----------+
+    | style         | Cell story paragraph style     | string    |
+    |               | name                           |           |
+    +---------------+--------------------------------+-----------+
+    | fillcolor     | Filling color name             | string    |
+    +---------------+--------------------------------+-----------+
+    | fillshade     | Filling color shade            | float     |
+    |               | percentage                     |           |
+    +---------------+--------------------------------+-----------+
+    | alignment     |                                |           |
+    +---------------+--------------------------------+-----------+
+    | borders       | Shorthand for rightborder,     | List of   |
+    |               | leftborder, topborder,         | floats    |
+    |               | bottomborder.                  |           |
+    |               |                                |           |
+    |               | Read like the CSS margin       |           |
+    |               | property:                      |           |
+    |               |                                |           |
+    |               | **With 1 float in the list :** |           |
+    |               |                                |           |
+    |               | [top & right & bottom & left]  |           |
+    |               |                                |           |
+    |               | **With 2 float in the list :** |           |
+    |               |                                |           |
+    |               | [top & bottom, right & left]   |           |
+    |               |                                |           |
+    |               | **With 3 float in the list :** |           |
+    |               |                                |           |
+    |               | [top, right & left, bottom]    |           |
+    |               |                                |           |
+    |               | **With 4 float in the list :** |           |
+    |               |                                |           |
+    |               | [top, right, bottom, left]     |           |
+    +---------------+--------------------------------+-----------+
+    | rightborder   |                                | float     |
+    +---------------+--------------------------------+-----------+
+    | leftborder    |                                | float     |
+    +---------------+--------------------------------+-----------+
+    | topborder     |                                | float     |
+    +---------------+--------------------------------+-----------+
+    | bottomborder  |                                | float     |
+    +---------------+--------------------------------+-----------+
+    | padding       | Shorthand for rightpadding,    | List of   |
+    |               | leftpadding, toppadding,       | floats    |
+    |               | bottompadding.                 |           |
+    |               |                                |           |
+    |               | Read like the CSS margin       |           |
+    |               | property:                      |           |
+    |               |                                |           |
+    |               | **With 1 float in the list :** |           |
+    |               |                                |           |
+    |               | [top & right & bottom & left]  |           |
+    |               |                                |           |
+    |               | **With 2 float in the list :** |           |
+    |               |                                |           |
+    |               | [top & bottom, right & left]   |           |
+    |               |                                |           |
+    |               | **With 3 float in the list :** |           |
+    |               |                                |           |
+    |               | [top, right & left, bottom]    |           |
+    |               |                                |           |
+    |               | **With 4 float in the list :** |           |
+    |               |                                |           |
+    |               | [top, right, bottom, left]     |           |
+    +---------------+--------------------------------+-----------+
+    | rightpadding  |                                | float     |
+    +---------------+--------------------------------+-----------+
+    | leftpadding   |                                | float     |
+    +---------------+--------------------------------+-----------+
+    | toppadding    |                                | float     |
+    +---------------+--------------------------------+-----------+
+    | bottompadding |                                | float     |
+    +---------------+--------------------------------+-----------+
     """
 
     # TextColumns="1" 
@@ -1677,16 +1813,126 @@ class TableCell(xmlc.PyScribusElement):
         :param settings: Kwargs dictionnary
         """
 
+        def shortcut_geometry_setting(objattribute, setting_value):
+            """
+            Solve a setting value like the CSS margin property.
+
+            - If only one value : same border/padding for all sides
+            - If two values: vertical and horizontal borders/padding
+            - If three values: top horizontal bottom
+            - If four values: top right bottom left
+
+            :type objattribute: dict
+            :param objattribute: instance attribute to modify
+            :type setting_value: list
+            :param setting_value: setting value
+            :rtype: dict
+            :returns: modified instance attribute
+            """
+
+            if isinstance(setting_value, list):
+                setting_len = len(setting_value)
+
+                if setting_len == 1:
+
+                    for side in ["top", "right", "bottom", "left"]:
+                        objattribute[side].value = float(
+                            setting_value[0]
+                        )
+
+                if setting_len == 2:
+                    sides = zip(
+                        [["top", "bottom"], ["right", "left"]],
+                        setting_value
+                    )
+
+                    for side in sides:
+                        for s in side[0]:
+                            objattribute[s].value = float(side[1])
+
+                if setting_len == 3:
+                    objattribute["top"].value = float(setting_value[0])
+
+                    for side in ["right", "left"]:
+                        objattribute[side].value = float(
+                            setting_value[1]
+                        )
+
+                    objattribute["bottom"].value = float(
+                        setting_value[2]
+                    )
+
+                if setting_len == 4:
+                    sides = zip(
+                        ["top", "right", "bottom", "left"],
+                        setting_value
+                    )
+
+                    for side in sides:
+                        objattribute[side[0]].value = float(side[1])
+
+            return objattribute
+
         if settings:
             xmlc.PyScribusElement._quick_setup(self, settings)
 
             for setting_name, setting_value in settings.items():
+
+                # Cell style --------------------------------------------------
+
+                if setting_name == "fillcolor":
+                    self.fill["color"] = setting_value
+
+                if setting_name == "fillshade":
+                    self.fill["shade"] = dimensions.Dim(
+                        float(setting_value), "pc"
+                    )
+
+                if setting_name == "style":
+                    self.style = setting_value
+
+                if setting_name == "alignment":
+
+                    if setting_value in TableCell.vertical_align.keys():
+                        self.align = setting_value
+                    else:
+                        self.align = "top"
+
+                # Borders -----------------------------------------------------
+
+                if setting_name in [
+                        "rightborder", "leftborder",
+                        "topborder", "bottomborder"]:
+                    side = setting_name.split("border")[0]
+                    self.borders[side].value = float(setting_value)
+
+                if setting_name == "borders":
+                    self.borders = shortcut_geometry_setting(
+                        self.borders, setting_value
+                    )
+
+                # Padding -----------------------------------------------------
+
+                if setting_name in [
+                        "rightpadding", "leftpadding",
+                        "toppadding", "bottompadding"]:
+                    side = setting_name.split("padding")[0]
+                    self.padding[side].value = float(setting_value)
+
+                if setting_name == "padding":
+                    self.padding = shortcut_geometry_setting(
+                        self.padding, setting_value
+                    )
+
+                # Cell position -----------------------------------------------
 
                 if setting_name == "row":
                     self.row = setting_value
 
                 if setting_name == "column":
                     self.column = setting_value
+
+                # Cell box ----------------------------------------------------
 
                 if setting_name == "posx":
                     self.box.coords["top-left"][0].value = float(setting_value)
