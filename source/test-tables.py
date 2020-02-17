@@ -21,6 +21,7 @@ if __name__ == "__main__":
         print(c.row, c.column, c.story.rawtext(), "|", c.box)
 
     last.append_column()
+    last.append_row()
 
     slafile.save("tests-outputs/tables.sla")
 

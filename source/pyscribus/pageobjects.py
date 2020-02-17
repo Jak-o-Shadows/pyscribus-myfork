@@ -644,17 +644,65 @@ class TableObject(PageObject):
     #--- --------------------------------------------------------------------
 
     def append_row(self, height=False):
+        """
+        Append a column at the end of the table.
+
+        :type height: boolean,float
+        :param height: Height of the news columns
+        :rtype: boolean
+        :returns: True if column were added
+        """
+
         self._update_rowcols_count()
 
         # --- Getting columns informations ---------------------------
+
+        columns = {}
+
+        for cell in self.cells:
+
+            if cell.column not in columns:
+                columns[cell.column] = {
+                    "x": float(cell.box.coords["top-left"][0]),
+                    "width": float(cell.box.dims["width"]),
+                }
 
         # --- Getting the last row y and height ----------------------
 
         last_y,last_height = None,None
 
+        for cell in self.cells:
+
+            if cell.row == (self.rows - 1):
+                last_y = float(cell.box.coords["top-left"][1])
+                last_height = float(cell.box.dims["height"])
+
+                break
+
         # --- Adding the new row -------------------------------------
 
         if last_y is not None and last_height is not None:
+
+            new_y = last_y + last_height
+
+            if height:
+                new_height = float(height)
+            else:
+                new_height = last_height
+
+            self.box.dims["height"] += float(new_height)
+
+            # --- Adding the cell in each column of the new row ------
+
+            for column_index, datas in columns.items():
+                cell = TableCell(
+                    self, default=True,
+                    column = column_index, row = self.rows,
+                    posx=datas["x"], posy=new_y,
+                    width=datas["width"], height=new_height
+                )
+
+                self.cells.append(cell)
 
             self._update_rowcols_count()
 
@@ -698,8 +746,8 @@ class TableObject(PageObject):
 
             if cell.row not in rows:
                 rows[cell.row] = {
-                    "y": float(cell.box.dims["height"]),
-                    "height": float(cell.box.coords["top-left"][1])
+                    "y": float(cell.box.coords["top-left"][1]),
+                    "height": float(cell.box.dims["height"]),
                 }
 
         # --- Getting the last column x and width --------------------
@@ -709,8 +757,8 @@ class TableObject(PageObject):
         for cell in self.cells:
 
             if cell.column == (self.columns - 1):
-                last_x = cell.box.coords["top-left"][0].value
-                last_width = cell.box.dims["width"].value
+                last_x = float(cell.box.coords["top-left"][0])
+                last_width = float(cell.box.dims["width"])
 
                 break
 
