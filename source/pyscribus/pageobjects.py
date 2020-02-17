@@ -665,10 +665,8 @@ class TableObject(PageObject):
                 columns[cell.column] = {
                     "x": float(cell.box.coords["top-left"][0]),
                     "width": float(cell.box.dims["width"]),
-                    "borders": cell.borders,
-                    "padding": cell.padding,
-                    "fill": cell.fill,
-                    "align": cell.align,
+                    "borders": cell.borders, "padding": cell.padding,
+                    "fill": cell.fill, "align": cell.align,
                     "style": cell.style
                 }
 
@@ -709,10 +707,8 @@ class TableObject(PageObject):
                     width=datas["width"], height=new_height,
                     fillcolor=datas["fill"]["color"],
                     fillshade=datas["fill"]["shade"],
-                    padding=datas["padding"],
-                    borders=datas["borders"],
-                    alignment=datas["align"],
-                    style=datas["style"],
+                    padding=datas["padding"], borders=datas["borders"],
+                    alignment=datas["align"], style=datas["style"],
                 )
 
                 self.cells.append(cell)
@@ -774,10 +770,8 @@ class TableObject(PageObject):
                 rows[cell.row] = {
                     "y": float(cell.box.coords["top-left"][1]),
                     "height": float(cell.box.dims["height"]),
-                    "borders": cell.borders,
-                    "padding": cell.padding,
-                    "fill": cell.fill,
-                    "align": cell.align,
+                    "borders": cell.borders, "padding": cell.padding,
+                    "fill": cell.fill, "align": cell.align,
                     "style": cell.style
                 }
 
@@ -818,10 +812,8 @@ class TableObject(PageObject):
                     width=new_width, height=datas["height"],
                     fillcolor=datas["fill"]["color"],
                     fillshade=datas["fill"]["shade"],
-                    padding=datas["padding"],
-                    borders=datas["borders"],
-                    alignment=datas["align"],
-                    style=datas["style"],
+                    padding=datas["padding"], borders=datas["borders"],
+                    alignment=datas["align"], style=datas["style"],
                 )
 
                 self.cells.append(cell)
