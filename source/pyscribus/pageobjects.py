@@ -645,12 +645,12 @@ class TableObject(PageObject):
 
     #--- --------------------------------------------------------------------
 
-    def append_row(self, height=False):
+    def _append_row_at_end(self, height=False):
         """
-        Append a column at the end of the table.
+        Append a row at the end of the table.
 
         :type height: boolean,float
-        :param height: Height of the news columns
+        :param height: Height of the new rows
         :rtype: list
         :returns: List of new cells
         """
@@ -724,22 +724,150 @@ class TableObject(PageObject):
 
         return False
 
-    def append_rows(self, number=1, height=False):
+    def append_row(self, height=False, position=-1):
+        """
+        Append a row at the end of the table.
+
+        :type height: boolean,float
+        :param height: Height of the new row
+        :rtype: list
+        :returns: List of new cells
+        """
+
+        self._update_rowcols_count()
+
+        # --- If position is -1 = end of the table -------------------
+
+        if position == -1:
+            return self._append_row_at_end(height)
+
+        # --- If position is not at the end of the table -------------
+
+        if position != -1:
+
+            # --- Getting columns informations ---------------------------
+
+            columns = {}
+
+            for cell in self.cells:
+
+                if cell.column not in columns:
+                    columns[cell.column] = {
+                        "x": float(cell.box.coords["top-left"][0]),
+                        "width": float(cell.box.dims["width"]),
+                        "borders": cell.borders, "padding": cell.padding,
+                        "fill": cell.fill, "align": cell.align,
+                        "style": cell.style
+                    }
+
+            # --- Getting the y and height of the row matching position --
+
+            index_row_y,index_row_height = None,None
+
+            for cell in self.cells:
+
+                if cell.row == position - 1:
+                    index_row_y = float(cell.box.coords["top-left"][1])
+                    index_row_height = float(cell.box.dims["height"])
+
+                    break
+
+            # --- Adding the new row -------------------------------------
+
+            if index_row_y is not None and index_row_height is not None:
+
+                # Getting the Y of the new row
+                new_y = index_row_y + index_row_height
+
+                # Setting the height of the new row
+                if height:
+                    new_height = float(height)
+                else:
+                    new_height = index_row_height
+
+                # Adjust the table box with the height of the new row
+                self.box.dims["height"] += float(new_height)
+
+                # --------------------------------------------------------
+
+                # Update the coordinates and col/rows positions of the 
+                # rows < position & rows > position
+
+                for cell in self.cells:
+
+                    if cell.row < (position - 1):
+                        cell.row -= 1
+                        cell.box.coords["top-left"][1].value -= new_height
+                        continue
+
+                    if cell.row > (position + 1):
+                        cell.row += 1
+                        cell.box.coords["top-left"][1].value += new_height
+                        continue
+
+                # --- Adding the cell in each column of the new row ------
+
+                new_cells = []
+
+                for column_index, datas in columns.items():
+                    cell = TableCell(
+                        self, default=True,
+                        column = column_index, row = position,
+                        posx=datas["x"], posy=new_y,
+                        width=datas["width"], height=new_height,
+                        fillcolor=datas["fill"]["color"],
+                        fillshade=datas["fill"]["shade"],
+                        padding=datas["padding"], borders=datas["borders"],
+                        alignment=datas["align"], style=datas["style"],
+                    )
+
+                    self.cells.append(cell)
+                    new_cells.append(self.cells[-1])
+
+                # --------------------------------------------------------
+
+                self._update_rowcols_count()
+
+                return new_cells
+
+            # ------------------------------------------------------------
+
+            return False
+
+        return False
+
+    def append_rows(self, number=1, height=False, position=-1):
         """
         Append rows at the end of the table.
 
         :type number: integer
         :param number: Number of colums to append
         :type height: boolean,float
-        :param height: Height of the news columns
+        :param height: Height of the new rows
+        :type position: integer
+        :param position: The rows are appended 
+            after the position-n row. If -1, the
+            rows are appended after the last 
+            row of the table.
         :rtype: list
         :returns: List of new cells by rows
         """
 
         new_cells,added = [],0
 
+        if position == -1:
+            at_end = True
+        else:
+            at_end = False
+            row_index = position
+
         for add in range(number):
-            cells = self.append_row(height)
+
+            if at_end:
+                cells = self.append_row(height)
+            else:
+                cells = self.append_row(height, row_index)
+                row_index += 1
 
             if cells:
                 added += 1
@@ -755,7 +883,7 @@ class TableObject(PageObject):
         Append a column at the end of the table.
 
         :type width: boolean,float
-        :param width: Width of the news columns
+        :param width: Width of the new column
         :rtype: list
         :returns: List of new cells
         """
@@ -793,13 +921,16 @@ class TableObject(PageObject):
 
         if last_x is not None and last_width is not None:
 
+            # Getting the X of the new column
             new_x = last_x + last_width
 
+            # Setting the width of the new column
             if width:
                 new_width = float(width)
             else:
                 new_width = last_width
 
+            # Adjust the table box with the width of the new row
             self.box.dims["width"] += float(new_width)
 
             # --- Adding the cell in each row of the new column ------
@@ -836,7 +967,7 @@ class TableObject(PageObject):
         :type number: integer
         :param number: Number of colums to append
         :type width: boolean,float
-        :param width: Width of the news columns
+        :param width: Width of the new columns
         :rtype: list
         :returns: List of new cells by columns
         """
