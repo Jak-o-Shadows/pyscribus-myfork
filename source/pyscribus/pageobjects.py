@@ -611,6 +611,8 @@ class TableObject(PageObject):
     #--- Cells update methods -----------------------------------------------
 
     def _update_rowcols_count(self):
+        """Update the count of rows and columns."""
+
         self.rows = max([cell.row for cell in self.cells]) + 1
         self.columns = max([cell.column for cell in self.cells]) + 1
 
