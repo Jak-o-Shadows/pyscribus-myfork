@@ -730,6 +730,9 @@ class TableObject(PageObject):
 
         :type height: boolean,float
         :param height: Height of the new row
+        :param position: The row is appended after the 
+            position-n row. If -1, the row is appended 
+            after the last row of the table.
         :rtype: list
         :returns: List of new cells
         """
@@ -738,7 +741,7 @@ class TableObject(PageObject):
 
         # --- If position is -1 = end of the table -------------------
 
-        if position == -1:
+        if position < 0:
             return self._append_row_at_end(height)
 
         # --- If position is not at the end of the table -------------
