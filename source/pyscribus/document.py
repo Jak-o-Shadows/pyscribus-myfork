@@ -131,6 +131,7 @@ class Document(PyScribusElement):
         #-----------------------------------------------
 
         self.notes = []
+        self.notes_frames = []
 
         self.styles = {
             "note": [],
@@ -937,8 +938,27 @@ class Document(PyScribusElement):
                         if success:
                             self.styles["note"].append(s)
 
-            # TODO NotesFrames
-            # TODO Notes
+            if child.tag == "NotesFrames":
+
+                for sub in child:
+
+                    if sub.tag == "FOOTNOTEFRAME":
+                        nf = notes.NoteFrame()
+                        success = nf.fromxml(sub)
+
+                        if success:
+                            self.notes_frames.append(nf)
+
+            if child.tag == "Notes":
+
+                for sub in child:
+
+                    if child.tag == "Note":
+                        nc = notes.Note()
+                        success = nc.fromxml(sub)
+
+                        if success:
+                            self.notes.append(nc)
 
             if child.tag == "PageSets":
 
@@ -1165,7 +1185,9 @@ class Document(PyScribusElement):
 
             xml.append(marksx)
 
-        # -------------------------------------------------
+        # Notes : styles, frames, notes content -----------
+
+        # Notes styles -------------------------------
 
         nsx = ET.Element("NotesStyles")
 
@@ -1175,11 +1197,19 @@ class Document(PyScribusElement):
 
         xml.append(nsx)
 
-        # -------------------------------------------------
+        # Notes frames -------------------------------
 
-        # TODO NotesFrames
+        if self.notes_frames:
 
-        # TODO Notes --------------------------------------
+            nfx = ET.Element("NotesFrames")
+
+            for note_frame in self.notes_frames:
+                n = note_frame.toxml()
+                nfx.append(n)
+
+            xml.append(nfx)
+
+        # Notes content ------------------------------
 
         if self.notes:
 
@@ -1273,9 +1303,10 @@ class Document(PyScribusElement):
                             templatable_set.extend(po_templatable_stories)
 
                     else:
-                        # TODO If this page object is another type of page object,
-                        # we look its properties and find if it is templatable
-                        # through sla.SLA.templating settings
+                        # TODO If this page object is another type of page
+                        # object, we look its properties and find if it 
+                        # is templatable through sla.SLA.templating settings
+
                         if po.templatable():
                             templatable_set.append(po)
 

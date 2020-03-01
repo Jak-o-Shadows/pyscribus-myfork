@@ -122,6 +122,7 @@ class NoteText(PyScribusElement):
         PyScribusElement.__init__(self)
 
     def fromxml(self, xml):
+
         if xml == "Note":
             content = xml.get("Text")
 
@@ -156,5 +157,69 @@ class NoteText(PyScribusElement):
         # TODO
 
         return xml_string
+
+
+class NoteFrame(PyScribusElement):
+    """
+    Note frame (NotesFrames/FOOTNOTEFRAME).
+    """
+
+    def __init__(self):
+        PyScribusElement.__init__(self)
+
+        # NOTE @myID
+        # The page object where the note content is located
+        self.own_frame_id = None
+
+        # NOTE @MasterID
+        # The page object with the story where note references are located
+        self.story_frame_id = None
+
+        # NOTE @NSname
+        self.note_style = None
+
+    def fromxml(self, xml):
+
+        if xml == "FOOTNOTEFRAME":
+            note_style = xml.get("NSname")
+            own_frame = xml.get("myID")
+            story_frame = xml.get("MasterID")
+
+            if note_style is not None:
+                self.note_style = note_style
+
+            if own_frame is not None:
+                self.own_frame_id = own_frame
+
+            if story_frame is not None:
+                self.story_frame_id = story_frame
+
+            if story_frame is None or own_frame is None:
+
+                raise exceptions.InsaneSLAValue(
+                    "Note frame has no page object ID or\
+                     no parent page object ID."
+                )
+
+            return True
+
+        return False
+
+    def toxml(self):
+        xml = ET.Element("FOOTNOTEFRAME")
+
+        if self.note_style is not None:
+            xml.attrib["NSname"] = self.note_style
+
+        if self.own_frame_id is not None:
+            xml.attrib["myID"] = self.own_frame_id
+
+        if self.story_frame_id is not None:
+            xml.attrib["MasterID"] = self.story_frame_id
+
+        return xml
+
+    def fromdefault(self):
+        self.note_style = "Default"
 
 # vim:set shiftwidth=4 softtabstop=4 spl=en:
