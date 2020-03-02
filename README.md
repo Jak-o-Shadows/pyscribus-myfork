@@ -12,11 +12,19 @@ Une librairie Python pour manipuler (et documenter) le format de Scribus, le SLA
 ## Pré-requis
 
 - [lxml](https://lxml.de/)
-- [Pillow](https://python-pillow.org/), optionel, pour le module ``extra.wireframe``
+- [Pillow](https://python-pillow.org/), optionnel, pour le module ``extra.wireframe``
+
+### Debian / Ubuntu
+
+```python
+sudo apt install python3 python3-lxml
+```
 
 ## Documentation
 
 La documentation est générée via Sphinx, avec le thème *Read the Docs*.
+
+### Debian / Ubuntu
 
 ```python
 sudo apt install python3-sphinx python3-sphinx-rtd-theme
