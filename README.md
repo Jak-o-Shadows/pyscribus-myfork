@@ -24,14 +24,16 @@ sudo apt install python3 python3-lxml
 
 La documentation est générée via Sphinx, avec le thème *Read the Docs*.
 
-### Debian / Ubuntu
+```bash
+make sphinxdoc
+```
+
+### Pré-requis
+
+#### Debian / Ubuntu
 
 ```python
 sudo apt install python3-sphinx python3-sphinx-rtd-theme
-```
-
-```bash
-make sphinxdoc
 ```
 
 ## Documentation externe
