@@ -115,9 +115,8 @@ if __name__ == "__main__":
                 text = text.replace("&#60;", "<")
                 text = text.replace("&#62;", ">")
 
-                text = text.replace("\t", "")
-                text = text.replace("\r", "")
-                text = text.replace("\n", "")
+                for i in ["\t", "\r", "\n"]:
+                    text = text.replace(i, "")
 
                 for i in range(2):
                     text = text.replace("  ", " ")
