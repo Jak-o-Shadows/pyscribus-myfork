@@ -1,4 +1,4 @@
-# Minimal makefile for Sphinx documentation
+.PHONY: help Makefile clean clean-tests reports clean-reports reporttodo reportfix
 
 # You can set these variables from the command line.
 SPHINXOPTS    =
@@ -9,8 +9,6 @@ BUILDDIR      = build
 # Put it first so that "make" without argument is like "make help".
 help:
 	@$(SPHINXBUILD) -M help "$(SOURCEDIR)" "$(BUILDDIR)" $(SPHINXOPTS) $(O)
-
-.PHONY: help Makefile clean clean-tests reports clean-reports reporttodo reportfix
 
 # Catch-all target: route all unknown targets to Sphinx using the new
 # "make mode" option.  $(O) is meant as a shortcut for $(SPHINXOPTS).
@@ -48,3 +46,9 @@ reportfix:
 
 sphinxdoc:
 	sphinx-build -b html source/ build/
+
+pipinstall:
+	pip3 uninstall --index-url https://test.pypi.org/simple/ --no-deps pyscribus
+
+pipremove:
+	pip3 uninstall pyscribus

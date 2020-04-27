@@ -26,6 +26,7 @@ setuptools.setup(
     ],
     python_requires='>=3.6',
     install_requires=['lxml'],
+    keywords=["scribus"],
 )
 
 # vim:set shiftwidth=4 softtabstop=4 spl=en:
