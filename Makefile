@@ -57,4 +57,4 @@ package:
 	./make-pypi.sh
 
 pypupload:
-	./upload-pypitesting.sh
+	./upload-pypi-testing.sh

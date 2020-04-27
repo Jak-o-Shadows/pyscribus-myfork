@@ -3,19 +3,25 @@
 
 import setuptools
 
-with open("../README.md", "r") as fh:
+with open("../README.pypi.rst", "r") as fh:
     long_description = fh.read()
+
+VERSION = "0.1.1"
+DESCRIPTION = "Read, create and update Scribus .sla files."
+
+REQUIRED = ['lxml']
 
 setuptools.setup(
     name="pyscribus",
-    version="0.1",
-    author="Etienne Nadji",
+    version=VERSION,
+    author="Étienne Nadji",
     author_email="etnadji@eml.cc",
-    description="Read, create and update Scribus .sla files.",
+    description=DESCRIPTION,
     long_description=long_description,
-    long_description_content_type="text/markdown",
-    url="https://etnadji.fr/pyscribus",
+    # long_description_content_type="text/markdown",
     packages=setuptools.find_packages(),
+    platforms='any',
+    license="GNU General Public License v3 or later (GPLv3+)",
     classifiers=[
         "Programming Language :: Python :: 3",
         "License :: OSI Approved :: GNU General Public License v3 or later (GPLv3+)",
@@ -24,9 +30,13 @@ setuptools.setup(
         "Topic :: Text Processing :: Markup :: XML",
         "Intended Audience :: Developers"
     ],
+    project_urls={
+        "Documentation": "https://etnadji.fr/pyscribus",
+        "Source Code": "https://framagit.org/etnadji/pyscribus",
+    },
     python_requires='>=3.6',
-    install_requires=['lxml'],
-    keywords=["scribus"],
+    install_requires=REQUIRED,
+    keywords=["scribus", "sla"],
 )
 
 # vim:set shiftwidth=4 softtabstop=4 spl=en:
