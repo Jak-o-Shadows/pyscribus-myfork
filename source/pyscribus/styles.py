@@ -860,6 +860,20 @@ class ParagraphStyle(StyleAbstract):
                             )
                         )
 
+    def set_leadingmode(self, leadingmode):
+        """
+        Set leading mode.
+
+        :type leadingmode: string
+        :param leadingmode: "fixed", "automatic", "grid"
+        """
+
+        if leadingmode.lower() in ParagraphStyle.leading_xml:
+            self.leading["mode"] = leadingmode
+            return True
+        else:
+            raise ValueError()
+
 
 class CharacterStyle(StyleAbstract):
     """

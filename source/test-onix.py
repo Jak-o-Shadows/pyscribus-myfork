@@ -168,7 +168,8 @@ if __name__ == "__main__":
 
     # As all defined styles will inherit Scribus default paragraph style,
     # we set its leading mode to "automatic".
-    slafile.document.styles["paragraph"][0].leading["mode"] = "automatic"
+    # slafile.document.styles["paragraph"][0].leading["mode"] = "automatic"
+    slafile.document.styles["paragraph"][0].set_leadingmode("automatic")
 
     # Defining paragraph styles, with quick settings
 

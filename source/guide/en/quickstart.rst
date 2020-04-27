@@ -47,29 +47,19 @@ Scribus handle (See **Measures and geometry in PyScribus**).
 You will just need ``papers.iso216`` if you don't work in an 
 american / canadian context.
 
-+---------------+---------------------------+
-| Module        | Use                       |
-+===============+===========================+
-| papers.iso216 | ISO 216 sizes (A, B)      |
-|               |                           |
-|               | Examples : A4; A3         |
-+---------------+---------------------------+
-| papers.iso269 | ISO 269 sizes (C, DL)     |
-|               |                           |
-|               | Examples : C6; DL         |
-+---------------+---------------------------+
-| papers.iso217 | ISO 217 sizes (RA, SRA)   |
-|               |                           |
-|               | Examples : RA0; 2SRA0     |
-+---------------+---------------------------+
-| papers.ansi   | ANSI normalized sizes.    |
-|               |                           |
-|               | Example : Letter / ANSI A |
-+---------------+---------------------------+
-| papers.afnor  | AFNOR normalized sizes    |
-|               |                           |
-|               | Examples : Raisin; Jesus  |
-+---------------+---------------------------+
++---------------+---------------------------+---------------------------+
+| Module        | Use                       | Examples                  |
++===============+===========================+===========================+
+| papers.iso216 | ISO 216 sizes (A, B)      | A4; A3                    |
++---------------+---------------------------+---------------------------+
+| papers.iso269 | ISO 269 sizes (C, DL)     | C6; DL                    |
++---------------+---------------------------+---------------------------+
+| papers.iso217 | ISO 217 sizes (RA, SRA)   | RAO; 2SRA0                |
++---------------+---------------------------+---------------------------+
+| papers.ansi   | ANSI normalized sizes.    | Letter / ANSI A           |
++---------------+---------------------------+---------------------------+
+| papers.afnor  | AFNOR normalized sizes    | Raisin; Jesus             |
++---------------+---------------------------+---------------------------+
 
 Extras
 ------

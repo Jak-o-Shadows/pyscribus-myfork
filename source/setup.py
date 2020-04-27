@@ -7,14 +7,14 @@ with open("../README.md", "r") as fh:
     long_description = fh.read()
 
 setuptools.setup(
-    name="pyscribus-USERNAME",
-    version="0.0.1",
+    name="pyscribus",
+    version="0.1",
     author="Etienne Nadji",
     author_email="etnadji@eml.cc",
     description="Read, create and update Scribus .sla files.",
     long_description=long_description,
     long_description_content_type="text/markdown",
-    url="https://framagit.org/etnadji/pyscribus",
+    url="https://etnadji.fr/pyscribus",
     packages=setuptools.find_packages(),
     classifiers=[
         "Programming Language :: Python :: 3",
@@ -25,6 +25,7 @@ setuptools.setup(
         "Intended Audience :: Developers"
     ],
     python_requires='>=3.6',
+    install_requires=['lxml'],
 )
 
 # vim:set shiftwidth=4 softtabstop=4 spl=en:
