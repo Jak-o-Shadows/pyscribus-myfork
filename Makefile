@@ -52,3 +52,9 @@ pipinstall:
 
 pipremove:
 	pip3 uninstall pyscribus
+
+package:
+	./make-pypi.sh
+
+pypupload:
+	./upload-pypitesting.sh
