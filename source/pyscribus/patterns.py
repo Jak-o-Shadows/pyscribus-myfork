@@ -172,14 +172,18 @@ class PatternItem(pageobjects.PageObject):
         """
         """
 
-        success = pageobjects.PageObject.fromxml("PatternItem")
+        success = pageobjects.PageObject.fromxml(
+            self, xml, arbitrary_tag="PatternItem"
+        )
+
         return success
 
     def toxml(self):
         """
         """
 
-        xml = pageobjects.PageObject.toxml("PatternItem")
+        xml = pageobjects.PageObject.toxml(arbitrary_tag="PatternItem")
+
         return xml
 
 # vim:set shiftwidth=4 softtabstop=4 spl=en:
