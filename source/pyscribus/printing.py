@@ -75,6 +75,8 @@ class PDFSettings(PyScribusElement):
         RecalcPic="0"
         # Resolution for downsampling Images
         PicRes="300"
+        # Resolution for embedded EPS-Pictures or PDF's
+        Resolution="300"
 
         #-------------------------------------------------------
 
@@ -93,21 +95,12 @@ class PDFSettings(PyScribusElement):
 
         #-------------------------------------------------------
 
-        # Resolution for embedded EPS-Pictures or PDF's
-        Resolution="300"
-
-        #-------------------------------------------------------
-
-        # (optional) Top Distance for the Bleed Box
-        BTop="0"
-        # (optional) Left Distance for the Bleed Box
-        BLeft="0"
-        # (optional) Right Distance for the Bleed Box
-        BRight="0"
-        # (optional) Bottom Distance for the Bleed Box
-        BBottom="0"
-
-        useDocBleeds="0"
+        self.bleeds = collections.OrderedDict()
+        self.bleeds["top"] = dimensions.Dim(0),
+        self.bleeds["left"] = dimensions.Dim(0),
+        self.bleeds["right"] = dimensions.Dim(0),
+        self.bleeds["bottom"] = dimensions.Dim(0),
+        self.bleeds["document"] = False
 
         #-------------------------------------------------------
 
@@ -121,15 +114,19 @@ class PDFSettings(PyScribusElement):
 
         #-------------------------------------------------------
 
-        # (optional) Owner Password for encrypted PDF's
-        PassOwner=""
-        # (optional) User Password for encrypted PDF's
-        PassUser=""
-        # (optional) Value used for Encryption Settings (???)
-        Permissions="-4"
-
-        # (optional) Flag, set to 1 when use Encryption is checked in the PDF-Options Dialog
-        Encrypt="0"
+        self.encryption = {
+            # (optional) Owner Password for encrypted PDF's
+            # PassOwner=""
+            # (optional) User Password for encrypted PDF's
+            # PassUser=""
+            "pass": {"owner": "", "user": ""},
+            # (optional) Value used for Encryption Settings (???)
+            # Permissions="-4"
+            # (optional) Flag, set to 1 when use Encryption is checked in 
+            # the PDF-Options Dialog
+            # Encrypt="0"
+            "settings": {"permissions": "-4", "encrypted": False}
+        }
 
         #-- FIXME Documented but to organize -------------------
 
@@ -207,6 +204,38 @@ class PDFSettings(PyScribusElement):
                             "Unknown image compression {}.".format(case[1])
                         )
 
+            # Bleed settings -----------------------------------
+
+            for case in ["top", "left", "right", "bottom"]:
+                att_name = "B{}".format(case.capitalize())
+
+                att = xml.get(att_name)
+
+                if att is not None:
+                    self.bleeds[case][0].value = float(att)
+
+            udb = xml.get("useDocBleeds")
+
+            if udb is not None:
+                self.bleeds["document"] = num_to_bool(udb)
+
+            # PDF encryption settings---------------------------
+
+            encrypt = xml.get("Encrypt")
+            encrypt_perm = xml.get("Permissions")
+
+            for case in [["owner", "PassOwner"], ["user", "PassUser"]]:
+                attrib = xml.get(case[1])
+
+                if attrib is not None:
+                    self.encryption["pass"][case[0]] = attrib
+
+            if encrypt is not None:
+                self.encryption["settings"]["encrypted"] = num_to_bool(encrypt)
+
+            if encrypt_perm is not None:
+                self.encryption["settings"]["permissions"] = encrypt_perm
+
             # Line per inch settings ---------------------------
 
             for element in xml:
@@ -249,7 +278,26 @@ class PDFSettings(PyScribusElement):
             PDFSettings.imgcomp_quality_xml[self.image_compression["quality"]]
         )
 
-        # TODO
+        # Bleed settings -----------------------------------
+
+        for bleed_config,bleed_value in self.bleeds.items():
+
+            if bleed_config != "document":
+                att_name = "B{}".format(bleed_config.capitalize())
+                xml.attrib[att_name] = bleed_value[0].toxmlstr()
+
+        xml.attrib["useDocBleeds"] = bool_to_num(self.bleeds["document"])
+
+        # PDF encryption settings---------------------------
+
+        xml.attrib["PassOwner"] = self.encryption["pass"]["owner"]
+        xml.attrib["PassUser"] = self.encryption["pass"]["user"]
+        xml.attrib["Permissions"] = self.encryption["settings"]["permissions"]
+        xml.attrib["Encrypt"] = num_to_bool(
+            self.encryption["settings"]["encrypted"]
+        )
+
+        # Line per Inch children ---------------------------
 
         for lo in self.lpi:
             lx = lo.toxml()
@@ -504,7 +552,7 @@ class PrinterSettings(PyScribusElement):
                 xml.attrib[att_name] = bleed_value[0].toxmlstr()
 
         xml.attrib["mirrorH"] = bool_to_num(self.mirror_pages["horizontal"])
-        xml.attrib["MirrorV"] = bool_to_num(self.mirror_pages["vertical"])
+        xml.attrib["mirrorV"] = bool_to_num(self.mirror_pages["vertical"])
 
         xml.attrib["useDocBleeds"] = bool_to_num(self.bleeds["document"])
 
