@@ -82,16 +82,35 @@ class PDFSettings(PyScribusElement):
 
         # (optional) Flag, set to 1 when Output should be in RGB
         RGBMode="1"
-        # (optional) Flag, set to 1 when ICC-Profiles should be used for solid colours
-        UseProfiles="0"
-        # (optional) Flag, set to 1 when ICC-Profiles should be used for images
-        UseProfiles2="0"
-        # (optional) ICC-Profile for solid colours
-        SolidP="sRGB IEC61966-2.1"
-        # (optional) ICC-Profile for the Printer, only used for PDF-X/3 output
-        PrintP="Fogra27L CMYK Coated Press"
 
-        ImageP="sRGB IEC61966-2.1"
+        # TODO : fromxml / toxml of this dict
+
+        self.profiles = {
+            "colors": {
+                # (optional) Flag, set to 1 when ICC-Profiles should be used
+                # for solid colours
+                # UseProfiles="0"
+                "used": False,
+                # (optional) ICC-Profile for solid colours
+                # SolidP="sRGB IEC61966-2.1"
+                "name": "sRGB IEC61966-2.1"
+            },
+            "images": {
+                # (optional) Flag, set to 1 when ICC-Profiles should be used
+                # for images
+                # UseProfiles2="0"
+                "used": False,
+                # ICC-Profile for images ?
+                # ImageP="sRGB IEC61966-2.1"
+                "name": "sRGB IEC61966-2.1"
+            },
+            "printer": {
+                # (optional) ICC-Profile for the Printer, only used for 
+                # PDF-X/3 output
+                # PrintP="Fogra27L CMYK Coated Press"
+                "name": "Fogra27L CMYK Coated Press"
+            }
+        }
 
         #-------------------------------------------------------
 
@@ -115,16 +134,7 @@ class PDFSettings(PyScribusElement):
         #-------------------------------------------------------
 
         self.encryption = {
-            # (optional) Owner Password for encrypted PDF's
-            # PassOwner=""
-            # (optional) User Password for encrypted PDF's
-            # PassUser=""
             "pass": {"owner": "", "user": ""},
-            # (optional) Value used for Encryption Settings (???)
-            # Permissions="-4"
-            # (optional) Flag, set to 1 when use Encryption is checked in 
-            # the PDF-Options Dialog
-            # Encrypt="0"
             "settings": {"permissions": "-4", "encrypted": False}
         }
 
