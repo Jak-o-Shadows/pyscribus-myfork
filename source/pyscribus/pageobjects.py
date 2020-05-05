@@ -1564,32 +1564,20 @@ class LineObject(PageObject):
         succeed = PageObject.fromxml(self, xml)
 
         if succeed:
-            fill = xml.get("PCOLOR")
-            stroke = xml.get("PCOLOR2")
-            thickness = xml.get("PWIDTH")
-            line_type = xml.get("PLINEART")
 
-            # TODO Walrus operator
-            # if (line_type := xml.get("PLINEART") is not None:
-            if line_type is not None:
+            if (line_type := xml.get("PLINEART") is not None:
                 for human, code in PageObject.line_type_xml.items():
                     if line_type == code:
                         self.line_type = human
                         break
 
-            # TODO Walrus operator
-            # if (fill := xml.get("PCOLOR") is not None:
-            if fill is not None:
+            if (fill := xml.get("PCOLOR") is not None:
                 self.line_fill = fill
 
-            # TODO Walrus operator
-            # if (stroke := xml.get("PCOLOR2") is not None:
-            if stroke is not None:
+            if (stroke := xml.get("PCOLOR2") is not None:
                 self.line_stroke = stroke
 
-            # TODO Walrus operator
-            # if (thickness := xml.get("PWIDTH") is not None:
-            if thickness is not None:
+            if (thickness := xml.get("PWIDTH") is not None:
                 self.line_thickness.value = float(thickness)
 
             return True

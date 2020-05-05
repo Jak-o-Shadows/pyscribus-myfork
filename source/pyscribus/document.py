@@ -691,36 +691,21 @@ class Document(PyScribusElement):
         # UI snapping
 
         for snap_thing in ["grid", "guides", "element"]:
-            att = xml.get("SnapTo{}".format(snap_thing.capitalize()))
+            att_name = "SnapTo{}".format(snap_thing.capitalize())
 
-            # TODO Walrus operator
-            # att_name = "SnapTo{}".format(snap_thing.capitalize())
-            # 
-            # if (att := xml.get(att_name) is not None:
-
-            if att is not None:
+            if (att := xml.get(att_name) is not None:
                 self.ui_snapping[snap_thing] = num_to_bool(att)
 
         # Bleed settings
 
         for att,human in Document.bleed_xml.items():
-            att_value = xml.get(att)
-
-            # TODO Walrus operator
-            # if (att_value := xml.get(att)) is not None:
-
-            if att_value is not None:
+            if (att_value := xml.get(att)) is not None:
                 self.bleed[human] = float(att_value)
 
         # UI show
 
         for att_name, ui_name in Document.ui_show_xml.items():
-            att = xml.get(att_name)
-
-            # TODO Walrus operator
-            # if (att := xml.get(att_name)) is not None:
-
-            if att is not None:
+            if (att := xml.get(att_name)) is not None:
                 self.ui_show[ui_name] = num_to_bool(att)
 
         # ICC color profiles
@@ -731,12 +716,7 @@ class Document(PyScribusElement):
             ["DPPr", "printer"]]:
             att_name,icc_key = case
 
-            att = xml.get(att_name)
-
-            # TODO Walrus operator
-            # if (att := xml.get(att_name)) is not None:
-
-            if att is not None:
+            if (att := xml.get(att_name)) is not None:
                 self.icc_profiles[icc_key] = att
 
         # Calligraphic pen
@@ -744,38 +724,26 @@ class Document(PyScribusElement):
         for case in [
                 ["Angle", "angle"], ["LineColorShade", "line_shade"],
                 ["FillColorShade", "fill_shade"]]:
-            att = xml.get("calligraphicPen{}".format(case[0]))
+            att_name = "calligraphicPen{}".format(case[0])
 
-            # TODO Walrus operator
-            # att_name = "calligraphicPen{}".format(case[0])
-            # 
-            # if (att := xml.get(att_name)) is not None:
-
-            if att is not None:
+            if (att := xml.get(att_name)) is not None:
                 self.calligraphicpen[case[1]].value = int(att)
 
         for case in [["LineWidth", "line_width"], ["Width", "width"]]:
             att = xml.get("calligraphicPen{}".format(case[0]))
 
-            # TODO Walrus operator
-            # att_name = "calligraphicPen{}".format(case[0])
-            # 
-            # if (att := xml.get(att_name)) is not None:
+            att_name = "calligraphicPen{}".format(case[0])
 
-            if att is not None:
+            if (att := xml.get(att_name)) is not None:
                 self.calligraphicpen[case[1]].value = float(att)
 
         for case in [
                 ["LineColor", "line_color"], ["FillColor", "fill_color"],
                 ["PenStyle", "style"]]:
-            att = xml.get("calligraphicPen{}".format(case[0]))
 
-            # TODO Walrus operator
-            # att_name = "calligraphicPen{}".format(case[0])
-            # 
-            # if (att := xml.get(att_name)) is not None:
+            att_name = "calligraphicPen{}".format(case[0])
 
-            if att is not None:
+            if (att := xml.get(att_name)) is not None:
                 self.calligraphicpen[case[1]] = att
 
         # --- DOCUMENT childs --------------------------------------------
@@ -784,12 +752,8 @@ class Document(PyScribusElement):
 
             if child.tag == "CheckProfile":
                 p = Profile()
-                success = p.fromxml(child)
 
-                # TODO Walrus operator
-                # if (success := p.fromxml(child)):
-
-                if success:
+                if (success := p.fromxml(child)):
                     self.profiles.append(p)
 
             if child.tag == "Gradient":
@@ -801,12 +765,8 @@ class Document(PyScribusElement):
 
             if child.tag == "COLOR":
                 c = pscolors.Color()
-                success = c.fromxml(child)
 
-                # TODO Walrus operator
-                # if (success := c.fromxml(child)):
-
-                if success:
+                if (success := c.fromxml(child)):
                     self.colors.append(c)
 
             if child.tag == "Pattern":
@@ -826,22 +786,13 @@ class Document(PyScribusElement):
                 if child.tag == "CHARSTYLE":
                     key,xstyle = "character",styles.CharacterStyle(self)
 
-                success = xstyle.fromxml(child)
-
-                # TODO Walrus operator
-                # if (success := xstyle.fromxml(child)):
-
-                if success:
+                if (success := xstyle.fromxml(child)):
                     self.styles[key].append(xstyle)
 
             if child.tag == "TableStyle":
                 tstyle = styles.TableStyle(self)
-                success = tstyle.fromxml(child)
 
-                # TODO Walrus operator
-                # if (success := tstyle.fromxml(child)):
-
-                if success:
+                if (success := tstyle.fromxml(child)):
                     self.styles["table"].append(tstyle)
 
             if child.tag == "CellStyle":
@@ -853,46 +804,30 @@ class Document(PyScribusElement):
 
             if child.tag == "LAYERS":
                 l = Layer()
-                success = l.fromxml(child)
 
-                # TODO Walrus operator
-                # if (success := l.fromxml(child)):
-
-                if success:
+                if (success := l.fromxml(child)):
                     self.layers.append(l)
 
             if child.tag == "Printer":
 
                 ps = printing.PrinterSettings()
-                success = ps.fromxml(child)
 
-                # TODO Walrus operator
-                # if (success := ps.fromxml(child)):
-
-                if success:
+                if (success := ps.fromxml(child)):
                     self.printer_settings.append(ps)
 
             if child.tag == "PDF":
 
                 pds = printing.PDFSettings()
-                success = pds.fromxml(child)
 
-                # TODO Walrus operator
-                # if (success := pds.fromxml(child)):
-
-                if success:
+                if (success := pds.fromxml(child)):
                     self.pdf_settings.append(pds)
 
             if child.tag == "DocItemAttributes":
 
                 for attribute in child:
                     da = itemattribute.DocumentAttribute()
-                    success = da.fromxml(attribute)
 
-                    # TODO Walrus operator
-                    # if (success := da.fromxml(attribute)):
-
-                    if success:
+                    if (success := da.fromxml(attribute)):
                         self.attributes.append(da)
 
             if child.tag == "TablesOfContents":
@@ -901,12 +836,8 @@ class Document(PyScribusElement):
 
                     if sub.tag == "TableOfContents":
                         toc_settings = toc.TOC()
-                        success = toc_settings.fromxml(sub)
 
-                        # TODO Walrus operator
-                        # if (success := toc_settings.fromxml(sub)):
-
-                        if success:
+                        if (success := toc_settings.fromxml(sub)):
                             self.tocs.append(toc_settings)
 
             if child.tag == "Marks":
@@ -916,12 +847,8 @@ class Document(PyScribusElement):
                     if sub.tag == "Mark":
 
                         mx = marks.DocumentMark()
-                        success = mx.fromxml(sub)
 
-                        # TODO Walrus operator
-                        # if (success := mx.fromxml(sub)):
-
-                        if success:
+                        if (success := mx.fromxml(sub)):
                             self.marks.append(mx)
 
             if child.tag == "NotesStyles":
@@ -930,12 +857,8 @@ class Document(PyScribusElement):
 
                     if sub.tag == "notesStyle":
                         s = styles.NoteStyle()
-                        success = s.fromxml(sub)
 
-                        # TODO Walrus operator
-                        # if (success := s.fromxml(sub)):
-
-                        if success:
+                        if (success := s.fromxml(sub)):
                             self.styles["note"].append(s)
 
             if child.tag == "NotesFrames":
@@ -964,12 +887,8 @@ class Document(PyScribusElement):
 
                 for page_set in child:
                     ps = pages.PageSet()
-                    success = ps.fromxml(page_set)
 
-                    # TODO Walrus operator
-                    # if (success := ps.fromxml(page_set)):
-
-                    if success:
+                    if (success := ps.fromxml(page_set)):
                         self.page_sets.append(ps)
 
             if child.tag == "Sections":
@@ -978,22 +897,14 @@ class Document(PyScribusElement):
 
                     if sub.tag == "Section":
                         sec = toc.Section()
-                        success = sec.fromxml(sub)
 
-                        # TODO Walrus operator
-                        # if (success := sec.fromxml(sub)):
-
-                        if success:
+                        if (success := sec.fromxml(sub)):
                             self.sections.append(sec)
 
             if child.tag == "MASTERPAGE":
                 m = pages.MasterPage()
-                success = m.fromxml(child)
 
-                # TODO Walrus operator
-                # if (success := m.fromxml(child)):
-
-                if success:
+                if (success := m.fromxml(child)):
                     self.master_pages.append(m)
 
             if child.tag == "PAGE":
@@ -1002,12 +913,7 @@ class Document(PyScribusElement):
                 p.sla_parent = self.sla_parent
                 p.doc_parent = self
 
-                success = p.fromxml(child)
-
-                # TODO Walrus operator
-                # if (success := p.fromxml(child)):
-
-                if success:
+                if (success := p.fromxml(child)):
                     self.pages.append(p)
 
             if child.tag == "PAGEOBJECT":
@@ -1020,12 +926,7 @@ class Document(PyScribusElement):
                             ptype, self.sla_parent, self
                         )
 
-                        success = po.fromxml(child)
-
-                        # TODO Walrus operator
-                        # if (success := po.fromxml(child)):
-
-                        if success:
+                        if (success := po.fromxml(child)):
                             self.page_objects.append(po)
 
                     except ValueError:
