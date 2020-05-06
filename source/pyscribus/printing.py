@@ -196,16 +196,14 @@ class PDFSettings(PyScribusElement):
 
             # Image compression : method and quality -----------
 
-            icm,icq = xml.get("CMethod"),xml.get("Quality")
-
             for case in [
-                    [icm, "method", PDFSettings.imgcomp_method_xml],
-                    [icq, "quality", PDFSettings.imgcomp_quality_xml]
-                    ]:
-                if case[0] is not None:
+                    [xml.get("CMethod"), "method",
+                    PDFSettings.imgcomp_method_xml],
+                    [xml.get("Quality"), "quality",
+                    PDFSettings.imgcomp_quality_xml]]:
 
-                    if int(case[0]) in case[2].values():
-
+                if (att := xml.get(case[0])) is not None:
+                    if int(att) in case[2].values():
                         for human,code in case[2].items():
                             self.image_compression[case[1]] = human
                             break
@@ -219,9 +217,7 @@ class PDFSettings(PyScribusElement):
             for case in ["top", "left", "right", "bottom"]:
                 att_name = "B{}".format(case.capitalize())
 
-                att = xml.get(att_name)
-
-                if att is not None:
+                if (att := xml.get(att_name)) is not None:
                     self.bleeds[case][0].value = float(att)
 
             udb = xml.get("useDocBleeds")
@@ -235,9 +231,7 @@ class PDFSettings(PyScribusElement):
             encrypt_perm = xml.get("Permissions")
 
             for case in [["owner", "PassOwner"], ["user", "PassUser"]]:
-                attrib = xml.get(case[1])
-
-                if attrib is not None:
+                if (attrib := xml.get(case[1])) is not None:
                     self.encryption["pass"][case[0]] = attrib
 
             if encrypt is not None:
@@ -303,7 +297,7 @@ class PDFSettings(PyScribusElement):
         xml.attrib["PassOwner"] = self.encryption["pass"]["owner"]
         xml.attrib["PassUser"] = self.encryption["pass"]["user"]
         xml.attrib["Permissions"] = self.encryption["settings"]["permissions"]
-        xml.attrib["Encrypt"] = num_to_bool(
+        xml.attrib["Encrypt"] = bool_to_num(
             self.encryption["settings"]["encrypted"]
         )
 
@@ -402,21 +396,17 @@ class LPI(PyScribusElement):
     def fromxml(self, xml):
 
         if xml.tag == "LPI":
-            freq = xml.get("Frequency")
-            spot = xml.get("SpotFunction")
-            angle = xml.get("Angle")
-            color = xml.get("Color")
 
-            if color is not None:
+            if (color := xml.get("Color")) is not None:
                 self.color = color
 
-            if freq is not None:
+            if (freq := xml.get("Frequency")) is not None:
                 self.frequency.value = int(freq)
 
-            if angle is not None:
+            if (angle := xml.get("Angle")) is not None:
                 self.angle.value = float(angle)
 
-            if spot is not None:
+            if (spot := xml.get("SpotFunction")) is not None:
 
                 for human,code in LPI.spot_xml.items():
                     if code == spot:
@@ -508,13 +498,10 @@ class PrinterSettings(PyScribusElement):
 
             # --- Page mirroring ------------------------------------
 
-            mrh = xml.get("mirrorH")
-            mrv = xml.get("mirrorV")
-
-            if mrh is not None:
+            if (mrh := xml.get("mirrorH")) is not None:
                 self.mirror_pages["horizontal"] = num_to_bool(mrh)
 
-            if mrv is not None:
+            if (mrv := xml.get("mirrorV")) is not None:
                 self.mirror_pages["vertical"] = num_to_bool(mrv)
 
             # --- Marks ---------------------------------------------
@@ -522,9 +509,7 @@ class PrinterSettings(PyScribusElement):
             for case in ["crop", "bleed", "registration", "color"]:
                 att_name = "{}Marks".format(case)
 
-                att = xml.get(att_name)
-
-                if att is not None:
+                if (att := xml.get(att_name)) is not None:
                     self.marks[case] = num_to_bool(att)
 
             # --- Printer bleeds ------------------------------------
@@ -532,14 +517,10 @@ class PrinterSettings(PyScribusElement):
             for case in ["top", "left", "right", "bottom"]:
                 att_name = "Bleed{}".format(case.capitalize())
 
-                att = xml.get(att_name)
-
-                if att is not None:
+                if (att := xml.get(att_name)) is not None:
                     self.bleeds[case][0].value = float(att)
 
-            udb = xml.get("useDocBleeds")
-
-            if udb is not None:
+            if (udb := xml.get("useDocBleeds")) is not None:
                 self.bleeds["document"] = num_to_bool(udb)
 
             # -------------------------------------------------------

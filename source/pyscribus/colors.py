@@ -235,9 +235,8 @@ class Color(xmlc.PyScribusElement):
 
         if space is not None:
             # Name -------------------------------------------------------
-            name = xml.get("NAME")
 
-            if name is not None:
+            if (name := xml.get("NAME")) is not None:
                 self.name = name
 
             # Space ------------------------------------------------------
@@ -264,9 +263,7 @@ class Color(xmlc.PyScribusElement):
 
             # Register ---------------------------------------------------
 
-            reg = xml.get("Register")
-
-            if reg is None:
+            if (reg := xml.get("Register")) is None:
                 self.register = False
             else:
                 if int(reg):
@@ -477,21 +474,16 @@ class GradientColorStop(xmlc.PyScribusElement):
 
     def fromxml(self, xml):
         if xml.tag == "CSTOP":
-            color = xml.get("NAME")
-            shade = xml.get("SHADE")
-            ramp = xml.get("RAMP")
-            opacity = xml.get("TRANS")
-
-            if color is not None:
+            if (color := xml.get("NAME")) is not None:
                 self.color = color
 
-            if shade is not None:
+            if (shade := xml.get("SHADE")) is not None:
                 self.shade = dimensions.Dim(float(opacity), "pc")
 
-            if ramp is not None:
+            if (ramp := xml.get("RAMP")) is not None:
                 self.position = dimensions.Dim(float(ramp), "pcdecim")
 
-            if opacity is not None:
+            if (opacity := xml.get("TRANS")) is not None:
                 self.opacity = dimensions.Dim(float(opacity), "pcdecim")
 
             return True
@@ -538,9 +530,8 @@ class Gradient(xmlc.PyScribusElement):
 
     def fromxml(self, xml):
         if xml.tag == "Gradient":
-            name = xml.get("Name")
 
-            if name is not None:
+            if (name := xml.get("Name")) is not None:
                 self.name = name
 
             # TODO FIXME Ext
@@ -548,9 +539,8 @@ class Gradient(xmlc.PyScribusElement):
             for element in xml:
                 if element.tag == "CSTOP":
                     grs = GradientColorStop()
-                    success = grs.fromxml(element)
 
-                    if success:
+                    if (success := grs.fromxml(element)):
                         self.stops.append(grs)
 
             return True

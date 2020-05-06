@@ -337,9 +337,7 @@ def undocumented_to_python(xml, attributes):
     undocumented = {}
 
     for att_name in attributes:
-        avalue = xml.get(att_name)
-
-        undocumented[att_name] = avalue
+        undocumented[att_name] = xml.get(att_name)
 
     return undocumented
 
