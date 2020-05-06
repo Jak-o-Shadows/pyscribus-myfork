@@ -570,7 +570,8 @@ class DimBox:
     """
 
     def __init__(self,**kwargs):
-        # X,Y coordinates
+        # X,Y coordinates for each corner
+        # Use setx, sety, getx, gety methods as shorthands
         self.coords = {
             "top-left": [Dim(0), Dim(0)],
             "top-right": [Dim(0), Dim(0)],
@@ -595,6 +596,57 @@ class DimBox:
         # -----------------------------------------------------------
 
         self.set_box(kwargs=kwargs)
+
+    #--- Shorthands for corners coordinates ------------------------------
+
+    def _setxy(self, corner, value, xy, rotated=False):
+        if corner.lower() in [
+                "top-left", "top-right",
+                "bottom-left", "bottom-right"]:
+
+            if xy == "x":
+                if rotated:
+                    self.rotated_coords[corner][0].value = value
+                else:
+                    self.coords[corner][0].value = value
+            else:
+                if rotated:
+                    self.rotated_coords[corner][1].value = value
+                else:
+                    self.coords[corner][1].value = value
+
+            return True
+        else:
+            raise KeyError()
+
+    def _getxy(self, corner, xy, rotated=False):
+        if corner.lower() in [
+                "top-left", "top-right",
+                "bottom-left", "bottom-right"]:
+            if xy == "x":
+                if rotated:
+                    return self.rotated_coords[corner][0].value
+                else:
+                    return self.coords[corner][0].value
+            else:
+                if rotated:
+                    return self.rotated_coords[corner][1].value
+                else:
+                    return self.coords[corner][1].value
+        else:
+            raise KeyError()
+
+    def setx(self, corner, value, rotated=False):
+        return self._setxy(corner, value, "x", rotated)
+
+    def sety(self, corner, value, rotated=False):
+        return self._setxy(corner, value, "y", rotated)
+
+    def getx(self, corner, rotated=False):
+        return self._getxy(corner, "x", rotated)
+
+    def gety(self, corner, rotated=False):
+        return self._getxy(corner, "y", rotated)
 
     #--- Box modification ------------------------------------------------
 
@@ -723,14 +775,25 @@ class DimBox:
             obj.dims["width"].value = brx - tlx
             obj.dims["height"].value = bry - tly
 
-            obj.coords["top-right"][0].value = brx
-            obj.coords["top-right"][1].value = tly
-            obj.coords["top-left"][0].value = tlx
-            obj.coords["top-left"][1].value = tly
-            obj.coords["bottom-left"][0].value = tlx
-            obj.coords["bottom-left"][1].value = bry
-            obj.coords["bottom-right"][0].value = brx
-            obj.coords["bottom-right"][1].value = bry
+            # obj.coords["top-right"][0].value = brx
+            # obj.coords["top-right"][1].value = tly
+            obj.setx("top-right", brx)
+            obj.sety("top-right", tly)
+
+            # obj.coords["top-left"][0].value = tlx
+            # obj.coords["top-left"][1].value = tly
+            obj.setx("top-left", tlx)
+            obj.sety("top-left", tly)
+
+            # obj.coords["bottom-left"][0].value = tlx
+            # obj.coords["bottom-left"][1].value = bry
+            obj.setx("bottom-left", tlx)
+            obj.sety("bottom-left", bry)
+
+            # obj.coords["bottom-right"][0].value = brx
+            # obj.coords["bottom-right"][1].value = bry
+            obj.setx("bottom-right", brx)
+            obj.sety("bottom-right", bry)
 
             return obj
 
@@ -756,14 +819,25 @@ class DimBox:
             obj.dims["width"].value = width
             obj.dims["height"].value = height
 
-            obj.coords["top-right"][0].value = trox
-            obj.coords["top-right"][1].value = troy
-            obj.coords["top-left"][0].value = trox - width
-            obj.coords["top-left"][1].value = troy
-            obj.coords["bottom-left"][0].value = trox - width
-            obj.coords["bottom-left"][1].value = troy + height
-            obj.coords["bottom-right"][0].value = trox
-            obj.coords["bottom-right"][1].value = troy + height
+            # obj.coords["top-right"][0].value = trox
+            # obj.coords["top-right"][1].value = troy
+            obj.setx("top-right", trox)
+            obj.sety("top-right", troy)
+
+            # obj.coords["top-left"][0].value = trox - width
+            # obj.coords["top-left"][1].value = troy
+            obj.setx("top-left", trox - width)
+            obj.sety("top-left", troy)
+
+            # obj.coords["bottom-left"][0].value = trox - width
+            # obj.coords["bottom-left"][1].value = troy + height
+            obj.setx("bottom-left", trox - width)
+            obj.sety("bottom-left", troy + height)
+
+            # obj.coords["bottom-right"][0].value = trox
+            # obj.coords["bottom-right"][1].value = troy + height
+            obj.setx("bottom-right", trox)
+            obj.sety("bottom-right", troy + height)
 
             return obj
 
@@ -787,14 +861,25 @@ class DimBox:
             obj.dims["width"].value = width
             obj.dims["height"].value = height
 
-            obj.coords["top-left"][0].value = tlx
-            obj.coords["top-left"][1].value = tly
-            obj.coords["top-right"][0].value = tlx + width
-            obj.coords["top-right"][1].value = tly
-            obj.coords["bottom-left"][0].value = tlx
-            obj.coords["bottom-left"][1].value = tly + height
-            obj.coords["bottom-right"][0].value = tlx + width
-            obj.coords["bottom-right"][1].value = tly + height
+            # obj.coords["top-left"][0].value = tlx
+            # obj.coords["top-left"][1].value = tly
+            obj.setx("top-left", tlx)
+            obj.sety("top-left", tly)
+
+            # obj.coords["top-right"][0].value = tlx + width
+            # obj.coords["top-right"][1].value = tly
+            obj.setx("top-right", tlx + width)
+            obj.sety("top-right", tly)
+
+            # obj.coords["bottom-left"][0].value = tlx
+            # obj.coords["bottom-left"][1].value = tly + height
+            obj.setx("bottom-left", tlx)
+            obj.sety("bottom-left", tly + height)
+
+            # obj.coords["bottom-right"][0].value = tlx + width
+            # obj.coords["bottom-right"][1].value = tly + height
+            obj.setx("bottom-right", tlx + width)
+            obj.sety("bottom-right", tly + height)
 
             return obj
 
@@ -888,24 +973,36 @@ class DimBox:
                 self.dims["height"].value += value
 
             if side == "left":
-                nlx = self.coords["top-left"][0].value + value
-                self.coords["top-left"][0] = nlx
-                self.coords["bottom-left"][0] = nlx
+                # nlx = self.coords["top-left"][0].value + value
+                # self.coords["top-left"][0] = nlx
+                # self.coords["bottom-left"][0] = nlx
+                nlx = self.getx("top-left") + value
+                self.setx("top-left", nlx)
+                self.setx("bottom-left", nlx)
 
             if side == "right":
-                nrx = self.coords["top-right"][0].value + value
-                self.coords["top-right"][0].value = nrx
-                self.coords["bottom-right"][0].value = nrx
+                # nrx = self.coords["top-right"][0].value + value
+                # self.coords["top-right"][0].value = nrx
+                # self.coords["bottom-right"][0].value = nrx
+                nrx = self.getx("top-right") + value
+                self.setx("top-right", nrx)
+                self.setx("bottom-right", nrx)
 
             if side == "top":
-                nty = self.coords["top-left"][1].value + value
-                self.coords["top-left"][1].value = nty
-                self.coords["top-right"][1].value = nty
+                # nty = self.coords["top-left"][1].value + value
+                # self.coords["top-left"][1].value = nty
+                # self.coords["top-right"][1].value = nty
+                nty = self.gety("top-left") + value
+                self.sety("top-left", nty)
+                self.sety("top-right", nty)
 
             if side == "bottom":
-                nby = self.coords["bottom-left"][1].value + value
-                self.coords["bottom-left"][1].value = nby
-                self.coords["bottom-right"][1].value = nby
+                # nby = self.coords["bottom-left"][1].value + value
+                # self.coords["bottom-left"][1].value = nby
+                # self.coords["bottom-right"][1].value = nby
+                nby = self.gety("bottom-left") + value
+                self.sety("bottom-left", nby)
+                self.sety("bottom-right", nby)
 
             return True
         else:

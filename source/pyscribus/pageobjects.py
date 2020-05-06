@@ -553,10 +553,12 @@ class PageObject(xmlc.PyScribusElement):
             for setting_name, setting_value in settings.items():
 
                 if setting_name == "posx":
-                    self.box.coords["top-left"][0].value = float(setting_value)
+                    # self.box.coords["top-left"][0].value = float(setting_value)
+                    self.box.setx("top-left", float(setting_value))
 
                 if setting_name == "posy":
-                    self.box.coords["top-left"][1].value = float(setting_value)
+                    # self.box.coords["top-left"][1].value = float(setting_value)
+                    self.box.sety("top-left", float(setting_value))
 
                 if setting_name == "width":
                     self.box.dims["width"].value = float(setting_value)
@@ -665,7 +667,8 @@ class TableObject(PageObject):
 
             if cell.column not in columns:
                 columns[cell.column] = {
-                    "x": float(cell.box.coords["top-left"][0]),
+                    # "x": float(cell.box.coords["top-left"][0]),
+                    "x": float(cell.box.getx("top-left")),
                     "width": float(cell.box.dims["width"]),
                     "borders": cell.borders, "padding": cell.padding,
                     "fill": cell.fill, "align": cell.align,
@@ -679,7 +682,8 @@ class TableObject(PageObject):
         for cell in self.cells:
 
             if cell.row == (self.rows - 1):
-                last_y = float(cell.box.coords["top-left"][1])
+                # last_y = float(cell.box.coords["top-left"][1])
+                last_y = float(cell.box.gety("top-left"))
                 last_height = float(cell.box.dims["height"])
 
                 break
@@ -756,7 +760,8 @@ class TableObject(PageObject):
 
                 if cell.column not in columns:
                     columns[cell.column] = {
-                        "x": float(cell.box.coords["top-left"][0]),
+                        # "x": float(cell.box.coords["top-left"][0]),
+                        "x": float(cell.box.getx("top-left")),
                         "width": float(cell.box.dims["width"]),
                         "borders": cell.borders, "padding": cell.padding,
                         "fill": cell.fill, "align": cell.align,
@@ -770,7 +775,8 @@ class TableObject(PageObject):
             for cell in self.cells:
 
                 if cell.row == position - 1:
-                    index_row_y = float(cell.box.coords["top-left"][1])
+                    # index_row_y = float(cell.box.coords["top-left"][1])
+                    index_row_y = float(cell.box.gety("top-left"))
                     index_row_height = float(cell.box.dims["height"])
 
                     break
@@ -901,7 +907,8 @@ class TableObject(PageObject):
 
             if cell.row not in rows:
                 rows[cell.row] = {
-                    "y": float(cell.box.coords["top-left"][1]),
+                    # "y": float(cell.box.coords["top-left"][1]),
+                    "y": float(cell.box.gety("top-left")),
                     "height": float(cell.box.dims["height"]),
                     "borders": cell.borders, "padding": cell.padding,
                     "fill": cell.fill, "align": cell.align,
@@ -915,7 +922,8 @@ class TableObject(PageObject):
         for cell in self.cells:
 
             if cell.column == (self.columns - 1):
-                last_x = float(cell.box.coords["top-left"][0])
+                # last_x = float(cell.box.coords["top-left"][0])
+                last_x = float(cell.box.getx("top-left"))
                 last_width = float(cell.box.dims["width"])
 
                 break
@@ -2051,10 +2059,12 @@ class TableCell(xmlc.PyScribusElement):
                 # Cell box ----------------------------------------------------
 
                 if setting_name == "posx":
-                    self.box.coords["top-left"][0].value = float(setting_value)
+                    # self.box.coords["top-left"][0].value = float(setting_value)
+                    self.box.setx("top-left"], float(setting_value))
 
                 if setting_name == "posy":
-                    self.box.coords["top-left"][1].value = float(setting_value)
+                    # self.box.coords["top-left"][1].value = float(setting_value)
+                    self.box.sety("top-left", float(setting_value))
 
                 if setting_name == "width":
                     self.box.dims["width"].value = float(setting_value)
