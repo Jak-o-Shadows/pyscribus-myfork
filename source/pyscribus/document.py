@@ -410,16 +410,8 @@ class Document(PyScribusElement):
         Add default checking profiles.
         """
 
-        for p in [
-                Profile(default="PDF 1.3"),
-                Profile(default="PDF 1.4"),
-                Profile(default="PDF 1.5"),
-                Profile(default="PDF/X-3"),
-                Profile(default="PDF/X-4"),
-                Profile(default="PostScript"),
-                Profile(default="PDF/X-1a")
-            ]:
-            self.profiles.append(p)
+        for def_name in Profile.defaults:
+            self.profiles.append(Profile(default=def_name))
 
     def _default_layer(self):
         """
@@ -525,9 +517,8 @@ class Document(PyScribusElement):
 
         for default in ["Single Page", "Facing Pages", "3-Fold", "4-Fold"]:
             ps = pages.PageSet()
-            success = ps.fromdefault(default)
 
-            if success:
+            if (success := ps.fromdefault(default)):
                 self.page_sets.append(ps)
 
     def _default_colors(self):
@@ -683,9 +674,7 @@ class Document(PyScribusElement):
         # Metadatas
 
         for att, key in Document.metadata_xml.items():
-            v = xml.get(att)
-
-            if v is not None:
+            if (v := xml.get(att)) is not None:
                 self.metadata[key] = v
 
         # UI snapping
@@ -730,8 +719,6 @@ class Document(PyScribusElement):
                 self.calligraphicpen[case[1]].value = int(att)
 
         for case in [["LineWidth", "line_width"], ["Width", "width"]]:
-            att = xml.get("calligraphicPen{}".format(case[0]))
-
             att_name = "calligraphicPen{}".format(case[0])
 
             if (att := xml.get(att_name)) is not None:
@@ -758,9 +745,8 @@ class Document(PyScribusElement):
 
             if child.tag == "Gradient":
                 gr = pscolors.Gradient()
-                success = gr.fromxml(child)
 
-                if success:
+                if (success := gr.fromxml(child)):
                     self.gradients.append(gr)
 
             if child.tag == "COLOR":
@@ -771,9 +757,8 @@ class Document(PyScribusElement):
 
             if child.tag == "Pattern":
                 patt = patterns.Pattern()
-                success = patt.fromxml(child)
 
-                if success:
+                if (success := patt.fromxml(child)):
                     self.patterns.append(patt)
 
             # TODO FIXME hyphen
@@ -797,9 +782,8 @@ class Document(PyScribusElement):
 
             if child.tag == "CellStyle":
                 cstyle = styles.CellStyle(self)
-                success = cstyle.fromxml(child)
 
-                if success:
+                if (success := cstyle.fromxml(child)):
                     self.styles["cell"].append(cstyle)
 
             if child.tag == "LAYERS":
@@ -845,7 +829,6 @@ class Document(PyScribusElement):
                 for sub in child:
 
                     if sub.tag == "Mark":
-
                         mx = marks.DocumentMark()
 
                         if (success := mx.fromxml(sub)):
@@ -867,9 +850,8 @@ class Document(PyScribusElement):
 
                     if sub.tag == "FOOTNOTEFRAME":
                         nf = notes.NoteFrame()
-                        success = nf.fromxml(sub)
 
-                        if success:
+                        if (success := nf.fromxml(sub)):
                             self.notes_frames.append(nf)
 
             if child.tag == "Notes":
@@ -878,9 +860,8 @@ class Document(PyScribusElement):
 
                     if child.tag == "Note":
                         nc = notes.Note()
-                        success = nc.fromxml(sub)
 
-                        if success:
+                        if (success := nc.fromxml(sub)):
                             self.notes.append(nc)
 
             if child.tag == "PageSets":
@@ -991,14 +972,26 @@ class Document(PyScribusElement):
         # Calligraphic pen
         # -------------------------------------------------
 
-        xml.attrib["calligraphicPenAngle"] = self.calligraphicpen["angle"].toxmlstr()
-        xml.attrib["calligraphicPenLineWidth"] = self.calligraphicpen["line_width"].toxmlstr()
-        xml.attrib["calligraphicPenLineColorShade"] = self.calligraphicpen["line_shade"].toxmlstr()
-        xml.attrib["calligraphicPenLineColor"] = self.calligraphicpen["line_color"]
-        xml.attrib["calligraphicPenWidth"] = self.calligraphicpen["width"].toxmlstr()
-        xml.attrib["calligraphicPenStyle"] = str(self.calligraphicpen["style"])
-        xml.attrib["calligraphicPenFillColor"] = self.calligraphicpen["fill_color"]
-        xml.attrib["calligraphicPenFillColorShade"] = self.calligraphicpen["fill_shade"].toxmlstr()
+        for case in [
+                ["Angle", "angle", True],
+                ["LineWidth", "line_width", True],
+                ["LineColorShade", "line_shade", True],
+                ["LineColor", "line_color", False],
+                ["Width", "width", True],
+                ["Style", "style", False],
+                ["FillColor", "fill_color", False],
+                ["FillColorShade", "fill_shade", True]]:
+
+            att_name = "calligraphicPen{}".format(case[0])
+            att_value = self.calligraphicpen[case[1]]
+
+            if case[2]:
+                att_value = att_value.toxmlstr()
+
+            if case[0] == "Style":
+                att_value = str(att_value)
+
+            xml.attrib[att_name]= att_value
 
         # --- DOCUMENT childs --------------------------------------------
 
@@ -1281,22 +1274,29 @@ class Document(PyScribusElement):
         """
         Append a page, a page object, layer, style…
 
-        check_color : bool : If True, check if a document's color already
-                             have the same inks as sla_object.
-
-        overlap_object : bool : If True (default) and if sla_object is a
-                                page object, sla_object will be added
-                                even if its coordinates overlap with a
-                                document's page object coordinates.
-
-                                If False, coordinates of sla_object will
-                                be checked against document's page objects,
-                                and eventually raise OverlappingPageObject.
-
-        overlap_layer : bool : If True (default) AND overlap_object is False,
-                               sla_object page object coordinates will only
-                               be checked against document's page objects
-                               on the same layer.
+        +----------------+---------+-----------------------------------------+
+        | Argument name  | Type    | Usage                                   |
+        +================+=========+=========================================+
+        | check_color    | boolean | If True, check if a document's color    |
+        |                |         | already have the same inks as           |
+        |                |         | sla_object.                             |
+        +----------------+---------+-----------------------------------------+
+        | overlap_object | boolean | If True (default) and if sla_object is  |
+        |                |         | a page object, sla_object will be added |
+        |                |         | even if its coordinates overlap with a  |
+        |                |         | document's page object coordinates.     |
+        |                |         |                                         |
+        |                |         | If False, coordinates of sla_object     |
+        |                |         | will be checked against document's page |
+        |                |         | objects, and eventually raise           |
+        |                |         | OverlappingPageObject.                  |
+        +----------------+---------+-----------------------------------------+
+        | overlap_layer  | boolean | If True (default) AND overlap_object is |
+        |                |         | False, sla_object page object           |
+        |                |         | coordinates will only be checked        |
+        |                |         | against document's page objects on the  |
+        |                |         | same layer.                             |
+        +----------------+---------+-----------------------------------------+
 
         :param kwargs: dict
         :type kwargs: Appending options
@@ -1495,8 +1495,7 @@ class Profile(PyScribusElement):
     """
 
     defaults = [
-        "PDF 1.3", "PDF 1.4", "PDF 1.5", "PDF/X-1a", "PDF/X-3",
-        "PDF/X-4", "PostScript"
+        "PDF 1.3", "PDF 1.4", "PDF 1.5", "PDF/X-3", "PDF/X-4", "PostScript", "PDF/X-1a"
     ]
 
     def __init__(self, default=False):
