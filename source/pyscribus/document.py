@@ -991,7 +991,7 @@ class Document(PyScribusElement):
             if case[0] == "Style":
                 att_value = str(att_value)
 
-            xml.attrib[att_name]= att_value
+            xml.attrib[att_name] = att_value
 
         # --- DOCUMENT childs --------------------------------------------
 
