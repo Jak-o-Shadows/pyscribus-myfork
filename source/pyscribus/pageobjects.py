@@ -553,11 +553,9 @@ class PageObject(xmlc.PyScribusElement):
             for setting_name, setting_value in settings.items():
 
                 if setting_name == "posx":
-                    # self.box.coords["top-left"][0].value = float(setting_value)
                     self.box.setx("top-left", float(setting_value))
 
                 if setting_name == "posy":
-                    # self.box.coords["top-left"][1].value = float(setting_value)
                     self.box.sety("top-left", float(setting_value))
 
                 if setting_name == "width":
@@ -2059,11 +2057,9 @@ class TableCell(xmlc.PyScribusElement):
                 # Cell box ----------------------------------------------------
 
                 if setting_name == "posx":
-                    # self.box.coords["top-left"][0].value = float(setting_value)
                     self.box.setx("top-left", float(setting_value))
 
                 if setting_name == "posy":
-                    # self.box.coords["top-left"][1].value = float(setting_value)
                     self.box.sety("top-left", float(setting_value))
 
                 if setting_name == "width":
