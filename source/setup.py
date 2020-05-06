@@ -18,7 +18,6 @@ setuptools.setup(
     author_email="etnadji@eml.cc",
     description=DESCRIPTION,
     long_description=long_description,
-    # long_description_content_type="text/markdown",
     packages=setuptools.find_packages(),
     platforms='any',
     license="GNU General Public License v3 or later (GPLv3+)",
@@ -34,7 +33,7 @@ setuptools.setup(
         "Documentation": "https://etnadji.fr/pyscribus",
         "Source Code": "https://framagit.org/etnadji/pyscribus",
     },
-    python_requires='>=3.6',
+    python_requires='>=3.8',
     install_requires=REQUIRED,
     keywords=["scribus", "sla"],
 )
