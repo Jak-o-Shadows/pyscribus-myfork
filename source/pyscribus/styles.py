@@ -916,9 +916,8 @@ class CharacterStyle(StyleAbstract):
             #--- Scales -----------------------------------------------------
 
             for case in [["SCALEH", "horizontal"], ["SCALEV", "vertical"]]:
-                scale_att = xml.get(case[0])
 
-                if scale_att is not None:
+                if (scale_att := xml.get(case[0])) is not None:
                     self.scale[case[1]] = scale_att
 
             #--- End of parsing ---------------------------------------------
@@ -1030,9 +1029,7 @@ class TableBorder(xmlc.PyScribusElement):
 
         # -------------------------------------------------
 
-        width = xml.get("Width")
-
-        if width is not None:
+        if (width := xml.get("Width")) is not None:
             self.width = dimensions.Dim(float(width))
 
         # -------------------------------------------------
@@ -1041,9 +1038,8 @@ class TableBorder(xmlc.PyScribusElement):
 
             if line.tag == "TableBorderLine":
                 lo = TableBorderLine()
-                success = lo.fromxml(line)
 
-                if success:
+                if (success := lo.fromxml(line)):
                     self.lines.append(lo)
 
         return True
@@ -1083,21 +1079,16 @@ class TableBorderLine(xmlc.PyScribusElement):
     def fromxml(self, xml):
         if xml.tag == "TableBorderLine":
 
-            width = xml.get("Width")
-            color = xml.get("Color")
-            shade = xml.get("Shade")
-            style = xml.get("PenStyle")
-
-            if width is not None:
+            if (width := xml.get("Width")) is not None:
                 self.width = float(width)
 
-            if color is not None:
+            if (color := xml.get("Color")) is not None:
                 self.color = color
 
-            if shade is not None:
+            if (shade := xml.get("Shade")) is not None:
                 self.shade = int(shade)
 
-            if style is not None:
+            if (style := xml.get("PenStyle")) is not None:
                 self.pen_style = style
 
             return True
@@ -1154,11 +1145,10 @@ class StyleTab(xmlc.PyScribusElement):
         self.position = dimensions.Dim(0, "pica")
 
     def fromxml(self, xml):
-        pos = xml.get("Pos")
-        fill = xml.get("Fill")
-        tab_type = xml.get("Type")
+        """
+        """
 
-        if tab_type is not None:
+        if (tab_type := xml.get("Type")) is not None:
             try:
                 for human,code in StyleTab.tab_type_xml.items():
                     if code == tab_type:
@@ -1168,11 +1158,11 @@ class StyleTab(xmlc.PyScribusElement):
             except IndexError:
                 self.type = "left"
 
-        if pos is not None:
+        if (pos := xml.get("Pos")) is not None:
             pos = float(pos)
             self.position.value = pos
 
-        if fill is not None:
+        if (fill := xml.get("Fill")) is not None:
             self.fill = fill
 
         return True
@@ -1209,18 +1199,16 @@ class RuleStyle(xmlc.PyScribusElement):
         """
 
         if xml.tag == "MultiLine":
-            name = xml.get("Name")
 
-            if name is not None:
+            if (name := xml.get("Name")) is not None:
                 self.name = name
 
             for element in xml:
 
                 if element.tag == "SubLine":
                     sl = RuleStyleLine()
-                    success = sl.fromxml(element)
 
-                    if success:
+                    if (success := sl.fromxml(element)):
                         self.lines.append(sl)
 
             return True
@@ -1302,34 +1290,25 @@ class RuleStyleLine(xmlc.PyScribusElement):
         if xml.tag == "SubLine":
             # --- Shortcut -----------------------------------------------
 
-            shortcut = xml.get("Shortcut")
-
-            if shortcut is not None:
+            if (shortcut := xml.get("Shortcut")) is not None:
                 self.shortcut = shortcut
 
             # --- Color and opacity --------------------------------------
 
-            color = xml.get("Color")
-            opacity = xml.get("Shade")
-
-            if color is not None:
+            if (color := xml.get("Color")) is not None:
                 self.color = color
 
-            if opacity is not None:
+            if (opacity := xml.get("Shade")) is not None:
                 self.opacity = dimensions.Dim(float(opacity), "pc")
 
             # --- Line width ---------------------------------------------
 
-            width = xml.get("Width")
-
-            if width is not None:
+            if (width := xml.get("Width")) is not None:
                 self.width = dimensions.Dim(float(width))
 
             # --- Line style ---------------------------------------------
 
-            dash = xml.get("Dash")
-
-            if dash is not None:
+            if (dash := xml.get("Dash")) is not None:
 
                 for human, code in RuleStyleLine.dash_xml.items():
                     if code == dash:
@@ -1338,9 +1317,7 @@ class RuleStyleLine(xmlc.PyScribusElement):
 
             # --- Line end -----------------------------------------------
 
-            line_end = xml.get("LineEnd")
-
-            if line_end is not None:
+            if (line_end := xml.get("LineEnd")) is not None:
 
                 for human, code in RuleStyleLine.lineend_xml.items():
                     if code == line_end:
@@ -1349,9 +1326,7 @@ class RuleStyleLine(xmlc.PyScribusElement):
 
             # --- Line join ----------------------------------------------
 
-            line_join = xml.get("LineJoin")
-
-            if line_join is not None:
+            if (line_join := xml.get("LineJoin")) is not None:
 
                 for human, code in RuleStyleLine.linejoin_xml.items():
                     if code == line_join:

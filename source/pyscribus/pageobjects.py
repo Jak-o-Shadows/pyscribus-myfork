@@ -181,16 +181,12 @@ class PageObject(xmlc.PyScribusElement):
 
             # Page object attributes
 
-            xml_name = xml.get("ANNAME")
-
-            if xml_name is not None:
+            if (xml_name := xml.get("ANNAME")) is not None:
                 self.name = xml_name
             else:
                 self.name = ""
 
-            own_id = xml.get("ItemID")
-
-            if own_id is None:
+            if (own_id := xml.get("ItemID")) is None:
                 if self.name:
                     raise exceptions.MissingSLAAttribute(
                         "PAGEOBJECT '{}' must have @ItemID".format(self.name)
@@ -242,13 +238,10 @@ class PageObject(xmlc.PyScribusElement):
 
             # --- Object path, copath and shape --------------------------
 
-            editedshape = xml.get("CLIPEDIT")
-            shapetype = xml.get("FRTYPE")
-
-            if editedshape is not None:
+            if (editedshape := xml.get("CLIPEDIT")) is not None:
                 self.shape["edited"] = xmlc.num_to_bool(editedshape)
 
-            if shapetype is not None:
+            if (shapetype := xml.get("FRTYPE")) is not None:
 
                 for human,code in PageObject.shape_type_xml.items():
                     if shapetype == code:
@@ -258,15 +251,13 @@ class PageObject(xmlc.PyScribusElement):
             # NOTE FIXME Currently only working for rectangular shapes
 
             for case in ["path", "copath"]:
-                att = xml.get(case)
 
-                if att is not None:
+                if (att := xml.get(case)) is not None:
 
                     if self.ptype not in ["line", "polyline", "textonpath"]:
                         rectpath = RectPath()
-                        success = rectpath.fromxml(att)
 
-                        if success:
+                        if (success := rectpath.fromxml(att)):
                             if case == "path":
                                 self.path = rectpath
                             else:
@@ -277,8 +268,6 @@ class PageObject(xmlc.PyScribusElement):
             next_id = xml.get("NEXTITEM")
             prev_id = xml.get("BACKITEM")
 
-            own_page = xml.get("OwnPage")
-
             for link_id in zip(["next", "previous"], [next_id, prev_id]):
 
                 if link_id[1] is not None:
@@ -287,7 +276,7 @@ class PageObject(xmlc.PyScribusElement):
                     else:
                         self.linked[link_id[0]] = link_id[1]
 
-            if own_page is not None:
+            if (own_page := xml.get("OwnPage")) is not None:
                 try:
                     if int(own_page):
                         self.own_page = int(own_page)
@@ -302,9 +291,7 @@ class PageObject(xmlc.PyScribusElement):
 
             # --- Layer of the page object -------------------------------
 
-            layer = xml.get("LAYER")
-
-            if layer is not None:
+            if (layer := xml.get("LAYER")) is not None:
 
                 try:
                     layer = int(layer)
@@ -339,9 +326,8 @@ class PageObject(xmlc.PyScribusElement):
             # --- Symbol attributes --------------------------------------
 
             if self.ptype == "symbol":
-                pattern = xml.get("pattern")
 
-                if pattern is not None:
+                if (pattern := xml.get("pattern")) is not None:
                     self.pattern = pattern
 
 
@@ -1107,13 +1093,10 @@ class TableObject(PageObject):
 
             # Number of rows and columns
 
-            rows = xml.get("Rows")
-            cols = xml.get("Columns")
-
-            if rows is not None:
+            if (rows := xml.get("Rows")) is not None:
                 self.rows = int(rows)
 
-            if cols is not None:
+            if (cols := xml.get("Columns")) is not None:
                 self.columns = int(cols)
 
             # Rows and columns widths and heights -------------------
@@ -1122,30 +1105,26 @@ class TableObject(PageObject):
 
             # Y position of the row, with the top-left corner
             # of the first cell of the first row is at 0
-            row_y = xml.get("RowPositions")
 
-            if row_y is not None:
+            if (row_y := xml.get("RowPositions")) is not None:
                 row_y = [float(i) for i in row_y.split()]
 
             # Height (dimension, not position)
-            row_h = xml.get("RowHeights")
 
-            if row_h is not None:
+            if (row_h := xml.get("RowHeights")) is not None:
                 row_h = [float(i) for i in row_h.split()]
 
             # Getting columns datas ----------------------------
 
             # X position of the column, with the top-left corner
             # of the first cell of the first row is at 0
-            col_x = xml.get("ColumnPositions")
 
-            if col_x is not None:
+            if (col_x := xml.get("ColumnPositions")) is not None:
                 col_x = [float(i) for i in col_x.split()]
 
             # Width (dimension, not position)
-            col_w = xml.get("ColumnWidths")
 
-            if col_w is not None:
+            if (col_w := xml.get("ColumnWidths")) is not None:
                 col_w = [float(i) for i in col_w.split()]
 
             # Mixing datas together ----------------------------
@@ -1170,17 +1149,13 @@ class TableObject(PageObject):
 
                 if element.tag == "TableData":
 
-                    style = element.get("Style")
-                    fill_color = element.get("FillColor")
-                    fill_shade = element.get("FillShade")
-
-                    if style is not None:
+                    if (style := element.get("Style")) is not None:
                         self.style = style
 
-                    if fill_color is not None:
+                    if (fill_color := element.get("FillColor")) is not None:
                         self.fill["color"] = fill_color
 
-                    if fill_shade is not None:
+                    if (fill_shade := element.get("FillShade")) is not None:
                         self.fill["shade"] = dimensions.Dim(
                             float(fill_shade), "pc"
                         )
@@ -1189,16 +1164,14 @@ class TableObject(PageObject):
 
                         if sub.tag in border_tags:
                             bx = pstyles.TableBorder()
-                            success = bx.fromxml(sub)
 
-                            if success:
+                            if (success := bx.fromxml(sub)):
                                 self.borders[bx.side] = bx
 
                         if sub.tag == "Cell":
                             cx = TableCell(self)
-                            success = cx.fromxml(sub)
 
-                            if success:
+                            if (success := cx.fromxml(sub)):
                                 self.cells.append(cx)
 
             # ------------------------------------------------------------
@@ -1244,9 +1217,7 @@ class GroupObject(PageObject):
 
             for element in xml:
 
-                element_ptype = element.get("PTYPE")
-
-                if element_ptype is not None:
+                if (element_ptype := element.get("PTYPE")) is not None:
 
                     try:
                         po = new_from_type(
@@ -1384,17 +1355,13 @@ class TextObject(PageObject):
 
             # --- Attributes ---------------------------------------------
 
-            columns = xml.get("COLUMNS")
-            columnsgap = xml.get("COLGAPS")
-            alignment = xml.get("ALIGN")
-
-            if columns is not None:
+            if (columns := xml.get("COLUMNS")) is not None:
                 self.columns["count"] = int(columns)
 
-            if columnsgap is not None:
+            if (columnsgap := xml.get("COLGAPS")) is not None:
                 self.columns["gap"].value = float(columnsgap)
 
-            if alignment is not None:
+            if (alignment := xml.get("ALIGN")) is not None:
                 for human, code in xmlc.alignment.items():
                     if alignment == code:
                         self.alignment = human
@@ -1410,9 +1377,8 @@ class TextObject(PageObject):
 
                         if sub.tag == "ItemAttribute":
                             iatt = itemattribute.PageObjectAttribute()
-                            success = iatt.fromxml(sub)
 
-                            if success:
+                            if (success := iatt.fromxml(sub)):
                                 self.attributes.append(iatt)
 
                 if element.tag == "WeldEntry":
@@ -1430,9 +1396,7 @@ class TextObject(PageObject):
                     story.sla_parent = self.sla_parent
                     story.doc_parent = self.doc_parent
 
-                    success = story.fromxml(element)
-
-                    if success:
+                    if (success := story.fromxml(element)):
                         if not self.stories:
                             self.have_stories = True
 
@@ -1504,18 +1468,20 @@ class ImageObject(PageObject):
 
             # --- Attributes ---------------------------------------------
 
-            idata = xml.get("ImageData")
             ipath = xml.get("PFILE")
             idata_ext = xml.get("inlineImageExt")
 
-            if idata is not None and idata:
-                self.data = idata
+            if (idata := xml.get("ImageData")) is not None:
+                if idata:
+                    self.data = idata
 
-            if idata_ext is not None and idata_ext:
-                self.data_type = idata_ext
+            if (idata_ext := xml.get("inlineImageExt")) is not None:
+                if idata_ext:
+                    self.data_type = idata_ext
 
-            if ipath is not None and ipath:
-                self.filepath = ipath
+            if (ipath := xml.get("PFILE")) is not None:
+                if ipath:
+                    self.filepath = ipath
 
             # ------------------------------------------------------------
 
@@ -1648,9 +1614,8 @@ class RenderObject(PageObject):
 
                 if child.tag == "LATEX":
                     bfr = RenderBuffer()
-                    success = bfr.fromxml(child)
 
-                    if success:
+                    if (success := bfr.fromxml(child)):
                         self.buffer = bfr
 
             # ------------------------------------------------------------
@@ -2099,34 +2064,28 @@ class TableCell(xmlc.PyScribusElement):
 
             # Cell attributes ----------------------------------------
 
-            style = xml.get("Style")
-            fill_color = xml.get("FillColor")
-            fill_shade = xml.get("FillShade")
-            align = xml.get("TextVertAlign")
-
-            if style is not None:
+            if (style := xml.get("Style")) is not None:
                 self.style = style
 
-            if align is not None:
+            if (align := xml.get("TextVertAlign")) is not None:
 
                 for human,code in TableCell.vertical_align.items():
                     if align == code:
                         self.align = human
                         break
 
-            if fill_color is not None:
+            if (fill_color := xml.get("FillColor")) is not None:
                 self.fill["color"] = fill_color
 
-            if fill_shade is not None:
+            if (fill_shade := xml.get("FillShade")) is not None:
                 self.fill["shade"] = dimensions.Dim(
                     float(fill_shade), "pc"
                 )
 
             for side in ["left", "right", "top", "bottom"]:
                 att_name = "{}Padding".format(side.capitalize())
-                att = xml.get(att_name)
 
-                if att is not None:
+                if (att := xml.get(att_name)) is not None:
                     self.padding[side] = dimensions.Dim(float(att))
 
             for element in xml:
@@ -2344,19 +2303,13 @@ class RenderBuffer(xmlc.PyScribusElement):
         if xml.tag == "LATEX":
             # Attributes
 
-            dpi = xml.get("DPI")
-
-            if dpi is not None:
+            if (dpi := xml.get("DPI")) is not None:
                 self.dpi.value = float(dpi)
 
-            use_preamble = xml.get("USE_PREAMBLE")
-
-            if use_preamble is not None:
+            if (use_preamble := xml.get("USE_PREAMBLE")) is not None:
                 self.use_preamble = xmlc.num_to_bool(use_preamble)
 
-            configfile = xml.get("ConfigFile")
-
-            if configfile is not None:
+            if (configfile := xml.get("ConfigFile")) is not None:
                 self.configfile = configfile
 
             # Properties
@@ -2441,13 +2394,10 @@ class RenderProperty(xmlc.PyScribusElement):
         """
 
         if xml.tag == "PROPERTY":
-            name = xml.get("name")
-            value = xml.get("value")
-
-            if name is not None:
+            if (name := xml.get("name")) is not None:
                 self.name = name
 
-            if value is not None:
+            if (value := xml.get("value")) is not None:
                 self._set_value(value)
 
             return True
@@ -2555,10 +2505,9 @@ class WeldEntry(xmlc.PyScribusElement):
 
     def fromxml(self, xml):
         if xml.tag == "WeldEntry":
-            target = xml.get("Target")
             wx,wy = xml.get("WX"),xml.get("WY")
 
-            if target is not None:
+            if (target := xml.get("Target")) is not None:
                 # TODO FIXME Il faudrait vérifier qu’un objet avec cet ID
                 # existe, mais généralement, il est à la suite, donc hors
                 # de ce qui constitue encore le document lors du parsing

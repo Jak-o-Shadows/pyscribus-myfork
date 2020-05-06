@@ -61,15 +61,12 @@ class StoryEnding(PyScribusElement):
 
     def fromxml(self, xml):
         if xml.tag == "trail":
-            align = xml.get("ALIGN")
 
-            parent = xml.get("PARENT")
-
-            if align is not None:
+            if (align := xml.get("ALIGN")) is not None:
                 # TODO use human values...
                 self.alignment = align
 
-            if parent is not None:
+            if (parent := xml.get("PARENT")) is not None:
                 self.parent = parent
 
             return True
@@ -136,8 +133,10 @@ class StoryParagraphEnding(PyScribusElement):
         return "PARAGEND|{}".format(self.parent)
 
     def fromxml(self, xml, check_style=True):
-        if "PARENT" in xml.attrib:
-            self.parent = xml.attrib["PARENT"]
+        if (parentpar := xml.get("PARENT")) is None:
+            self.parent = False
+        else:
+            self.parent = parentpar
 
             if check_style and self.parent:
 
@@ -152,8 +151,6 @@ class StoryParagraphEnding(PyScribusElement):
 
                     if not checked:
                         raise exceptions.UnknownStyleInStory(self.parent)
-        else:
-            self.parent=False
 
         return True
 
@@ -376,22 +373,22 @@ class StoryFragment(PyScribusElement):
         return xml
 
     def fromxml(self, xml):
-        if "CH" in xml.attrib:
+        if (fragtext := xml.get("CH")) is not None:
 
             # NOTE Don't do any strip, rstrip to @CH, as it may
             # contains legitimate spaces
-            self.text = xml.attrib["CH"]
+            self.text = fragtext
 
-            if "FEATURES" in xml.attrib:
-                self.set_features(xml.attrib["FEATURES"])
+            if (features := xml.get("FEATURES")) is not None:
+                self.set_features(features)
 
             for case in zip(
                         ["name", "color", "opacity", "size"],
                         ["FONT", "FCOLOR", "FSHADE", "FONTSIZE"],
                         ):
 
-                if case[1] in xml.attrib:
-                    self.font[case[0]] = xml.attrib[case[1]]
+                if (att := xml.get(case[1])) is not None:
+                    self.font[case[0]] = att
 
             # TODO Reste de l’implémentation, puis :
 
@@ -446,9 +443,8 @@ class StoryVariable(PyScribusElement):
         """
 
         if xml.tag == "var":
-            nam = xml.get("name")
 
-            if nam is None:
+            if (nam := xml.get("name")) is None:
                 return False
             else:
                 if nam in StoryVariable.var_names:

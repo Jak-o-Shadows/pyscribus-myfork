@@ -81,22 +81,19 @@ class Pattern(PyScribusElement):
         """
 
         if xml.tag == "Pattern":
-            name = xml.get("Name")
 
-            if name is not None:
+            if (name := xml.get("Name")) is not None:
                 self.name = name
 
             for dim in ["width", "height"]:
-                att = xml.get(dim)
 
-                if att is not None:
+                if (att := xml.get(dim)) is not None:
                     self.dims[dim] = dimensions.Dim(float(att))
 
             for scale in ["x", "x"]:
                 att_name = "scale{}".format(scale.upper())
-                att = xml.get(att_name)
 
-                if att is not None:
+                if (att := xml.get(att_name)) is not None:
                     self.scale[scale] = dimensions.Dim(float(att), "pcdecim")
 
             # TODO FIXME xoffset yoffset
@@ -105,9 +102,8 @@ class Pattern(PyScribusElement):
 
                 if element.tag == "PatternItem":
                     pie = PatternItem(self.sla_parent, self.doc_parent)
-                    success = pie.fromxml(element)
 
-                    if success:
+                    if (success := pie.fromxml(element)):
                         self.items.append(pie)
 
             return True
