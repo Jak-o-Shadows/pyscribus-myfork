@@ -693,7 +693,7 @@ class Document(PyScribusElement):
         for snap_thing in ["grid", "guides", "element"]:
             att_name = "SnapTo{}".format(snap_thing.capitalize())
 
-            if (att := xml.get(att_name) is not None:
+            if (att := xml.get(att_name)) is not None:
                 self.ui_snapping[snap_thing] = num_to_bool(att)
 
         # Bleed settings

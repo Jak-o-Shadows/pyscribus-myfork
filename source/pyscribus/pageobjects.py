@@ -1573,19 +1573,19 @@ class LineObject(PageObject):
 
         if succeed:
 
-            if (line_type := xml.get("PLINEART") is not None:
+            if (line_type := xml.get("PLINEART")) is not None:
                 for human, code in PageObject.line_type_xml.items():
                     if line_type == code:
                         self.line_type = human
                         break
 
-            if (fill := xml.get("PCOLOR") is not None:
+            if (fill := xml.get("PCOLOR")) is not None:
                 self.line_fill = fill
 
-            if (stroke := xml.get("PCOLOR2") is not None:
+            if (stroke := xml.get("PCOLOR2")) is not None:
                 self.line_stroke = stroke
 
-            if (thickness := xml.get("PWIDTH") is not None:
+            if (thickness := xml.get("PWIDTH")) is not None:
                 self.line_thickness.value = float(thickness)
 
             return True
@@ -2060,7 +2060,7 @@ class TableCell(xmlc.PyScribusElement):
 
                 if setting_name == "posx":
                     # self.box.coords["top-left"][0].value = float(setting_value)
-                    self.box.setx("top-left"], float(setting_value))
+                    self.box.setx("top-left", float(setting_value))
 
                 if setting_name == "posy":
                     # self.box.coords["top-left"][1].value = float(setting_value)
