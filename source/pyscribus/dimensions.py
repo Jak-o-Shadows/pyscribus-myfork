@@ -455,6 +455,9 @@ class Dim:
 
     #--- Python __ methods -----------------------------------------------
 
+    def __bool__(self):
+        return bool(self.value)
+
     def __str__(self):
         r,u = str(self.value),""
 
