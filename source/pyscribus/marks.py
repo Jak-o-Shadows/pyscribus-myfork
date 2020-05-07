@@ -26,9 +26,8 @@ Classes related to marks management
 import lxml
 import lxml.etree as ET
 
+import pyscribus.common.xml as xmlc
 import pyscribus.exceptions as exceptions
-
-from pyscribus.common.xml import *
 
 # Variables globales ====================================================#
 
@@ -105,7 +104,8 @@ class DocumentMark(PyScribusElement):
 
         if self.type:
 
-            # NOTE
+            # --- Label -----------------------------------------------------
+
             # When @type is "3" (variable text), @str acts as @label
             # in other @types, and @label acts as a mark identifier.
             #
@@ -117,6 +117,8 @@ class DocumentMark(PyScribusElement):
                 xml.attrib["label"] = self.name
             else:
                 xml.attrib["label"] = self.label
+
+            # ---------------------------------------------------------------
 
             xml.attrib["type"] = mark_type_xml[self.type]
 
@@ -152,7 +154,8 @@ class DocumentMark(PyScribusElement):
                         self.type = h
                         break
 
-            # NOTE
+            # --- Name and/or label -----------------------------------------
+
             # When @type is "3" (variable text), @str acts as @label
             # in other @types, and @label acts as a mark identifier.
             #
@@ -160,36 +163,27 @@ class DocumentMark(PyScribusElement):
             #   DocumentMark.name  = @label if @type == "3"
             #   DocumentMark.label = @label if @type != "3"
 
-            mlabel = xml.get("label")
-
-            if mlabel is not None:
-
+            if (mlabel := xml.get("label")) is not None:
                 if self.type == "variable":
                     self.name = mlabel
                 else:
                     self.label = mlabel
 
             if self.type == "variable":
-
-                mstr = xml.get("str")
-
-                if mstr is not None:
+                if (mstr := xml.get("str")) is not None:
                     self.label = mstr
 
-            if self.type == "objectref":
-                mitem = xml.get("ItemID")
+            # ---------------------------------------------------------------
 
-                if mitem is not None:
+            if self.type == "objectref":
+                if (mitem := xml.get("ItemID")) is not None:
                     self.target_object = mitem
 
             if self.type == "markref":
-                mtarget_type = xml.get("MARKtype")
-                mtarget_label = xml.get("MARKlabel")
-
-                if mtarget_label is not None:
+                if (mtarget_label := xml.get("MARKlabel")) is not None:
                     self.target_mark["label"] = mtarget_label
 
-                if mtarget_type is not None:
+                if (mtarget_type := xml.get("MARKtype")) is not None:
 
                     if mtarget_type in mark_type_xml.values():
                         self.target_mark["type"] = mark_type_xml[mtarget_type]
@@ -243,20 +237,16 @@ class StoryMarkAbstract(PyScribusElement):
 
         if xml.tag == "MARK":
 
-            mtype = xml.get("type")
-            mlabel = xml.get("label")
-            mfeatures = xml.get("features")
-
-            if mtype is not None:
+            if (mtype := xml.get("type")) is not None:
                 for h,x in mark_type_xml.items():
                     if mtype == x:
                         self.type = h
                         break
 
-            if mlabel is not None:
+            if (mlabel := xml.get("label")) is not None:
                 self.label = mlabel
 
-            if mfeatures is not None:
+            if (mfeatures := xml.get("features")) is not None:
                 self.set_features(mfeatures)
 
             return True
