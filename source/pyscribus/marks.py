@@ -43,7 +43,7 @@ mark_type_xml = {
 
 # Classes ===============================================================#
 
-class DocumentMark(PyScribusElement):
+class DocumentMark(xmlc.PyScribusElement):
     """
     Mark element (DOCUMENT/Marks/Mark)
     """
@@ -198,7 +198,7 @@ class DocumentMark(PyScribusElement):
             return False
 
 
-class StoryMarkAbstract(PyScribusElement):
+class StoryMarkAbstract(xmlc.PyScribusElement):
     """
     Abstract class for MARK elements in Scribus stories.
 
