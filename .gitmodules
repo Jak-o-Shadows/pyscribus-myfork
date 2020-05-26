@@ -1,0 +1,3 @@
+[submodule "build"]
+	path = build
+	url = https://framagit.org/etnadji/pyscribus-docs.git
