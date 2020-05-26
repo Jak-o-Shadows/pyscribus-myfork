@@ -4,6 +4,8 @@ PyScribus
 
 Read, create and update Scribus .sla files.
 
+``pip install pyscribus``
+
 -------------------
 
 User Guide
