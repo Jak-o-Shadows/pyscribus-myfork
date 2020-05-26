@@ -47,8 +47,11 @@ reportfix:
 sphinxdoc:
 	sphinx-build -b html source/ build/
 
+pipinstall-testing:
+	pip3 install --index-url https://test.pypi.org/simple/ --no-deps pyscribus
+
 pipinstall:
-	pip3 uninstall --index-url https://test.pypi.org/simple/ --no-deps pyscribus
+	pip3 install pyscribus
 
 pipremove:
 	pip3 uninstall pyscribus
@@ -56,5 +59,8 @@ pipremove:
 package:
 	./make-pypi.sh
 
-pypupload:
+pypupload-testing:
 	./upload-pypi-testing.sh
+
+pypupload:
+	./upload-pypi-main.sh
