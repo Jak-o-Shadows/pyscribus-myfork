@@ -9,7 +9,7 @@ with open("../README.pypi.rst", "r") as fh:
 VERSION = "0.1"
 DESCRIPTION = "Read, create and update Scribus .sla files."
 
-REQUIRED = ['lxml']
+REQUIRED = ['lxml', 'svg.path']
 
 setuptools.setup(
     name="pyscribus",
