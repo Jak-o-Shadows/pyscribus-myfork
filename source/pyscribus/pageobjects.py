@@ -29,6 +29,8 @@ import math
 import lxml
 import lxml.etree as ET
 
+import svg.path as svg
+
 import pyscribus.common.xml as xmlc
 import pyscribus.exceptions as exceptions
 import pyscribus.dimensions as dimensions
@@ -254,10 +256,12 @@ class PageObject(xmlc.PyScribusElement):
 
                 if (att := xml.get(case)) is not None:
 
-                    if self.ptype not in ["line", "polyline", "textonpath"]:
+                    if self.ptype not in [
+                            "line", "polyline", "textonpath", "polygon"]:
                         rectpath = RectPath()
 
                         if (success := rectpath.fromxml(att)):
+
                             if case == "path":
                                 self.path = rectpath
                             else:
@@ -2537,7 +2541,7 @@ class RectPath:
     Path object for easiest manipulation of @path / @copath of rectangular
     shapes.
 
-    Translate strings like :
+    Translate SVG path @d strings like :
 
     M0 0 L515.276 0 L515.276 761.89 L0 761.89 L0 0 Z
 
@@ -2546,6 +2550,8 @@ class RectPath:
 
     def __init__(self):
         self.raw = None
+        self.svg_path = None
+
         self.points = []
 
     def add_point(self, x, y):
@@ -2561,54 +2567,28 @@ class RectPath:
         return False
 
     def fromxml(self, xmlstring):
-        # Reset of points list
+        # NOTE
+        # svg.path library use complex number, which I don’t know anything
+        # about, but fortunately, I can check xmlstring for similarities
+        # without having to do a PhD in maths.
+
         self.points = []
-        # Temporary list of points
-        points = []
 
-        # We save the original string
+        parsed_path = svg.parse_path(xmlstring)
+
         self.raw = xmlstring
+        self.svg_path = parsed_path
 
-        #--- Extracting the points ----------------------------------
+        for s in parsed_path._segments:
 
-        splitted = xmlstring.split()
+            if isinstance(s, svg.path.Move) or isinstance(s, svg.path.Line):
+                x = float(s.end.real)
+                y = float(s.end.imag)
+                px = PathPoint(x, y, fromsla=True)
+                self.points.append(px)
 
-        is_point = False
-        current_point = []
-
-        for element in splitted:
-
-            if is_point:
-                current_point.append(element)
-                points.append(current_point)
-                current_point = []
-                is_point = False
-
-            if element.startswith("L"):
-                is_point = True
-                current_point.append(element)
-
-        #--- Points processing --------------------------------------
-
-        for point in points:
-            x = float(point[0][1:])
-            y = float(point[1])
-
-            px = PathPoint(x, y, fromsla=True)
-
-            self.points.append(px)
-
-        #--- Export in XML check ------------------------------------
-
-        restored = self.toxmlstr()
-
-        if self.raw != restored:
-            print("--------------------------------")
-            print("Unable to restore points of path")
-            print("Original path :", self.raw)
-            print("Restored path :", restored)
-
-        #------------------------------------------------------------
+            if isinstance(s, svg.path.Close):
+                break
 
         return True
 
@@ -2650,49 +2630,36 @@ class RectPath:
 
     def toxmlstr(self):
         if self.points:
-            xml = "M0 0 "
+            xml = []
 
-            #------------------------------------------------------------
-            # Sorting the points and making 3 sets of them to make sure
-            # they are added to XML string clockwise, the origin point
-            # being the last one
+            for point in self.points:
+                if xml:
+                    xml.append(point.toxmlstr())
+                else:
+                    xml.append(point.toxmlstr(move=True))
 
-            with_x = sorted(
-                [p for p in self.points if p.x > 0],
-                key=lambda p: p.x
-            )
+            if xml:
+                xml.append("Z")
 
-            with_y = sorted(
-                [p for p in self.points if p.x == 0 and p.y > 0],
-                key=lambda p: p.x, reverse=True
-            )
-
-            try:
-                origin = [p for p in self.points if p.is_origin()][0]
-            except IndexError:
-                # When RectPath is used in polyline objects which are
-                # without origin points as RectPath defines it
-                origin = []
-
-            #------------------------------------------------------------
-
-            xml += " ".join([i.toxmlstr() for i in with_x]) + " "
-            xml += " ".join([i.toxmlstr() for i in with_y]) + " "
-
-            try:
-                xml += origin.toxmlstr() + " "
-            except AttributeError:
-                # Idem
-                pass
-
-            xml += "Z"
+            xml = " ".join(xml)
 
             return xml
-
         else:
             return False
 
+
 class PathPoint:
+    """
+    Point of a rectangular path in @path/@copath page objects.
+
+    :type x: float
+    :param x: x
+    :type y: float
+    :param y: y
+    :type fromsla: boolean
+    :param fromsla: Adjusts x and y value if these value are not immediately
+        from SLA sources.
+    """
 
     def __init__(self, x=0, y=0, fromsla=False):
 
@@ -2706,16 +2673,32 @@ class PathPoint:
     def _round_coord(self, n):
         """
         Round up the float n to the third decimal.
+
+        :rtype: float
         """
+
         return math.ceil(n * 1000) / 1000
 
     def is_origin(self):
+        """
+        Is this path point the origin point ?
+
+        :rtype: boolean
+        """
+
         if self.x == float(0) and self.y == float(0):
             return True
         else:
             return False
 
-    def toxmlstr(self):
+    def toxmlstr(self, move=False):
+        """
+        Returns SVG path @d command version of self.
+
+        :rtype: str
+        :returns: SVG path command
+        """
+
         if float(self.x) == int(self.x):
             x = int(self.x)
         else:
@@ -2726,7 +2709,10 @@ class PathPoint:
         else:
             y = self.y
 
-        return "L{} {}".format(x, y)
+        if move:
+            return "M{} {}".format(x, y)
+        else:
+            return "L{} {}".format(x, y)
 
     def __repr__(self):
         return self.toxmlstr()
@@ -2747,6 +2733,18 @@ po_type_classes = {
 }
 
 # Fonctions =============================================================#
+
+def adjust_path_d(d):
+    """
+    Adjusts SVG path @d returned by svg.path Path.d() to what Scribus
+    actually wrotes in SLA files.
+    """
+    d = d.replace("M 0,", "M0 ")
+    d = d.replace("L 0,0 ", "L0 0 ")
+    d = d.replace("L ", "L")
+    d = d.replace(",", " ")
+
+    return d
 
 # NOTE This function to avoid document module managing page objects
 # classes selections. We just need to modify po_type_xml, po_type_classes
