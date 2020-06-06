@@ -12,12 +12,14 @@ Une librairie Python pour manipuler (et documenter) le format de Scribus, le SLA
 ## Pré-requis
 
 - [lxml](https://lxml.de/)
+- [svg.path](https://pypi.org/project/svg.path/)
 - [Pillow](https://python-pillow.org/), optionnel, pour le module ``extra.wireframe``
 
 ### Debian / Ubuntu
 
 ```python
 sudo apt install python3 python3-lxml
+sudo pip3 install svg.path
 ```
 
 ## Documentation
