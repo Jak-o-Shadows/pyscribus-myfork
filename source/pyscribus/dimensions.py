@@ -62,7 +62,7 @@ class Dim:
     +-------------------------+---------------+
     | Percentage (0 to 100)   | perc, pc      |
     +-------------------------+---------------+
-    | Percentage (0.0 to 1)   | pcdecim       |
+    | Percentage (0.0 to 1)   | pcdecim, pcd  |
     +-------------------------+---------------+
     | Calligraphic pen degree | cdeg          |
     +-------------------------+---------------+
@@ -81,7 +81,7 @@ class Dim:
         "mm": ["mm"],
         "pica": ["pica", "pt"],
         "perc": ["perc", "pc"],
-        "pcdecim": ["pcdecim"],
+        "pcdecim": ["pcdecim", "pcd"],
         "cdeg": ["cdeg"],
         "deg": ["deg"],
         "dpi": ["dpi", "ppp", "ppi"],
@@ -191,7 +191,7 @@ class Dim:
         +-------------------------+---------------+
         | Percentage (0 to 100)   | perc, pc      |
         +-------------------------+---------------+
-        | Percentage (0.0 to 1)   | pcdecim       |
+        | Percentage (0.0 to 1)   | pcdecim, pcd  |
         +-------------------------+---------------+
         | Calligraphic pen degree | cdeg          |
         +-------------------------+---------------+

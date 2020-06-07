@@ -447,7 +447,8 @@ class StyleAbstract(xmlc.PyScribusElement):
 
             #--- FIXME This records undocumented attributes --------
 
-            self.undocumented = xmlc.all_undocumented_to_python(xml)
+            if self.style_type not in ["character", "paragraph"]:
+                self.undocumented = xmlc.all_undocumented_to_python(xml)
 
             # ------------------------------------------------------
 
@@ -544,7 +545,7 @@ class StyleAbstract(xmlc.PyScribusElement):
         #--- FIXME This exports undocumented attributes -------
 
         try:
-            if self.style_type != "paragraph":
+            if self.style_type not in ["paragraph", "character"]:
                 xml, undoc_attribs = xmlc.all_undocumented_to_xml(
                     xml, self.undocumented, True,
                     self.style_type + " style"
@@ -638,12 +639,36 @@ class ParagraphStyle(StyleAbstract):
 
     def __init__(self, doc_parent, default=False, **kwargs):
         StyleAbstract.__init__(self, "paragraph", doc_parent, default)
+
+        self.indentations = {
+            "left": None,
+            "right": None,
+            "first-line": None
+        }
+
         self._quick_setup(kwargs)
 
     def fromxml(self, xml):
         is_paragraph = StyleAbstract.fromxml(self, xml, True)
 
         if is_paragraph:
+
+            #--- Indentation ------------------------------------------------
+
+            # Left indentation of all paragraph lines
+
+            if (left := xml.get("INDENT")) is not None:
+                self.indentations["left"] = dimensions.Dim(float(left))
+
+            # Right indentation of all paragraph lines
+
+            if (right := xml.get("RMARGIN")) is not None:
+                self.indentations["right"] = dimensions.Dim(float(right))
+
+            # Indentation of the first line of the paragraph
+
+            if (first := xml.get("FIRST")) is not None:
+                self.indentations["first-line"] = dimensions.Dim(float(first))
 
             #--- Lists ------------------------------------------------------
 
@@ -714,6 +739,8 @@ class ParagraphStyle(StyleAbstract):
 
             #--- End of parsing ---------------------------------------------
 
+            self.undocumented = xmlc.all_undocumented_to_python(xml)
+
             return True
         else:
             return False
@@ -730,6 +757,17 @@ class ParagraphStyle(StyleAbstract):
 
             if self.leading["mode"] == "fixed":
                 xml.attrib["LINESP"] = self.leading["value"].toxmlstr()
+
+        #--- Indentation --------------------------------------------
+
+        for case in [
+            ["left", "INDENT"], ["right", "RMARGIN"],
+            ["first-line", "FIRST"]]:
+
+            if self.indentations[case[0]] is None:
+                xml.attrib[case[1]] = "0"
+            else:
+                xml.attrib[case[1]] = self.indentations[case[0]].toxmlstr()
 
         #--- Parent character style ---------------------------------
 
@@ -881,10 +919,25 @@ class CharacterStyle(StyleAbstract):
         StyleAbstract.__init__(self, "character", doc_parent, default)
         StyleAbstract._quick_setup(self, kwargs)
 
+        self.font["space_width"] = dimensions.Dim(1, "pcdecim")
+        self.font["kerning"] = dimensions.Dim(0, "pc")
+
     def fromxml(self, xml):
         is_character = StyleAbstract.fromxml(self, xml, True)
 
         if is_character:
+
+            #--- Font settings ----------------------------------------------
+
+            if (wordtrack := xml.get("wordTrack")) is not None:
+                self.font["space_width"] = dimensions.Dim(
+                    float(wordtrack), "pcdecim"
+                )
+
+            if (kerning := xml.get("KERN")) is not None:
+                self.font["kerning"] = dimensions.Dim(
+                    float(kerning), "pc"
+                )
 
             #--- Scales -----------------------------------------------------
 
@@ -895,6 +948,8 @@ class CharacterStyle(StyleAbstract):
 
             #--- End of parsing ---------------------------------------------
 
+            self.undocumented = xmlc.all_undocumented_to_python(xml)
+
             return True
         else:
             return False
@@ -902,10 +957,32 @@ class CharacterStyle(StyleAbstract):
     def toxml(self):
         xml = StyleAbstract.toxml(self)
 
+        #--- Font settings ----------------------------------------------
+
+        if self.font["space_width"] is not None:
+            if self.font["space_width"].value != 1.0:
+                xml.attrib["wordTrack"] = self.font["space_width"].toxmlstr()
+
+        if self.font["kerning"] is not None:
+            if self.font["kerning"].value:
+                xml.attrib["KERN"] = self.font["kerning"].toxmlstr(True)
+
         #--- Scales -----------------------------------------------------
 
         xml.attrib["SCALEH"] = str(self.scale["horizontal"])
         xml.attrib["SCALEV"] = str(self.scale["vertical"])
+
+        #----------------------------------------------------------------
+
+        try:
+            xml, undoc_attribs = xmlc.all_undocumented_to_xml(
+                xml, self.undocumented, True,
+                self.style_type + " style"
+            )
+
+        except AttributeError:
+            # NOTE If fromxml was not used
+            pass
 
         return xml
 
