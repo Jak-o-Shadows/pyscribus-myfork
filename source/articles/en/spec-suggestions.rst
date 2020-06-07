@@ -1,6 +1,6 @@
-*****************************
-SLA's enhancement suggestions
-*****************************
+**********************************
+[EN] SLA's enhancement suggestions
+**********************************
 
 # 1
 ===
@@ -43,5 +43,21 @@ attributes should be translated.
 Discussion
 ----------
 
-``<LAYERS NUMMER="0" LEVEL="0" NAME="Fond de page" SICHTBAR="1" DRUCKEN="1" EDIT="1" SELECT="0" FLOW="1" TRANS="1" BLEND="0" OUTL="0" LAYERC="#000000"/>``
+  ::
+
+   <!-- A layer definition -->
+   <LAYERS NUMMER="0" 
+   LEVEL="0" 
+   NAME="Fond de page" 
+
+   SICHTBAR="1" 
+   DRUCKEN="1" 
+
+   EDIT="1" 
+   SELECT="0" 
+   FLOW="1" 
+   TRANS="1" 
+   BLEND="0" 
+   OUTL="0" 
+   LAYERC="#000000"/>
 

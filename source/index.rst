@@ -16,12 +16,10 @@ User Guide
 
    guide/en/quickstart.rst
    guide/fr/general.rst
-   guide/fr/dims.rst
    guide/en/psm.rst
    guide/en/templating.rst
    examples/index.rst
-   credits.rst
-   thanks.rst
+   forhumans.rst
 
 Documentation
 =============
@@ -31,15 +29,23 @@ Documentation
 
    modules.rst
 
-Human readable articles about Scribus' SLA
-==========================================
+Scribus SLA specification improvements
+======================================
 
 .. toctree::
    :maxdepth: 1
 
    articles/en/spec.rst
    articles/en/spec-suggestions.rst
-   articles/fr/stories.rst
+
+Appendix
+========
+
+.. toctree::
+   :maxdepth: 1
+
+   credits.rst
+   thanks.rst
 
 Indices and tables
 ==================
