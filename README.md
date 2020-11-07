@@ -1,30 +1,34 @@
 # PyScribus
 
-Une librairie Python pour manipuler (et documenter) le format de Scribus, le SLA.
+**Branche rétroportée, < Python 3.8** |
+**Backported branch, < Python 3.8**
 
-## Avancement
+Une librairie Python pour manipuler (et documenter)
+le format de Scribus, le SLA.
 
-- [ ] **en cours** Analyse (*parsing*) totale
-  - [ ] Objets Python cohérents
-  - [ ] Import et export XML
-- [ ] Fonctions de haut niveau
+## Obtenir PyScribus
 
-## Pré-requis
+```bash
+pip3 install pyscribus-backported
+```
+
+### Pré-requis
 
 - [lxml](https://lxml.de/)
 - [svg.path](https://pypi.org/project/svg.path/)
 - [Pillow](https://python-pillow.org/), optionnel, pour le module ``extra.wireframe``
 
-### Debian / Ubuntu
+#### Debian / Ubuntu
 
-```python
+```bash
 sudo apt install python3 python3-lxml
 sudo pip3 install svg.path
 ```
 
 ## Documentation
 
-La documentation est générée via Sphinx, avec le thème *Read the Docs*.
+[La documentation](https://etnadji.fr/pyscribus) est générée
+via Sphinx, avec le thème *Read the Docs*.
 
 ```bash
 make sphinxdoc
@@ -34,7 +38,7 @@ make sphinxdoc
 
 #### Debian / Ubuntu
 
-```python
+```bash
 sudo apt install python3-sphinx python3-sphinx-rtd-theme
 ```
 
@@ -42,7 +46,12 @@ sudo apt install python3-sphinx python3-sphinx-rtd-theme
 
 ### Le format SLA
 
-[File Format Specification for Scribus 1.5](https://wiki.scribus.net/canvas/File_Format_Specification_for_Scribus_1.5)
-
+- [File Format Specification for Scribus 1.5](https://wiki.scribus.net/canvas/File_Format_Specification_for_Scribus_1.5)
 - [Liste des elements/attributs documentables](source/articles/en/spec.rst) trouvés lors de l’écriture de cette librairie.
 
+## Avancement
+
+- [ ] **en cours** Analyse (*parsing*) totale
+  - [ ] Objets Python cohérents
+  - [ ] Import et export XML
+- [ ] Fonctions de haut niveau
