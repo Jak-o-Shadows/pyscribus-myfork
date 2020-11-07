@@ -31,7 +31,8 @@ setuptools.setup(
     ],
     project_urls={
         "Documentation": "https://etnadji.fr/pyscribus",
-        "Source Code": "https://framagit.org/etnadji/pyscribus",
+        "Source Code": "https://framagit.org/etnadji/pyscribus/-/tree/backported",
+        "Issue tracker": "https://framagit.org/etnadji/pyscribus/-/issues",
     },
     python_requires='<=3.7.9',
     install_requires=REQUIRED,
