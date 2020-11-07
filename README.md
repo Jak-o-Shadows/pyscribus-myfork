@@ -1,6 +1,10 @@
 # PyScribus
 
-Une librairie Python pour manipuler (et documenter) le format de Scribus, le SLA.
+**Branche principale, >= Python 3.8**
+**Main branch, >= Python 3.8**
+
+Une librairie Python pour manipuler (et documenter) 
+le format de Scribus, le SLA.
 
 ## Avancement
 
@@ -9,22 +13,29 @@ Une librairie Python pour manipuler (et documenter) le format de Scribus, le SLA
   - [ ] Import et export XML
 - [ ] Fonctions de haut niveau
 
-## Pré-requis
+## Obtenir PyScribus
+
+```bash
+pip3 install pyscribus
+```
+
+### Pré-requis
 
 - [lxml](https://lxml.de/)
 - [svg.path](https://pypi.org/project/svg.path/)
 - [Pillow](https://python-pillow.org/), optionnel, pour le module ``extra.wireframe``
 
-### Debian / Ubuntu
+#### Debian / Ubuntu
 
-```python
+```bash
 sudo apt install python3 python3-lxml
 sudo pip3 install svg.path
 ```
 
 ## Documentation
 
-La documentation est générée via Sphinx, avec le thème *Read the Docs*.
+[La documentation](https://etnadji.fr/pyscribus) est générée 
+via Sphinx, avec le thème *Read the Docs*.
 
 ```bash
 make sphinxdoc
