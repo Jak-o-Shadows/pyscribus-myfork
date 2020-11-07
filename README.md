@@ -38,7 +38,7 @@ make sphinxdoc
 
 #### Debian / Ubuntu
 
-```python
+```bash
 sudo apt install python3-sphinx python3-sphinx-rtd-theme
 ```
 
