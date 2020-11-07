@@ -240,21 +240,26 @@ class TOC(xmlc.PyScribusElement):
 
         if xml.tag == "TableOfContents":
 
-            if (nam := xml.get("Name")) is not None:
+            nam = xml.get("Name")
+            if nam is not None:
                 self.name = nam
 
-            if (fnam := xml.get("FrameName")) is not None:
+            fnam = xml.get("FrameName")
+            if fnam is not None:
                 self.frame_name = fnam
 
-            if (sn := xml.get("Style")) is not None:
+            sn = xml.get("Style")
+            if sn is not None:
                 self.style = sn
 
-            if (np := xml.get("ListNonPrinting")) is not None:
+            np = xml.get("ListNonPrinting")
+            if np is not None:
                 self.non_printing = xmlc.num_to_bool(np)
 
             #--------------------------------------------------------
 
-            if (fattribute := xml.get("ItemAttributeName")) is not None:
+            fattribute = xml.get("ItemAttributeName")
+            if fattribute is not None:
 
                 if fattribute == "None":
                     self.attribute = ""
@@ -263,7 +268,8 @@ class TOC(xmlc.PyScribusElement):
 
             #--------------------------------------------------------
 
-            if (placement := xml.get("NumberPlacement")) is not None:
+            placement = xml.get("NumberPlacement")
+            if placement is not None:
 
                 for human, code in TOC.placement_to_xml.items():
 

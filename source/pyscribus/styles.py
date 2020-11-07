@@ -355,12 +355,14 @@ class StyleAbstract(xmlc.PyScribusElement):
             if self.style_type in ["paragraph", "table", "cell", "character"]:
                 name_att = self._choose_att(StyleAbstract.name_xml)
 
-            if (name := xml.get(name_att)) is not None:
+            name = xml.get(name_att)
+            if name is not None:
                 self.name = name
 
             #--- Common attributes ---------------------------------
 
-            if (default := xml.get("DefaultStyle")) is not None:
+            default = xml.get("DefaultStyle")
+            if default is not None:
                 self.is_default = xmlc.num_to_bool(default)
 
             #--- Specific attributes for paragraph -----------------
@@ -389,25 +391,31 @@ class StyleAbstract(xmlc.PyScribusElement):
             if self.style_type in ["paragraph", "character"]:
                 #--- Font and font features ------------------------------
 
-                if (font := xml.get("FONT")) is not None:
+                font = xml.get("FONT")
+                if font is not None:
                     self.font["name"] = font
 
-                if (font_size := xml.get("FONTSIZE")) is not None:
+                font_size = xml.get("FONTSIZE")
+                if font_size is not None:
                     self.font["size"] = float(font_size)
 
-                if (font_features := xml.get("FONTFEATURES")) is not None:
+                font_features = xml.get("FONTFEATURES")
+                if font_features is not None:
                     self.font["features"] = font_features.split(",")
 
-                if (font_color := xml.get("FCOLOR")) is not None:
+                font_color = xml.get("FCOLOR")
+                if font_color is not None:
                     self.font["color"] = font_color
 
                 # NOTE Weird FEATURES duplicate
-                if (features := xml.get("FEATURES")) is not None:
+                features = xml.get("FEATURES")
+                if features is not None:
                     self.features = features
 
                 #--- Lang ------------------------------------------------
 
-                if (lang := xml.get("LANGUAGE")) is not None:
+                lang = xml.get("LANGUAGE")
+                if lang is not None:
                     if lang:
                         self.lang = lang
 
@@ -415,7 +423,8 @@ class StyleAbstract(xmlc.PyScribusElement):
 
                 parent_att = self._choose_att(StyleAbstract.parent_xml)
 
-                if (parent := xml.get(parent_att)) is not None:
+                parent = xml.get(parent_att)
+                if parent is not None:
                     if parent:
                         self.parent = parent
 
@@ -423,7 +432,8 @@ class StyleAbstract(xmlc.PyScribusElement):
 
                 shortcut_att = self._choose_att(StyleAbstract.shortcut_xml)
 
-                if (shortcut := xml.get(shortcut_att)) is not None:
+                shortcut = xml.get(shortcut_att)
+                if shortcut is not None:
                     if shortcut:
                         self.shortcut = shortcut
 
@@ -433,10 +443,12 @@ class StyleAbstract(xmlc.PyScribusElement):
                 fshade_att = self._choose_att(StyleAbstract.fshade_xml)
                 fcolor_att = self._choose_att(StyleAbstract.fcolor_xml)
 
-                if (fill_color := xml.get(fcolor_att)) is not None:
+                fill_color = xml.get(fcolor_att)
+                if fill_color is not None:
                     self.fill["color"] = fill_color
 
-                if (fill_shade := xml.get(fshade_att)) is not None:
+                fill_shade = xml.get(fshade_att)
+                if fill_shade is not None:
                     self.fill["shade"] = float(fill_shade)
 
             #--- Childs --------------------------------------------
@@ -657,28 +669,33 @@ class ParagraphStyle(StyleAbstract):
 
             # Left indentation of all paragraph lines
 
-            if (left := xml.get("INDENT")) is not None:
+            left = xml.get("INDENT")
+            if left is not None:
                 self.indentations["left"] = dimensions.Dim(float(left))
 
             # Right indentation of all paragraph lines
 
-            if (right := xml.get("RMARGIN")) is not None:
+            right = xml.get("RMARGIN")
+            if right is not None:
                 self.indentations["right"] = dimensions.Dim(float(right))
 
             # Indentation of the first line of the paragraph
 
-            if (first := xml.get("FIRST")) is not None:
+            first = xml.get("FIRST")
+            if first is not None:
                 self.indentations["first-line"] = dimensions.Dim(float(first))
 
             #--- Lists ------------------------------------------------------
 
             self.is_ul,self.is_ol = False,False
 
-            if (is_bullet := xml.get("Bullet")) is not None:
+            is_bullet = xml.get("Bullet")
+            if is_bullet is not None:
                 if is_bullet == "1":
                     self.is_ul = True
 
-            if (is_numeroted := xml.get("Numeration")) is not None:
+            is_numeroted = xml.get("Numeration")
+            if is_numeroted is not None:
                 if is_numeroted == "1":
                     self.is_ol = True
 
@@ -688,18 +705,21 @@ class ParagraphStyle(StyleAbstract):
                 )
 
             if self.is_ul:
-                if (bullet_char := xml.get("BulletStr")) is not None:
+                bullet_char = xml.get("BulletStr")
+                if bullet_char is not None:
                     # TODO
                     pass
 
             #--- Parent character style -------------------------------------
 
-            if (character_parent := xml.get("CPARENT")) is not None:
+            character_parent = xml.get("CPARENT")
+            if character_parent is not None:
                 self.character_parent = character_parent
 
             #--- Leading ----------------------------------------------------
 
-            if (leading := xml.get("LINESPMode")) is not None:
+            leading = xml.get("LINESPMode")
+            if leading is not None:
 
                 for human, code in ParagraphStyle.leading_xml.items():
                     if leading == code:
@@ -714,7 +734,8 @@ class ParagraphStyle(StyleAbstract):
 
             #--- Alignment --------------------------------------------------
 
-            if (alignment := xml.get("ALIGN")) is not None:
+            alignment = xml.get("ALIGN")
+            if alignment is not None:
                 for human, code in xmlc.alignment.items():
                     if alignment == code:
                         self.font["alignment"] = human
@@ -724,7 +745,8 @@ class ParagraphStyle(StyleAbstract):
 
             for case in [["VOR", "before"], ["NACH", "after"]]:
 
-                if (space_att := xml.get(case[0])) is not None:
+                space_att = xml.get(case[0])
+                if space_att is not None:
                     self.space[case[1]] = dimensions.Dim(float(space_att))
 
             #--- Tabs -------------------------------------------------------
@@ -734,7 +756,8 @@ class ParagraphStyle(StyleAbstract):
                 if child.tag == "Tabs":
                     to = StyleTab()
 
-                    if (success := to.fromxml(child)):
+                    success = to.fromxml(child)
+                    if success:
                         self.tabs.append(to)
 
             #--- End of parsing ---------------------------------------------
@@ -929,12 +952,14 @@ class CharacterStyle(StyleAbstract):
 
             #--- Font settings ----------------------------------------------
 
-            if (wordtrack := xml.get("wordTrack")) is not None:
+            wordtrack = xml.get("wordTrack")
+            if wordtrack is not None:
                 self.font["space_width"] = dimensions.Dim(
                     float(wordtrack), "pcdecim"
                 )
 
-            if (kerning := xml.get("KERN")) is not None:
+            kerning = xml.get("KERN")
+            if kerning is not None:
                 self.font["kerning"] = dimensions.Dim(
                     float(kerning), "pc"
                 )
@@ -943,7 +968,8 @@ class CharacterStyle(StyleAbstract):
 
             for case in [["SCALEH", "horizontal"], ["SCALEV", "vertical"]]:
 
-                if (scale_att := xml.get(case[0])) is not None:
+                scale_att = xml.get(case[0])
+                if scale_att is not None:
                     self.scale[case[1]] = scale_att
 
             #--- End of parsing ---------------------------------------------
@@ -1003,7 +1029,8 @@ class TabularStyleAbstract(StyleAbstract):
                     if border.tag in TableBorder.sides_xml.values():
                         tb = TableBorder()
 
-                        if (success := tb.fromxml(border)):
+                        success = tb.fromxml(border)
+                        if success:
                             self.borders.append(tb)
 
                 return True
@@ -1078,7 +1105,8 @@ class TableBorder(xmlc.PyScribusElement):
 
         # -------------------------------------------------
 
-        if (width := xml.get("Width")) is not None:
+        width = xml.get("Width")
+        if width is not None:
             self.width = dimensions.Dim(float(width))
 
         # -------------------------------------------------
@@ -1088,7 +1116,8 @@ class TableBorder(xmlc.PyScribusElement):
             if line.tag == "TableBorderLine":
                 lo = TableBorderLine()
 
-                if (success := lo.fromxml(line)):
+                success = lo.fromxml(line)
+                if success:
                     self.lines.append(lo)
 
         return True
@@ -1128,16 +1157,20 @@ class TableBorderLine(xmlc.PyScribusElement):
     def fromxml(self, xml):
         if xml.tag == "TableBorderLine":
 
-            if (width := xml.get("Width")) is not None:
+            width = xml.get("Width")
+            if width is not None:
                 self.width = float(width)
 
-            if (color := xml.get("Color")) is not None:
+            color = xml.get("Color")
+            if color is not None:
                 self.color = color
 
-            if (shade := xml.get("Shade")) is not None:
+            shade = xml.get("Shade")
+            if shade is not None:
                 self.shade = int(shade)
 
-            if (style := xml.get("PenStyle")) is not None:
+            style = xml.get("PenStyle")
+            if style is not None:
                 self.pen_style = style
 
             return True
@@ -1197,7 +1230,8 @@ class StyleTab(xmlc.PyScribusElement):
         """
         """
 
-        if (tab_type := xml.get("Type")) is not None:
+        tab_type = xml.get("Type")
+        if tab_type is not None:
             try:
                 for human,code in StyleTab.tab_type_xml.items():
                     if code == tab_type:
@@ -1207,11 +1241,13 @@ class StyleTab(xmlc.PyScribusElement):
             except IndexError:
                 self.type = "left"
 
-        if (pos := xml.get("Pos")) is not None:
+        pos = xml.get("Pos")
+        if pos is not None:
             pos = float(pos)
             self.position.value = pos
 
-        if (fill := xml.get("Fill")) is not None:
+        fill = xml.get("Fill")
+        if fill is not None:
             self.fill = fill
 
         return True
@@ -1249,7 +1285,8 @@ class RuleStyle(xmlc.PyScribusElement):
 
         if xml.tag == "MultiLine":
 
-            if (name := xml.get("Name")) is not None:
+            name = xml.get("Name")
+            if name is not None:
                 self.name = name
 
             for element in xml:
@@ -1257,7 +1294,8 @@ class RuleStyle(xmlc.PyScribusElement):
                 if element.tag == "SubLine":
                     sl = RuleStyleLine()
 
-                    if (success := sl.fromxml(element)):
+                    success = sl.fromxml(element)
+                    if success:
                         self.lines.append(sl)
 
             return True
@@ -1339,25 +1377,30 @@ class RuleStyleLine(xmlc.PyScribusElement):
         if xml.tag == "SubLine":
             # --- Shortcut -----------------------------------------------
 
-            if (shortcut := xml.get("Shortcut")) is not None:
+            shortcut = xml.get("Shortcut")
+            if shortcut is not None:
                 self.shortcut = shortcut
 
             # --- Color and opacity --------------------------------------
 
-            if (color := xml.get("Color")) is not None:
+            color = xml.get("Color")
+            if color is not None:
                 self.color = color
 
-            if (opacity := xml.get("Shade")) is not None:
+            opacity = xml.get("Shade")
+            if opacity is not None:
                 self.opacity = dimensions.Dim(float(opacity), "pc")
 
             # --- Line width ---------------------------------------------
 
-            if (width := xml.get("Width")) is not None:
+            width = xml.get("Width")
+            if width is not None:
                 self.width = dimensions.Dim(float(width))
 
             # --- Line style ---------------------------------------------
 
-            if (dash := xml.get("Dash")) is not None:
+            dash = xml.get("Dash")
+            if dash is not None:
 
                 for human, code in RuleStyleLine.dash_xml.items():
                     if code == dash:
@@ -1366,7 +1409,8 @@ class RuleStyleLine(xmlc.PyScribusElement):
 
             # --- Line end -----------------------------------------------
 
-            if (line_end := xml.get("LineEnd")) is not None:
+            line_end = xml.get("LineEnd")
+            if line_end is not None:
 
                 for human, code in RuleStyleLine.lineend_xml.items():
                     if code == line_end:
@@ -1375,7 +1419,8 @@ class RuleStyleLine(xmlc.PyScribusElement):
 
             # --- Line join ----------------------------------------------
 
-            if (line_join := xml.get("LineJoin")) is not None:
+            line_join = xml.get("LineJoin")
+            if line_join is not None:
 
                 for human, code in RuleStyleLine.linejoin_xml.items():
                     if code == line_join:

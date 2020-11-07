@@ -291,10 +291,12 @@ class PageAbstract(PyScribusElement):
 
             #--- Paper size name and orientation ------------------
 
-            if (paper_size := xml.get("Size")) is not None:
+            paper_size = xml.get("Size")
+            if paper_size is not None:
                 self.paper_size = paper_size
 
-            if (orientation := xml.get("Orientation")) is not None:
+            orientation = xml.get("Orientation")
+            if orientation is not None:
 
                 for h,x in PageAbstract.orientation_xml.items():
                     if orientation == x:
@@ -313,7 +315,8 @@ class PageAbstract(PyScribusElement):
 
                 att_name = "{}Guides".format(guide_type.capitalize())
 
-                if (att := xml.get(att_name)) is not None:
+                att = xml.get(att_name)
+                if att is not None:
                     if att:
                         # NOTE Example of att value : "42.5197 56.6929 "
 
@@ -803,14 +806,16 @@ class PageSet(PyScribusElement):
 
             #------------------------------------------------------
 
-            if (name := xml.get("Name")) is not None:
+            name = xml.get("Name")
+            if name is not None:
                 self.name = name
 
             #------------------------------------------------------
 
             for att in ["FirstPage", "Rows", "Columns"]:
 
-                if (atx := xml.get(att)) is not None:
+                atx = xml.get(att)
+                if atx is not None:
 
                     try:
                         atx = int(atx)
@@ -821,13 +826,16 @@ class PageSet(PyScribusElement):
                             )
                         )
 
-            if (first := xml.get("FirstPage")) is not None:
+            first = xml.get("FirstPage")
+            if first is not None:
                 self.first_page = int(first)
 
-            if (rows := xml.get("Rows")) is not None:
+            rows = xml.get("Rows")
+            if rows is not None:
                 self.rows = int(rows)
 
-            if (columns := xml.get("Columns")) is not None:
+            columns = xml.get("Columns")
+            if columns is not None:
                 self.columns = int(columns)
 
             #--- Page names ---------------------------------------

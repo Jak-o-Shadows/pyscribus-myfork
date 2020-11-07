@@ -163,27 +163,32 @@ class DocumentMark(xmlc.PyScribusElement):
             #   DocumentMark.name  = @label if @type == "3"
             #   DocumentMark.label = @label if @type != "3"
 
-            if (mlabel := xml.get("label")) is not None:
+            mlabel = xml.get("label")
+            if mlabel is not None:
                 if self.type == "variable":
                     self.name = mlabel
                 else:
                     self.label = mlabel
 
             if self.type == "variable":
-                if (mstr := xml.get("str")) is not None:
+                mstr = xml.get("str")
+                if mstr is not None:
                     self.label = mstr
 
             # ---------------------------------------------------------------
 
             if self.type == "objectref":
-                if (mitem := xml.get("ItemID")) is not None:
+                mitem = xml.get("ItemID")
+                if mitem is not None:
                     self.target_object = mitem
 
             if self.type == "markref":
-                if (mtarget_label := xml.get("MARKlabel")) is not None:
+                mtarget_label = xml.get("MARKlabel")
+                if mtarget_label is not None:
                     self.target_mark["label"] = mtarget_label
 
-                if (mtarget_type := xml.get("MARKtype")) is not None:
+                mtarget_type = xml.get("MARKtype")
+                if mtarget_type is not None:
 
                     if mtarget_type in mark_type_xml.values():
                         self.target_mark["type"] = mark_type_xml[mtarget_type]
@@ -237,16 +242,19 @@ class StoryMarkAbstract(xmlc.PyScribusElement):
 
         if xml.tag == "MARK":
 
-            if (mtype := xml.get("type")) is not None:
+            mtype = xml.get("type")
+            if mtype is not None:
                 for h,x in mark_type_xml.items():
                     if mtype == x:
                         self.type = h
                         break
 
-            if (mlabel := xml.get("label")) is not None:
+            mlabel = xml.get("label")
+            if mlabel is not None:
                 self.label = mlabel
 
-            if (mfeatures := xml.get("features")) is not None:
+            mfeatures = xml.get("features")
+            if mfeatures is not None:
                 self.set_features(mfeatures)
 
             return True

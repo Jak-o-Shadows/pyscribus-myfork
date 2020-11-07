@@ -7,12 +7,12 @@ with open("../README.pypi.rst", "r") as fh:
     long_description = fh.read()
 
 VERSION = "0.1"
-DESCRIPTION = "Read, create and update Scribus .sla files."
+DESCRIPTION = "Read, create and update Scribus .sla files. (Python < 3.8 version)"
 
 REQUIRED = ['lxml', 'svg.path']
 
 setuptools.setup(
-    name="pyscribus",
+    name="pyscribus-backported",
     version=VERSION,
     author="Étienne Nadji",
     author_email="etnadji@eml.cc",
@@ -33,7 +33,7 @@ setuptools.setup(
         "Documentation": "https://etnadji.fr/pyscribus",
         "Source Code": "https://framagit.org/etnadji/pyscribus",
     },
-    python_requires='>=3.8',
+    python_requires='<=3.7.9',
     install_requires=REQUIRED,
     keywords=["scribus", "sla"],
 )

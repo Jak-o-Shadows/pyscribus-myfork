@@ -202,7 +202,8 @@ class PDFSettings(PyScribusElement):
                     [xml.get("Quality"), "quality",
                     PDFSettings.imgcomp_quality_xml]]:
 
-                if (att := xml.get(case[0])) is not None:
+                att = xml.get(case[0])
+                if att is not None:
                     if int(att) in case[2].values():
                         for human,code in case[2].items():
                             self.image_compression[case[1]] = human
@@ -217,7 +218,8 @@ class PDFSettings(PyScribusElement):
             for case in ["top", "left", "right", "bottom"]:
                 att_name = "B{}".format(case.capitalize())
 
-                if (att := xml.get(att_name)) is not None:
+                att = xml.get(att_name)
+                if att is not None:
                     self.bleeds[case][0].value = float(att)
 
             udb = xml.get("useDocBleeds")
@@ -231,7 +233,8 @@ class PDFSettings(PyScribusElement):
             encrypt_perm = xml.get("Permissions")
 
             for case in [["owner", "PassOwner"], ["user", "PassUser"]]:
-                if (attrib := xml.get(case[1])) is not None:
+                attrib = xml.get(case[1])
+                if attrib is not None:
                     self.encryption["pass"][case[0]] = attrib
 
             if encrypt is not None:
@@ -397,16 +400,20 @@ class LPI(PyScribusElement):
 
         if xml.tag == "LPI":
 
-            if (color := xml.get("Color")) is not None:
+            color = xml.get("Color")
+            if color is not None:
                 self.color = color
 
-            if (freq := xml.get("Frequency")) is not None:
+            freq = xml.get("Frequency")
+            if freq is not None:
                 self.frequency.value = int(freq)
 
-            if (angle := xml.get("Angle")) is not None:
+            angle = xml.get("Angle")
+            if angle is not None:
                 self.angle.value = float(angle)
 
-            if (spot := xml.get("SpotFunction")) is not None:
+            spot = xml.get("SpotFunction")
+            if spot is not None:
 
                 for human,code in LPI.spot_xml.items():
                     if code == spot:
@@ -498,10 +505,12 @@ class PrinterSettings(PyScribusElement):
 
             # --- Page mirroring ------------------------------------
 
-            if (mrh := xml.get("mirrorH")) is not None:
+            mrh = xml.get("mirrorH")
+            if mrh is not None:
                 self.mirror_pages["horizontal"] = num_to_bool(mrh)
 
-            if (mrv := xml.get("mirrorV")) is not None:
+            mrv = xml.get("mirrorV")
+            if mrv is not None:
                 self.mirror_pages["vertical"] = num_to_bool(mrv)
 
             # --- Marks ---------------------------------------------
@@ -509,7 +518,8 @@ class PrinterSettings(PyScribusElement):
             for case in ["crop", "bleed", "registration", "color"]:
                 att_name = "{}Marks".format(case)
 
-                if (att := xml.get(att_name)) is not None:
+                att = xml.get(att_name)
+                if att is not None:
                     self.marks[case] = num_to_bool(att)
 
             # --- Printer bleeds ------------------------------------
@@ -517,10 +527,12 @@ class PrinterSettings(PyScribusElement):
             for case in ["top", "left", "right", "bottom"]:
                 att_name = "Bleed{}".format(case.capitalize())
 
-                if (att := xml.get(att_name)) is not None:
+                att = xml.get(att_name)
+                if att is not None:
                     self.bleeds[case][0].value = float(att)
 
-            if (udb := xml.get("useDocBleeds")) is not None:
+            udb = xml.get("useDocBleeds")
+            if udb is not None:
                 self.bleeds["document"] = num_to_bool(udb)
 
             # -------------------------------------------------------

@@ -518,7 +518,8 @@ class Document(PyScribusElement):
         for default in ["Single Page", "Facing Pages", "3-Fold", "4-Fold"]:
             ps = pages.PageSet()
 
-            if (success := ps.fromdefault(default)):
+            success = ps.fromdefault(default)
+            if success:
                 self.page_sets.append(ps)
 
     def _default_colors(self):
@@ -674,7 +675,8 @@ class Document(PyScribusElement):
         # Metadatas
 
         for att, key in Document.metadata_xml.items():
-            if (v := xml.get(att)) is not None:
+            v = xml.get(att)
+            if v is not None:
                 self.metadata[key] = v
 
         # UI snapping
@@ -682,19 +684,22 @@ class Document(PyScribusElement):
         for snap_thing in ["grid", "guides", "element"]:
             att_name = "SnapTo{}".format(snap_thing.capitalize())
 
-            if (att := xml.get(att_name)) is not None:
+            att = xml.get(att_name)
+            if att is not None:
                 self.ui_snapping[snap_thing] = num_to_bool(att)
 
         # Bleed settings
 
         for att,human in Document.bleed_xml.items():
-            if (att_value := xml.get(att)) is not None:
+            att_value = xml.get(att)
+            if att_value is not None:
                 self.bleed[human] = float(att_value)
 
         # UI show
 
         for att_name, ui_name in Document.ui_show_xml.items():
-            if (att := xml.get(att_name)) is not None:
+            att = xml.get(att_name)
+            if att is not None:
                 self.ui_show[ui_name] = num_to_bool(att)
 
         # ICC color profiles
@@ -705,7 +710,8 @@ class Document(PyScribusElement):
             ["DPPr", "printer"]]:
             att_name,icc_key = case
 
-            if (att := xml.get(att_name)) is not None:
+            att = xml.get(att_name)
+            if att is not None:
                 self.icc_profiles[icc_key] = att
 
         # Calligraphic pen
@@ -715,13 +721,15 @@ class Document(PyScribusElement):
                 ["FillColorShade", "fill_shade"]]:
             att_name = "calligraphicPen{}".format(case[0])
 
-            if (att := xml.get(att_name)) is not None:
+            att = xml.get(att_name)
+            if att is not None:
                 self.calligraphicpen[case[1]].value = int(att)
 
         for case in [["LineWidth", "line_width"], ["Width", "width"]]:
             att_name = "calligraphicPen{}".format(case[0])
 
-            if (att := xml.get(att_name)) is not None:
+            att = xml.get(att_name)
+            if att is not None:
                 self.calligraphicpen[case[1]].value = float(att)
 
         for case in [
@@ -730,7 +738,8 @@ class Document(PyScribusElement):
 
             att_name = "calligraphicPen{}".format(case[0])
 
-            if (att := xml.get(att_name)) is not None:
+            att = xml.get(att_name)
+            if att is not None:
                 self.calligraphicpen[case[1]] = att
 
         # --- DOCUMENT childs --------------------------------------------
@@ -740,25 +749,29 @@ class Document(PyScribusElement):
             if child.tag == "CheckProfile":
                 p = Profile()
 
-                if (success := p.fromxml(child)):
+                success = p.fromxml(child)
+                if success:
                     self.profiles.append(p)
 
             if child.tag == "Gradient":
                 gr = pscolors.Gradient()
 
-                if (success := gr.fromxml(child)):
+                success = gr.fromxml(child)
+                if success:
                     self.gradients.append(gr)
 
             if child.tag == "COLOR":
                 c = pscolors.Color()
 
-                if (success := c.fromxml(child)):
+                success = c.fromxml(child)
+                if success:
                     self.colors.append(c)
 
             if child.tag == "Pattern":
                 patt = patterns.Pattern()
 
-                if (success := patt.fromxml(child)):
+                success = patt.fromxml(child)
+                if success:
                     self.patterns.append(patt)
 
             # TODO FIXME hyphen
@@ -771,39 +784,45 @@ class Document(PyScribusElement):
                 if child.tag == "CHARSTYLE":
                     key,xstyle = "character",styles.CharacterStyle(self)
 
-                if (success := xstyle.fromxml(child)):
+                success = xstyle.fromxml(child)
+                if success:
                     self.styles[key].append(xstyle)
 
             if child.tag == "TableStyle":
                 tstyle = styles.TableStyle(self)
 
-                if (success := tstyle.fromxml(child)):
+                success = tstyle.fromxml(child)
+                if success:
                     self.styles["table"].append(tstyle)
 
             if child.tag == "CellStyle":
                 cstyle = styles.CellStyle(self)
 
-                if (success := cstyle.fromxml(child)):
+                success = cstyle.fromxml(child)
+                if success:
                     self.styles["cell"].append(cstyle)
 
             if child.tag == "LAYERS":
                 l = Layer()
 
-                if (success := l.fromxml(child)):
+                success = l.fromxml(child)
+                if success:
                     self.layers.append(l)
 
             if child.tag == "Printer":
 
                 ps = printing.PrinterSettings()
 
-                if (success := ps.fromxml(child)):
+                success = ps.fromxml(child)
+                if success:
                     self.printer_settings.append(ps)
 
             if child.tag == "PDF":
 
                 pds = printing.PDFSettings()
 
-                if (success := pds.fromxml(child)):
+                success = pds.fromxml(child)
+                if success:
                     self.pdf_settings.append(pds)
 
             if child.tag == "DocItemAttributes":
@@ -811,7 +830,8 @@ class Document(PyScribusElement):
                 for attribute in child:
                     da = itemattribute.DocumentAttribute()
 
-                    if (success := da.fromxml(attribute)):
+                    success = da.fromxml(attribute)
+                    if success:
                         self.attributes.append(da)
 
             if child.tag == "TablesOfContents":
@@ -821,7 +841,8 @@ class Document(PyScribusElement):
                     if sub.tag == "TableOfContents":
                         toc_settings = toc.TOC()
 
-                        if (success := toc_settings.fromxml(sub)):
+                        success = toc_settings.fromxml(sub)
+                        if success:
                             self.tocs.append(toc_settings)
 
             if child.tag == "Marks":
@@ -831,7 +852,8 @@ class Document(PyScribusElement):
                     if sub.tag == "Mark":
                         mx = marks.DocumentMark()
 
-                        if (success := mx.fromxml(sub)):
+                        success = mx.fromxml(sub)
+                        if success:
                             self.marks.append(mx)
 
             if child.tag == "NotesStyles":
@@ -841,7 +863,8 @@ class Document(PyScribusElement):
                     if sub.tag == "notesStyle":
                         s = styles.NoteStyle()
 
-                        if (success := s.fromxml(sub)):
+                        success = s.fromxml(sub)
+                        if success:
                             self.styles["note"].append(s)
 
             if child.tag == "NotesFrames":
@@ -851,7 +874,8 @@ class Document(PyScribusElement):
                     if sub.tag == "FOOTNOTEFRAME":
                         nf = notes.NoteFrame()
 
-                        if (success := nf.fromxml(sub)):
+                        success = nf.fromxml(sub)
+                        if success:
                             self.notes_frames.append(nf)
 
             if child.tag == "Notes":
@@ -861,7 +885,8 @@ class Document(PyScribusElement):
                     if child.tag == "Note":
                         nc = notes.Note()
 
-                        if (success := nc.fromxml(sub)):
+                        success = nc.fromxml(sub)
+                        if success:
                             self.notes.append(nc)
 
             if child.tag == "PageSets":
@@ -869,7 +894,8 @@ class Document(PyScribusElement):
                 for page_set in child:
                     ps = pages.PageSet()
 
-                    if (success := ps.fromxml(page_set)):
+                    success = ps.fromxml(page_set)
+                    if success:
                         self.page_sets.append(ps)
 
             if child.tag == "Sections":
@@ -879,13 +905,15 @@ class Document(PyScribusElement):
                     if sub.tag == "Section":
                         sec = toc.Section()
 
-                        if (success := sec.fromxml(sub)):
+                        success = sec.fromxml(sub)
+                        if success:
                             self.sections.append(sec)
 
             if child.tag == "MASTERPAGE":
                 m = pages.MasterPage()
 
-                if (success := m.fromxml(child)):
+                success = m.fromxml(child)
+                if success:
                     self.master_pages.append(m)
 
             if child.tag == "PAGE":
@@ -894,7 +922,8 @@ class Document(PyScribusElement):
                 p.sla_parent = self.sla_parent
                 p.doc_parent = self
 
-                if (success := p.fromxml(child)):
+                success = p.fromxml(child)
+                if success:
                     self.pages.append(p)
 
             if child.tag == "PAGEOBJECT":
@@ -907,7 +936,8 @@ class Document(PyScribusElement):
                             ptype, self.sla_parent, self
                         )
 
-                        if (success := po.fromxml(child)):
+                        success = po.fromxml(child)
+                        if success:
                             self.page_objects.append(po)
 
                     except ValueError:

@@ -62,11 +62,13 @@ class StoryEnding(PyScribusElement):
     def fromxml(self, xml):
         if xml.tag == "trail":
 
-            if (align := xml.get("ALIGN")) is not None:
+            align = xml.get("ALIGN")
+            if align is not None:
                 # TODO use human values...
                 self.alignment = align
 
-            if (parent := xml.get("PARENT")) is not None:
+            parent = xml.get("PARENT")
+            if parent is not None:
                 self.parent = parent
 
             return True
@@ -133,7 +135,8 @@ class StoryParagraphEnding(PyScribusElement):
         return "PARAGEND|{}".format(self.parent)
 
     def fromxml(self, xml, check_style=True):
-        if (parentpar := xml.get("PARENT")) is None:
+        parentpar = xml.get("PARENT")
+        if parentpar is None:
             self.parent = False
         else:
             self.parent = parentpar
@@ -373,13 +376,15 @@ class StoryFragment(PyScribusElement):
         return xml
 
     def fromxml(self, xml):
-        if (fragtext := xml.get("CH")) is not None:
+        fragtext = xml.get("CH")
+        if fragtext is not None:
 
             # NOTE Don't do any strip, rstrip to @CH, as it may
             # contains legitimate spaces
             self.text = fragtext
 
-            if (features := xml.get("FEATURES")) is not None:
+            features = xml.get("FEATURES")
+            if features is not None:
                 self.set_features(features)
 
             for case in zip(
@@ -387,7 +392,8 @@ class StoryFragment(PyScribusElement):
                         ["FONT", "FCOLOR", "FSHADE", "FONTSIZE"],
                         ):
 
-                if (att := xml.get(case[1])) is not None:
+                att = xml.get(case[1])
+                if att is not None:
                     self.font[case[0]] = att
 
             # TODO Reste de l’implémentation, puis :
@@ -444,7 +450,8 @@ class StoryVariable(PyScribusElement):
 
         if xml.tag == "var":
 
-            if (nam := xml.get("name")) is None:
+            nam = xml.get("name")
+            if nam is None:
                 return False
             else:
                 if nam in StoryVariable.var_names:

@@ -269,7 +269,8 @@ class SLA(xmlc.PyScribusElement):
         def read_xml(obj, xml):
             if xml.tag == "SCRIBUSUTF8NEW":
 
-                if (version := xml.get("Version")) is not None:
+                version = xml.get("Version")
+                if version is not None:
                     obj.version = version.split(".")
 
                 for element in xml:
