@@ -11,6 +11,7 @@ pyscribus/__pycache__/*.pyc
 source/dist/*
 source/build/*
 source/pyscribus.egg-info/*
+source/pyscribus_backported.egg-info/*
 source/_templates/*
 source/tests-outputs/*
 source/tests/test-samples/*
