@@ -21,7 +21,6 @@ User Guide
    :maxdepth: 1
 
    guide/en/quickstart.rst
-   guide/fr/general.rst
    guide/en/psm.rst
    guide/en/templating.rst
    examples/index.rst
