@@ -193,14 +193,14 @@ class Wireframe:
         :type sla: string
         :param sla: SLA file path
         """
-        self.bleed = sla.documents[0].bleed
+        self.bleed = sla.document.bleed
 
-        for page in sla.documents[0].pages:
+        for page in sla.document.pages:
             wo = WireframeObject(page)
             wo.bleed = self.bleed
             self.pages.append(wo)
 
-        for pago in sla.documents[0].page_objects:
+        for pago in sla.document.page_objects:
             wo = WireframeObject(pago)
             self.page_objects.append(wo)
 
