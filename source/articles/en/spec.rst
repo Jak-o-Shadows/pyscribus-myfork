@@ -54,6 +54,10 @@ Notes
 ``/PAGEOBJECT/@path`` and ``/PAGEOBJECT/@copath`` format specifications are 
 `available on W3C <https://www.w3.org/TR/SVG/paths.html#TheDProperty>`_.
 
+Attributes ``@RATIO``, ``@SCALETYPE``, ``@LOCALSCX``, ``@LOCALSCY``, 
+``@LOCALX``, ``@LOCALY``, ``@LOCALROT``, ``@PICART`` 
+of ``/PAGEOBJECT/`` are **not** optional.
+
 Corrections
 -----------
 
