@@ -1021,4 +1021,41 @@ class DimBox:
             self.dims["height"],
         )
 
+
+class LocalDimBox(DimBox):
+    """
+    Box/rectangle object to manipulate Scribus frames coordinates,
+    but coordinates are relative to a parent frame.
+
+    Used for image frames in image objects.
+
+    :type kwargs: dict
+    :param kwargs: kwargs (see kwargs table)
+
+    :ivar dict dims: Width and height of the box as Dim objects
+    :ivar dict coords: Coordinates of the box, dict of list of
+        Dim objects ([x, y]) for each point
+    :ivar Dim rotation: Rotation angle of the box as Dim object
+        (unit : degree)
+    :ivar dict rotated_coords: Coordinates of the box when rotated by
+        rotation degree
+    :ivar bool visible: Is this box is visible in the parent ?
+
+    +-------------------------+------------+
+    | Box point coordinate    | kwargs key |
+    +=========================+============+
+    | Top left x position     | top_lx     |
+    +-------------------------+------------+
+    | Top left y position     | top_ly     |
+    +-------------------------+------------+
+    | Box width (optionnal)   | width      |
+    +-------------------------+------------+
+    | Box height (optionnal)  | height     |
+    +-------------------------+------------+
+    """
+
+    def __init__(self, **kwargs):
+        DimBox.__init__(self)
+        self.visible = True
+
 # vim:set shiftwidth=4 softtabstop=4 spl=en:

@@ -90,6 +90,11 @@ class PageObject(xmlc.PyScribusElement):
         "dash-dot-dot": 5
     }
 
+    image_scaling_type_xml = {
+        "free": "0",
+        "frame": "1",
+    }
+
     shape_type_xml = {
         "rectangle": "0",
         "ellipse": "1",
@@ -124,6 +129,22 @@ class PageObject(xmlc.PyScribusElement):
         self.rotated = False
         self.shape = {"type": None, "edited": None}
 
+        # Image frame in image object defined there because Scribus
+        # does it.
+
+        self.image_box = dimensions.LocalDimBox()
+        self.image_rotated_box = dimensions.DimBox()
+
+        self.image_scale = {
+            "ratio": True,
+            "type": "frame",
+            "vertical": dimensions.Dim(float(1), "pcdecim"),
+            "horizontal": dimensions.Dim(float(1), "pcdecim")
+        }
+
+        # Undocumented box from gXpos, gYpos, gWidth, gHeight
+        self.gbox = dimensions.DimBox()
+
         # --- Page object own_page and linking/id --------------------
 
         # NOTE FIXME Implemented because without it Scribus crashes, but
@@ -138,6 +159,15 @@ class PageObject(xmlc.PyScribusElement):
 
         self.on_master_page = False
         self.have_stories = False
+
+        # --- Page object outline ------------------------------------
+
+        self.outline = {
+            "type": "solid",
+            "fill": "Black",
+            "stroke": "Black",
+            "thickness": dimensions.Dim(0)
+        }
 
         # --- Page object paths --------------------------------------
 
@@ -238,6 +268,51 @@ class PageObject(xmlc.PyScribusElement):
                     except ValueError:
                         pass
 
+            # --- Undocumented gbox --------------------------------------
+
+            gxpos = xml.get("gXpos")
+            gypos = xml.get("gYpos")
+            gwidth = xml.get("gWidth")
+            gheight = xml.get("gHeight")
+
+            valid_box = 0
+
+            for test in [gxpos, gypos, gwidth, gheight]:
+                if test is not None:
+                    valid_box += 1
+
+            if valid_box == 4:
+
+                self.gbox.set_box(
+                    top_lx=gxpos,
+                    top_ly=gypos,
+                    width=gwidth,
+                    height=gheight
+                )
+
+            # ------------------------------------------------------------
+
+            if (aspectratio := xml.get("RATIO")) is not None:
+                try:
+                    is_ratio = int(aspectratio)
+                except ValueError:
+                    is_ratio = 1
+
+                self.image_scale["ratio"] = bool(is_ratio)
+
+            if (lscx := xml.get("LOCALSCX")) is not None:
+                self.image_scale["horizontal"].value = float(lscx)
+
+            if (lscy := xml.get("LOCALSCY")) is not None:
+                self.image_scale["vertical"].value = float(lscy)
+
+            if (istype := xml.get("SCALETYPE")) is not None:
+
+                for human, code in PageObject.image_scaling_type_xml.items():
+                    if istype == code:
+                        self.image_scale["type"] = human
+                        break
+
             # --- Object path, copath and shape --------------------------
 
             if (editedshape := xml.get("CLIPEDIT")) is not None:
@@ -327,13 +402,95 @@ class PageObject(xmlc.PyScribusElement):
             # Moved to LineObject
             # Moved to TableObject
 
+            # --- Image in the image frame weirdly defined for all objects
+
+            img_xpos = xml.get("LOCALX")
+            img_ypos = xml.get("LOCALY")
+            img_rotation = xml.get("LOCALROT")
+
+            valid_box = 0
+
+            for test in [img_xpos, img_ypos]:
+                if test is not None:
+                    try:
+                        test = float(test)
+                        valid_box += 1
+                    except ValueError:
+                        continue
+
+            # The DimBox object needs a width and height but we don’t have
+            # that for the included image frame. So we take the dimensions
+            # of the parent object and resize them with image scale attributes
+
+            # WARNING But all of this is based on a SCALETYPE being free, not frame
+
+            if valid_box == 2:
+
+                if self.image_scale["horizontal"]:
+                    img_width = self.box.dims["width"].value * float(
+                        self.image_scale["horizontal"]
+                    )
+
+                if self.image_scale["vertical"]:
+                    img_height = self.box.dims["height"].value * float(
+                        self.image_scale["vertical"]
+                    )
+
+                self.image_box.set_box(
+                    top_lx=img_xpos,
+                    top_ly=img_ypos,
+                    width=img_width,
+                    height=img_height
+                )
+
+                self.image_rotated_box = copy.deepcopy(self.image_box)
+
+                if img_rotation is not None:
+
+                    try:
+                        rdegree = float(img_rotation)
+
+                        if rdegree > 0:
+                            self.image_rotated_box.rotate(rdegree)
+                        else:
+                            self.image_rotated_box.rotation.value = 0
+
+                    except ValueError:
+                        pass
+
+            if (visibleimage := xml.get("PICART")) is not None:
+                self.image_box.visible = xmlc.num_to_bool(visibleimage)
+
+            # --- Page object outline ------------------------------------
+
+            if (line_type := xml.get("PLINEART")) is not None:
+                for human, code in PageObject.line_type_xml.items():
+                    if line_type == code:
+                        self.outline["type"] = human
+                        break
+
+            if (fill := xml.get("PCOLOR")) is not None:
+                self.outline["fill"] = fill
+
+            if (stroke := xml.get("PCOLOR2")) is not None:
+                self.outline["stroke"] = stroke
+
+            if (thickness := xml.get("PWIDTH")) is not None:
+                self.outline["thickness"].value = float(thickness)
+
+            # --- ICC profiles -------------------------------------------
+
+            if self.ptype in ["image", "render"]:
+
+                if (embedded := xml.get("EMBEDDED")) is not None:
+                    self.use_embedded_icc = xmlc.num_to_bool(embedded)
+
             # --- Symbol attributes --------------------------------------
 
             if self.ptype == "symbol":
 
                 if (pattern := xml.get("pattern")) is not None:
                     self.pattern = pattern
-
 
             # --- Text object attributes ---------------------------------
 
@@ -380,24 +537,44 @@ class PageObject(xmlc.PyScribusElement):
         xml.attrib["YPOS"] = self.box.coords["top-left"][1].toxmlstr()
         xml.attrib["WIDTH"] = self.box.dims["width"].toxmlstr()
         xml.attrib["HEIGHT"] = self.box.dims["height"].toxmlstr()
-
         xml.attrib["ROT"] = self.rotated_box.rotation.toxmlstr(True)
+
+        xml.attrib["ItemID"] = self.object_id
+
+        # NOTE OwnPage doit exister quitte à juste être faux (= 0)
+        # sinon plantage de Scribus.
+        # wiki.scribus.net/canvas/
+        # (FR)_Introdution_au_Format_de_fichier_SLA_pour_Scribus_1.4
+
+        xml.attrib["OwnPage"] = xmlc.bool_or_else_to_num(self.own_page)
 
         # NOTE ANNAME is optional
         if self.name is not None:
             if self.name:
                 xml.attrib["ANNAME"] = self.name
 
-        xml.attrib["ItemID"] = self.object_id
+        xml.attrib["LOCALSCX"] = str(self.image_scale["horizontal"])
+        xml.attrib["LOCALSCY"] = str(self.image_scale["vertical"])
 
-        # NOTE OwnPage doit exister quitte à juste être faux (= 0)
-        # sinon plantage de Scribus.
-        # wiki.scribus.net/canvas/(FR)_Introdution_au_Format_de_fichier_SLA_pour_Scribus_1.4
+        # Image frame of an image object
 
-        xml.attrib["OwnPage"] = xmlc.bool_or_else_to_num(self.own_page)
+        xml.attrib["LOCALX"] = self.image_box.coords["top-left"][0].toxmlstr()
+        xml.attrib["LOCALY"] = self.image_box.coords["top-left"][1].toxmlstr()
+        xml.attrib["LOCALROT"] = self.image_rotated_box.rotation.toxmlstr(True)
 
+        xml.attrib["PICART"] = xmlc.bool_to_num(self.image_box.visible)
+
+        # Undocumented gbox
+
+        xml.attrib["gXpos"] = self.gbox.coords["top-left"][0].toxmlstr()
+        xml.attrib["gYpos"] = self.gbox.coords["top-left"][1].toxmlstr()
+        xml.attrib["gWidth"] = self.gbox.dims["width"].toxmlstr()
+        xml.attrib["gHeight"] = self.gbox.dims["height"].toxmlstr()
+
+        # Page object type
         xml.attrib["PTYPE"] = str(po_type_xml[self.ptype])
 
+        # Layer
         xml.attrib["LAYER"] = str(self.layer)
 
         # ------------------------------------------------------------
@@ -413,6 +590,9 @@ class PageObject(xmlc.PyScribusElement):
             xml.attrib["CLIPEDIT"] = "0"
         else:
             xml.attrib["CLIPEDIT"] = xmlc.bool_to_num(self.shape["edited"])
+
+        xml.attrib["SCALETYPE"] = PageObject.image_scaling_type_xml[self.image_scale["type"]]
+        xml.attrib["RATIO"] = xmlc.bool_to_num(self.image_scale["ratio"])
 
         if self.path is None:
 
@@ -437,13 +617,21 @@ class PageObject(xmlc.PyScribusElement):
             xml.attrib["PFILE"] = self.filepath
             xml.attrib["inlineImageExt"] = self.data_type
 
+        # Outline ----------------------------------------------------
+
+        xml.attrib["PLINEART"] = str(
+            PageObject.line_type_xml[self.outline["type"]]
+        )
+        xml.attrib["PCOLOR"] = self.outline["fill"]
+        xml.attrib["PCOLOR2"] = self.outline["stroke"]
+        xml.attrib["PWIDTH"] = self.outline["thickness"].toxmlstr()
+
         # ------------------------------------------------------------
 
-        if self.ptype == "line":
-            xml.attrib["PLINEART"] = str(PageObject.line_type_xml[self.line_type])
-            xml.attrib["PCOLOR"] = self.line_fill
-            xml.attrib["PCOLOR2"] = self.line_stroke
-            xml.attrib["PWIDTH"] = self.line_thickness.toxmlstr()
+        if self.ptype in ["image", "render"]:
+            xml.attrib["EMBEDDED"] = xmlc.bool_to_num(self.use_embedded_icc)
+
+        # ------------------------------------------------------------
 
         if self.ptype == "text":
 
@@ -1527,10 +1715,7 @@ class LineObject(PageObject):
 
         #--- Specific attributes to this subclass ------------------------
 
-        self.line_type = "solid"
-        self.line_fill = "Black"
-        self.line_stroke = "Black"
-        self.line_thickness = dimensions.Dim(1)
+        self.outline["thickness"].value = float(1)
 
         #--- Then, quick setup -------------------------------------------
 
@@ -1540,21 +1725,6 @@ class LineObject(PageObject):
         succeed = PageObject.fromxml(self, xml)
 
         if succeed:
-
-            if (line_type := xml.get("PLINEART")) is not None:
-                for human, code in PageObject.line_type_xml.items():
-                    if line_type == code:
-                        self.line_type = human
-                        break
-
-            if (fill := xml.get("PCOLOR")) is not None:
-                self.line_fill = fill
-
-            if (stroke := xml.get("PCOLOR2")) is not None:
-                self.line_stroke = stroke
-
-            if (thickness := xml.get("PWIDTH")) is not None:
-                self.line_thickness.value = float(thickness)
 
             return True
 
@@ -1631,7 +1801,7 @@ class RenderObject(PageObject):
     def toxml(self):
         xml = PageObject.toxml(self)
 
-        if xml:
+        if xml is not None:
             # --- Children -----------------------------------------------
 
             bfrx = self.buffer.toxml()
