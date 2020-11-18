@@ -294,7 +294,8 @@ class PageObject(xmlc.PyScribusElement):
 
             # ------------------------------------------------------------
 
-            if (aspectratio := xml.get("RATIO")) is not None:
+            aspectratio = xml.get("RATIO")
+            if aspectratio is not None:
                 try:
                     is_ratio = int(aspectratio)
                 except ValueError:
@@ -302,13 +303,16 @@ class PageObject(xmlc.PyScribusElement):
 
                 self.image_scale["ratio"] = bool(is_ratio)
 
-            if (lscx := xml.get("LOCALSCX")) is not None:
+            lscx = xml.get("LOCALSCX")
+            if lscx is not None:
                 self.image_scale["horizontal"].value = float(lscx)
 
-            if (lscy := xml.get("LOCALSCY")) is not None:
+            lscy = xml.get("LOCALSCY")
+            if lscy is not None:
                 self.image_scale["vertical"].value = float(lscy)
 
-            if (istype := xml.get("SCALETYPE")) is not None:
+            istype = xml.get("SCALETYPE")
+            if istype is not None:
 
                 for human, code in PageObject.image_scaling_type_xml.items():
                     if istype == code:
@@ -466,31 +470,37 @@ class PageObject(xmlc.PyScribusElement):
                     except ValueError:
                         pass
 
-            if (visibleimage := xml.get("PICART")) is not None:
+            visibleimage = xml.get("PICART")
+            if visibleimage is not None:
                 self.image_box.visible = xmlc.num_to_bool(visibleimage)
 
             # --- Page object outline ------------------------------------
 
-            if (line_type := xml.get("PLINEART")) is not None:
+            line_type = xml.get("PLINEART")
+            if line_type is not None:
                 for human, code in PageObject.line_type_xml.items():
                     if line_type == code:
                         self.outline["type"] = human
                         break
 
-            if (fill := xml.get("PCOLOR")) is not None:
+            fill = xml.get("PCOLOR")
+            if fill is not None:
                 self.outline["fill"] = fill
 
-            if (stroke := xml.get("PCOLOR2")) is not None:
+            stroke = xml.get("PCOLOR2")
+            if stroke is not None:
                 self.outline["stroke"] = stroke
 
-            if (thickness := xml.get("PWIDTH")) is not None:
+            thickness = xml.get("PWIDTH")
+            if thickness is not None:
                 self.outline["thickness"].value = float(thickness)
 
             # --- ICC profiles -------------------------------------------
 
             if self.ptype in ["image", "render"]:
 
-                if (embedded := xml.get("EMBEDDED")) is not None:
+                embedded = xml.get("EMBEDDED")
+                if embedded is not None:
                     self.use_embedded_icc = xmlc.num_to_bool(embedded)
 
             # --- Symbol attributes --------------------------------------
