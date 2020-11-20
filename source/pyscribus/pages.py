@@ -390,31 +390,37 @@ class PageAbstract(PyScribusElement):
 
             #--- PDF effects -------------------------------------------------
 
-            if (duration := xml.get("pageEffectDuration")) is not None:
+            duration = xml.get("pageEffectDuration")
+            if duration is not None:
                 self.effect["duration"].value = int(duration)
 
-            if (view_duration := xml.get("pageViewDuration")) is not None:
+            view_duration = xml.get("pageViewDuration")
+            if view_duration is not None:
                 self.effect["view-duration"].value = int(view_duration)
 
-            if (effect_type := xml.get("effectType")) is not None:
+            effect_type = xml.get("effectType")
+            if effect_type is not None:
                 for human, code in PageAbstract.effect_type_xml.items():
                     if effect_type == code:
                         self.effect["type"] = human
                         break
 
-            if (effect_lines := xml.get("Dm")) is not None:
+            effect_lines = xml.get("Dm")
+            if effect_lines is not None:
                 for human, code in PageAbstract.effect_mobile_line_xml.items():
                     if effect_lines == code:
                         self.effect["mobile-lines"] = human
                         break
 
-            if (effect_source := xml.get("M")) is not None:
+            effect_source = xml.get("M")
+            if effect_source is not None:
                 for human, code in PageAbstract.effect_source_xml.items():
                     if effect_source == code:
                         self.effect["source"] = human
                         break
 
-            if (effect_direction := xml.get("Di")) is not None:
+            effect_direction = xml.get("Di")
+            if effect_direction is not None:
                 for human, code in PageAbstract.effect_direction_xml.items():
                     if effect_direction == code:
                         self.effect["direction"] = human
