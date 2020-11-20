@@ -72,6 +72,8 @@ class Dim:
     +-------------------------+---------------+
     | Line per inch (LPI)     | lpi           |
     +-------------------------+---------------+
+    | Second                  | s, sec        |
+    +-------------------------+---------------+
     """
 
     # 1 pica point = 25,4/72 milimeters
@@ -86,6 +88,7 @@ class Dim:
         "deg": ["deg"],
         "dpi": ["dpi", "ppp", "ppi"],
         "lpi": ["lpi"],
+        "sec": ["s", "sec"]
     }
 
     def __init__(self, value, unit="pica", is_int=False, original_unit=False):
@@ -137,6 +140,12 @@ class Dim:
             if self.value < 0:
                 raise exceptions.InvalidDim(
                     "LPI must be a positive number"
+                )
+
+        if self.unit == "sec":
+            if int(float(self.value)) != float(self.value):
+                raise exceptions.InvalidDim(
+                    "Second Dim must be an integer, is {}".format(self.value)
                 )
 
         if self.unit == "cdeg":
@@ -201,6 +210,8 @@ class Dim:
         +-------------------------+---------------+
         | Line per inch (LPI)     | lpi           |
         +-------------------------+---------------+
+        | Second                  | s, sec        |
+        +-------------------------+---------------+
         """
 
         tmp_unit = unit.lower()
@@ -212,6 +223,10 @@ class Dim:
                 self.unit = code
                 valid_unit = True
                 break
+
+        if self.unit == "sec":
+            self.is_int = True
+            self.value = int(self.value)
 
         return valid_unit
 

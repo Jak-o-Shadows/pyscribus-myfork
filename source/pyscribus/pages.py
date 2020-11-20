@@ -56,8 +56,30 @@ class PageAbstract(PyScribusElement):
     """
 
     orientation_xml = {"portrait": "0", "landscape": "1"}
-
     autoguides_origin_xml = {"page": "0", "margins": "1"}
+
+    effect_source_xml = {"internal": "0", "external": "1"}
+    effect_mobile_line_xml = {"horizontal": "0", "vertical": 1}
+
+    effect_type_xml = {
+        "none": "0",
+        "masks": "1",
+        "box": "2",
+        "dissolve": "3",
+        "glitter": "4",
+        "break": "5",
+        "delete": "6"
+    }
+
+    # NOTE These directions are in the correct order, but Scribus only allows
+    # the user to select "left-to-right" in its GUI.
+    effect_direction_xml = {
+        "left-to-right": "0",
+        "top-to-bottom": "1",
+        "bottom-to-top": "2",
+        "right-to-left": "3",
+        "tl-to-br": "4",
+    }
 
     def __init__(self, **kwargs):
         PyScribusElement.__init__(self)
@@ -113,15 +135,26 @@ class PageAbstract(PyScribusElement):
             "selection": []
         }
 
+        #--- PDF effects -------------------------------------------------
+
+        self.effect = {
+            # @pageEffectDuration
+            "duration": dimensions.Dim(1, "sec"),
+            # @pageViewDuration
+            "view-duration": dimensions.Dim(1, "sec"),
+            # @effectType
+            "type": "none",
+            # @Dm
+            "mobile-lines": "horizontal",
+            # @M
+            "source": "internal",
+            # @Di
+            "direction": "left-to-right"
+        }
+
         #--- FIXME Not documented ----------------------------------------
 
         # Same as DOCUMENT/PDF/Effekte (PDF display effects) attributes ?
-        # pageEffectDuration="1"
-        # pageViewDuration="1"
-        # effectType="0"
-        # Dm="0"
-        # M="0"
-        # Di="0"/>
 
         #-----------------------------------------------------------------
 
@@ -347,7 +380,7 @@ class PageAbstract(PyScribusElement):
 
                 if ag_gap is not None:
                     ag_gap = float(ag_gap)
-                    self.auto_guides[case[0]]["gap"].value = ag_count
+                    self.auto_guides[case[0]]["gap"].value = ag_gap
 
                 if ag_origin is not None:
 
@@ -355,17 +388,47 @@ class PageAbstract(PyScribusElement):
                         if ag_origin == code:
                             self.auto_guides[case[0]]["origin"] = human
 
+            #--- PDF effects -------------------------------------------------
+
+            if (duration := xml.get("pageEffectDuration")) is not None:
+                self.effect["duration"].value = int(duration)
+
+            if (view_duration := xml.get("pageViewDuration")) is not None:
+                self.effect["view-duration"].value = int(view_duration)
+
+            if (effect_type := xml.get("effectType")) is not None:
+                for human, code in PageAbstract.effect_type_xml.items():
+                    if effect_type == code:
+                        self.effect["type"] = human
+                        break
+
+            if (effect_lines := xml.get("Dm")) is not None:
+                for human, code in PageAbstract.effect_mobile_line_xml.items():
+                    if effect_lines == code:
+                        self.effect["mobile-lines"] = human
+                        break
+
+            if (effect_source := xml.get("M")) is not None:
+                for human, code in PageAbstract.effect_source_xml.items():
+                    if effect_source == code:
+                        self.effect["source"] = human
+                        break
+
+            if (effect_direction := xml.get("Di")) is not None:
+                for human, code in PageAbstract.effect_direction_xml.items():
+                    if effect_direction == code:
+                        self.effect["direction"] = human
+                        break
+
             #--- FIXME This records undocumented attributes -------
 
             self.undocumented = all_undocumented_to_python(xml)
-
             # self.undocumented = undocumented_to_python(
                 # xml,
                 # [
                     # "LEFT", "PRESET",
                     # "AGSelection",
-                    # "pageEffectDuration", "pageViewDuration", "effectType",
-                    # "Dm", "M", "Di"
+                    # "pageEffectDuration", "pageViewDuration", "effectType", # "Dm", "M", "Di"
                 # ]
             # )
 
@@ -425,34 +488,49 @@ class PageAbstract(PyScribusElement):
 
         #--- Guides -------------------------------------------
 
-
         for guide_type,guides in self.guides.items():
             att_name = "{}Guides".format(guide_type.capitalize())
 
             # NOTE Example of att value : "42.5197 56.6929 "
 
-            guides_str = " ".join([g.toxmlstr() for g in guides])
+            guides_str = " ".join([g.toxmlstr(True) for g in guides])
 
             if guides_str.strip():
                 xml.attrib[att_name] = guides_str
+            else:
+                xml.attrib[att_name] = ""
 
         #--- Auto guides --------------------------------------
 
-        # Page lines count
-        # AGhorizontalAutoCount="2"
-        # Page lines gap (gouttière)
-        # AGhorizontalAutoGap="17.007874015748"
-        # Page lines origin
-        # 0 = Page 1 = Margins
-        # AGhorizontalAutoRefer="0"
+        for case in [["lines", "horizontal"], ["columns", "vertical"]]:
+            # Page lines / columns count
+            # AGhorizontalAutoCount="2"
+            # AGverticalAutoCount="3"
+            count_att = "AG{}AutoCount".format(case[1])
 
-        # Page columns count
-        # AGverticalAutoCount="3"
-        # Page columns gap (gouttière)
-        # AGverticalAutoGap="22.6771653543307"
-        # Page column origin
-        # 0 = Page 1 = Margins
-        # AGverticalAutoRefer="0"
+            # Page lines / columns gap (gouttière)
+            # AGhorizontalAutoGap="17.007874015748"
+            # AGverticalAutoGap="22.6771653543307"
+            gap_att = "AG{}AutoGap".format(case[1])
+
+            # Page lines / columns origin
+            # 0 = Page 1 = Margins
+            # AGhorizontalAutoRefer="0"
+            # AGverticalAutoRefer="0"
+            orig_att = "AG{}AutoRefer".format(case[1])
+
+            xml.attrib[count_att] = str(self.auto_guides[case[0]]["count"])
+            xml.attrib[gap_att] = self.auto_guides[case[0]]["gap"].toxmlstr()
+            xml.attrib[orig_att] = PageAbstract.autoguides_origin_xml[self.auto_guides[case[0]]["origin"]]
+
+        #--- PDF effects -------------------------------------------------
+
+        xml.attrib["pageEffectDuration"] = self.effect["duration"].toxmlstr()
+        xml.attrib["pageViewDuration"] = self.effect["view-duration"].toxmlstr()
+        xml.attrib["effectType"] = PageAbstract.effect_type_xml[self.effect["type"]]
+        xml.attrib["Dm"] = PageAbstract.effect_mobile_line_xml[self.effect["mobile-lines"]]
+        xml.attrib["M"] = PageAbstract.effect_source_xml[self.effect["source"]]
+        xml.attrib["Di"] = PageAbstract.effect_direction_xml[self.effect["direction"]]
 
         #--- FIXME This exports undocumented attributes -------
 
