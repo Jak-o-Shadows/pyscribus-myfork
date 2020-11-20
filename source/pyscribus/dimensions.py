@@ -1005,7 +1005,7 @@ class DimBox:
 
         # FIXME Remove that after implementation
         print("PyScribus - Box rotation not implemented.")
-        print("Rotation degree :", degree)
+        # print("Rotation degree :", degree)
 
         valid = True
 

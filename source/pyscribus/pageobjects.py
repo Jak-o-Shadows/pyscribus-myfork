@@ -145,6 +145,8 @@ class PageObject(xmlc.PyScribusElement):
         # Undocumented box from gXpos, gYpos, gWidth, gHeight
         self.gbox = dimensions.DimBox()
 
+        self.use_embedded_icc = False
+
         # --- Page object own_page and linking/id --------------------
 
         # NOTE FIXME Implemented because without it Scribus crashes, but
