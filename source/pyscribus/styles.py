@@ -548,7 +548,7 @@ class StyleAbstract(xmlc.PyScribusElement):
             if self.style_type not in ["paragraph", "character"]:
                 xml, undoc_attribs = xmlc.all_undocumented_to_xml(
                     xml, self.undocumented, True,
-                    self.style_type + " style"
+                    self.style_type + " style " + self.name
                 )
 
         except AttributeError:
@@ -769,6 +769,16 @@ class ParagraphStyle(StyleAbstract):
             else:
                 xml.attrib[case[1]] = self.indentations[case[0]].toxmlstr()
 
+        #--- Lists ------------------------------------------------------
+
+        if self.is_ul and self.is_ol:
+            raise exceptions.InsaneSLAValue(
+                "Style {} is both bullet and numeroted list.".format(name)
+            )
+        else:
+            for case in [["Bullet", self.is_ul], ["Numeration", self.is_ol]]:
+                xml.attrib[case[0]] = xmlc.bool_to_num(case[1])
+
         #--- Parent character style ---------------------------------
 
         # NOTE To not confuse with parent paragraph style which is
@@ -809,7 +819,7 @@ class ParagraphStyle(StyleAbstract):
         try:
             xml, undoc_attribs = xmlc.all_undocumented_to_xml(
                 xml, self.undocumented, True,
-                self.style_type + " style"
+                self.style_type + " style " + self.name
             )
 
         except AttributeError:
@@ -977,7 +987,7 @@ class CharacterStyle(StyleAbstract):
         try:
             xml, undoc_attribs = xmlc.all_undocumented_to_xml(
                 xml, self.undocumented, True,
-                self.style_type + " style"
+                self.style_type + " style " + self.name
             )
 
         except AttributeError:
