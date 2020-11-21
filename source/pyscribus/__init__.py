@@ -24,6 +24,6 @@ PyScribus
 from pyscribus.sla import SLA
 
 __author__ = "Etienne Nadji <etnadji@eml.cc>"
-__version__ = "0.1"
+__version__ = "0.2"
 
 # vim:set shiftwidth=4 softtabstop=4 spl=en:
