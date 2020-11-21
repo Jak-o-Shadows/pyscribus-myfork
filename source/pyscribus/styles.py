@@ -658,6 +658,11 @@ class ParagraphStyle(StyleAbstract):
             "first-line": None
         }
 
+        self.listing = {
+            "type": None,
+            "char": None
+        }
+
         self._quick_setup(kwargs)
 
     def fromxml(self, xml):
@@ -687,28 +692,27 @@ class ParagraphStyle(StyleAbstract):
 
             #--- Lists ------------------------------------------------------
 
-            self.is_ul,self.is_ol = False,False
+            is_ul,is_ol = False,False
 
             is_bullet = xml.get("Bullet")
             if is_bullet is not None:
                 if is_bullet == "1":
-                    self.is_ul = True
+                    self.listing["type"] = "ul"
+                    is_ul = True
 
             is_numeroted = xml.get("Numeration")
             if is_numeroted is not None:
                 if is_numeroted == "1":
-                    self.is_ol = True
+                    self.listing["type"] = "ol"
+                    is_ol = True
 
-            if self.is_ol and self.is_ul:
+            if is_ol and is_ul:
                 raise exceptions.InsaneSLAValue(
                     "Style {} is both bullet and numeroted list.".format(name)
                 )
 
-            if self.is_ul:
-                bullet_char = xml.get("BulletStr")
-                if bullet_char is not None:
-                    # TODO
-                    pass
+            if (bullet_char := xml.get("BulletStr")) is not None:
+                self.listing["char"] = bullet_char
 
             #--- Parent character style -------------------------------------
 
@@ -794,13 +798,17 @@ class ParagraphStyle(StyleAbstract):
 
         #--- Lists ------------------------------------------------------
 
-        if self.is_ul and self.is_ol:
-            raise exceptions.InsaneSLAValue(
-                "Style {} is both bullet and numeroted list.".format(name)
-            )
+        if self.listing["type"] == "ol":
+            att_seq = [False, True]
+        elif self.listing["type"] == "ul":
+            att_seq = [True, False]
         else:
-            for case in [["Bullet", self.is_ul], ["Numeration", self.is_ol]]:
-                xml.attrib[case[0]] = xmlc.bool_to_num(case[1])
+            att_seq = [False, False]
+
+        for case in zip(att_seq, ["Bullet", "Numeration"]):
+            xml.attrib[case[1]] = xmlc.bool_to_num(case[0])
+
+        xml.attrib["BulletStr"] = xmlc.none_or_str(self.listing["char"])
 
         #--- Parent character style ---------------------------------
 
