@@ -2,6 +2,12 @@
 
 Dates are in DD/MM/YYYY format.
 
+## 0.2 -> 0.2.1, 21/11/2020
+
+### Package
+
+Correct ``__version__`` as it still was "0.1" in "0.2"…
+
 ## 0.1 -> 0.2, 21/11/2020
 
 ### Package and dependencies
