@@ -515,13 +515,15 @@ class PageObject(xmlc.PyScribusElement):
 
             if self.ptype in ["polyline", "polygon"]:
 
-                if (line_end := xml.get("PLINEEND")) is not None:
+                line_end = xml.get("PLINEEND")
+                if line_end is not None:
                     for human, code in PageObject.line_endcap_xml.items():
                         if line_end == code:
                             self.outline["endcap"] = human
                             break
 
-                if (line_join := xml.get("PLINEJOIN")) is not None:
+                line_join = xml.get("PLINEJOIN")
+                if line_join is not None:
                     for human, code in PageObject.line_join_xml.items():
                         if line_join == code:
                             self.outline["join"] = human

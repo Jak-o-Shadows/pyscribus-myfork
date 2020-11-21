@@ -711,7 +711,8 @@ class ParagraphStyle(StyleAbstract):
                     "Style {} is both bullet and numeroted list.".format(name)
                 )
 
-            if (bullet_char := xml.get("BulletStr")) is not None:
+            bullet_char = xml.get("BulletStr")
+            if bullet_char is not None:
                 self.listing["char"] = bullet_char
 
             #--- Parent character style -------------------------------------
