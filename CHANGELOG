@@ -1,0 +1,56 @@
+# Changelog
+
+Dates are in DD/MM/YYYY format.
+
+## 0.1 -> 0.2, 22/11/2020
+
+### Package and dependencies
+
+- New dependency : svg.path.
+- Link to issues webpage
+- New package for python versions < 3.8 : pyscribus-backported
+
+### Pages / Master pages
+
+- Handling of PDF effects (``@pageEffectDuration``, ``@pageViewDuration``, ``@effectType``, ``@Dm``, ``@M``, ``@Di``) => ``PageAbstract.effect``
+- Actual export of guides and autoguides
+
+Most of the implementations discussed here happened in commit ``f86ddef4``.
+
+### Page objects
+
+Better / new handling of :
+
+- outline (``@PWIDTH``, ``@PLINEART``, ``@PCOLOR``, ``@PCOLOR2``, ``@PLINEEND``, ``@PLINEJOIN``) => ``PageObject.outline``.
+- image frames in image objects (``@EMBEDDED``, ``@RATIO``, ``@SCALETYPE``, ``@LOCALSCX``, ``@LOCALSCY``, ``@LOCALX``, ``@LOCALY``, ``@LOCALROT``, ``@PICART``) => ``PageObject.use_embedded_icc``, ``PageObject.image_scale``, ``PageObject.image_box``, ``PageObject.image_rotated_box``
+- group objects (``@groupWidth``, ``@groupHeight``) => ``GroupObject.group_box``
+
+Handling of ``@gXpos``, ``@gYpos``, ``@gWidth``, ``@gHeight``, even if I don’t know the utility of it => ``PageObject.gbox``
+
+Most of the implementations discussed here happened in commits ``a35231bc``, ``85695910``.
+
+### Styles
+
+#### Paragraph
+
+- Indentations (``@INDENT``, ``@RMARGIN``, ``@first``) => `ParagraphStyle.indentations`.
+- Ordered and bullet lists settings (``@Numeration``, ``@Bullet``, ``@BulletStr``) => ``ParagraphStyle.listing``.
+
+Most of the implementations discussed here happened in commits ``b0702c1e``, ``8706565e``,``85695910``.
+
+#### Character
+
+- Space width (``@wordTrack``) => ``CharacterStyle.font``.
+- Kerning (``@KERN``) => ``CharacterStyle.font``.
+
+Most of the implementations discussed here happened in commit ``b0702c1e``.
+
+### Extra
+
+#### Wireframe
+
+- Fixed ``Wireframe.from_sla()`` as ``sla.SLA.documents`` is now ``sla.SLA.document`` and not a list anymore.
+
+## 0.1, 26/05/2020
+
+First version.
