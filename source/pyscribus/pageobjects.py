@@ -90,6 +90,18 @@ class PageObject(xmlc.PyScribusElement):
         "dash-dot-dot": 5
     }
 
+    line_endcap_xml = {
+        "flat": "0",
+        "square": "16",
+        "round": "32"
+    }
+
+    line_join_xml = {
+        "miter": "0",
+        "bevel": "64",
+        "round": "128"
+    }
+
     image_scaling_type_xml = {
         "free": "0",
         "frame": "1",
@@ -168,7 +180,9 @@ class PageObject(xmlc.PyScribusElement):
             "type": "solid",
             "fill": "Black",
             "stroke": "Black",
-            "thickness": dimensions.Dim(0)
+            "thickness": dimensions.Dim(0),
+            "join": None,
+            "endcap": None
         }
 
         # --- Page object paths --------------------------------------
@@ -480,6 +494,22 @@ class PageObject(xmlc.PyScribusElement):
             if (thickness := xml.get("PWIDTH")) is not None:
                 self.outline["thickness"].value = float(thickness)
 
+            # Outline end/join for polyline and polygon
+
+            if self.ptype in ["polyline", "polygon"]:
+
+                if (line_end := xml.get("PLINEEND")) is not None:
+                    for human, code in PageObject.line_endcap_xml.items():
+                        if line_end == code:
+                            self.outline["endcap"] = human
+                            break
+
+                if (line_join := xml.get("PLINEJOIN")) is not None:
+                    for human, code in PageObject.line_join_xml.items():
+                        if line_join == code:
+                            self.outline["join"] = human
+                            break
+
             # --- ICC profiles -------------------------------------------
 
             if self.ptype in ["image", "render"]:
@@ -624,6 +654,13 @@ class PageObject(xmlc.PyScribusElement):
         xml.attrib["PLINEART"] = str(
             PageObject.line_type_xml[self.outline["type"]]
         )
+
+        if self.outline["join"] is not None:
+            xml.attrib["PLINEJOIN"] = PageObject.line_join_xml[self.outline["join"]]
+
+        if self.outline["endcap"] is not None:
+            xml.attrib["PLINEEND"] = PageObject.line_endcap_xml[self.outline["endcap"]]
+
         xml.attrib["PCOLOR"] = self.outline["fill"]
         xml.attrib["PCOLOR2"] = self.outline["stroke"]
         xml.attrib["PWIDTH"] = self.outline["thickness"].toxmlstr()
@@ -668,7 +705,7 @@ class PageObject(xmlc.PyScribusElement):
 
         #--- FIXME This exports undocumented attributes -------
 
-        if self.ptype not in ["table"]:
+        if self.ptype not in ["table", "group"]:
 
             try:
                 xml, undoc_attribs = xmlc.all_undocumented_to_xml(
@@ -1400,14 +1437,82 @@ class GroupObject(PageObject):
 
         self.group_objects = []
 
+        self.group_box = dimensions.DimBox()
+
         #--- Then, quick setup -------------------------------------------
 
         PageObject._quick_setup(self, kwargs)
 
+    def toxml(self):
+        """
+        :rtype: lxml._Element
+        :returns: Table object as LXML element
+        """
+
+        xml = PageObject.toxml(self)
+
+        if isinstance(xml, ET._Element):
+            xml.attrib["groupWidth"] = self.group_box.dims["width"].toxmlstr()
+            xml.attrib["groupHeight"] = self.group_box.dims["height"].toxmlstr()
+
+            # TODO FIXME Undocumented : @groupClips
+
+            #--- FIXME This exports undocumented attributes --------------
+
+            try:
+                xml, undoc_attribs = xmlc.all_undocumented_to_xml(
+                    xml, self.undocumented, True,
+                    self.ptype + " frame '" + self.name + "'"
+                )
+
+            except AttributeError:
+                # NOTE If fromxml was not used
+                pass
+
+            # --- Children -----------------------------------------------
+
+            for group_object in self.group_objects:
+                grx = group_object.toxml()
+
+                if isinstance(grx, ET._Element):
+                    xml.append(grx)
+
+            return xml
+
+        return False
+
     def fromxml(self, xml):
         succeed = PageObject.fromxml(self, xml)
 
+        # TODO Undocumented : @groupClips
+
         if succeed:
+            # --- Group box ----------------------------------------------
+
+            # NOTE Group box have the same values of PageObject.box, but
+            # is defined with other attributes
+
+            grxpos = xml.get("XPOS")
+            grypos = xml.get("YPOS")
+            grwidth = xml.get("groupWidth")
+            grheight = xml.get("groupHeight")
+
+            valid_box = 0
+
+            for test in [grxpos, grypos, grwidth, grheight]:
+                if test is not None:
+                    valid_box += 1
+
+            if valid_box == 4:
+
+                self.group_box.set_box(
+                    top_lx=grxpos,
+                    top_ly=grypos,
+                    width=grwidth,
+                    height=grheight
+                )
+
+            # ------------------------------------------------------------
 
             for element in xml:
 
