@@ -6,7 +6,7 @@ import setuptools
 with open("../README.pypi.rst", "r") as fh:
     long_description = fh.read()
 
-VERSION = "0.1"
+VERSION = "0.2"
 DESCRIPTION = "Read, create and update Scribus .sla files. (Python < 3.8 version)"
 
 REQUIRED = ['lxml', 'svg.path']
