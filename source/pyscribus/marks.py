@@ -62,7 +62,7 @@ class DocumentMark(xmlc.PyScribusElement):
 
         self.pyscribus_defaults = [k for k in mark_type_xml.keys()]
 
-    def fromdefault(self, default):
+    def fromdefault(self, default: str):
         """
         :type default: string
         :param default: Set of default settings to apply
@@ -76,13 +76,14 @@ class DocumentMark(xmlc.PyScribusElement):
         else:
             return False
 
-    def set_type(self, mtype):
+    def set_type(self, mtype: str):
         """
         :type mtype: string
         :param mtype: Mark type in pyscribus.marks.mark_type_xml keys()
         :rtype: boolean
         :returns: True if setting type succeed
         """
+
         global mark_type_xml
 
         if mtype in mark_type_xml.keys():
@@ -137,7 +138,7 @@ class DocumentMark(xmlc.PyScribusElement):
 
         return xml
 
-    def fromxml(self, xml):
+    def fromxml(self, xml: ET._Element):
         """
         :rtype: boolean
         :returns: True if XML parsing succeed

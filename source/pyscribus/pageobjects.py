@@ -205,9 +205,9 @@ class PageObject(xmlc.PyScribusElement):
     def fromdefault(self):
         self.shape = {"type": "rectangle", "edited": False}
 
-    def fromxml(self, xml, arbitrary_tag=False):
+    def fromxml(self, xml: ET._Element, arbitrary_tag: bool = False):
         """
-        :type xml: lxml._Element
+        :type xml: lxml.etree._Element
         :param xml: XML source of the page object (PAGEOBJECT)
         :rtype: boolean
         :returns: True if XML parsing succeed
@@ -549,10 +549,10 @@ class PageObject(xmlc.PyScribusElement):
         else:
             return False
 
-    def toxml(self, arbitrary_tag=False):
+    def toxml(self, arbitrary_tag: bool = False):
         """
-        :rtype: lxml._Element
-        :returns: Page object as lxml._Element
+        :rtype: lxml.etree._Element
+        :returns: Page object as lxml.etree._Element
         """
 
         global po_type_xml
@@ -943,12 +943,13 @@ class TableObject(PageObject):
 
         return False
 
-    def append_row(self, height=False, position=-1):
+    def append_row(self, height=False, position: int = -1):
         """
         Append a row at the end of the table.
 
         :type height: boolean,float
         :param height: Height of the new row
+        :type position: integer
         :param position: The row is appended after the 
             position-n row. If -1, the row is appended 
             after the last row of the table.
@@ -1060,7 +1061,7 @@ class TableObject(PageObject):
 
         return False
 
-    def append_rows(self, number=1, height=False, position=-1):
+    def append_rows(self, number: int = 1, height=False, position: int = -1):
         """
         Append rows at the end of the table.
 
@@ -1186,7 +1187,7 @@ class TableObject(PageObject):
 
         return False
 
-    def append_columns(self, number=1, width=False):
+    def append_columns(self, number: int = 1, width=False):
         """
         Append columns at the end of the table.
 
@@ -1216,7 +1217,7 @@ class TableObject(PageObject):
 
     def toxml(self):
         """
-        :rtype: lxml._Element
+        :rtype: lxml.etree._Element
         :returns: Table object as LXML element
         """
 
@@ -1315,7 +1316,7 @@ class TableObject(PageObject):
 
         return False
 
-    def fromxml(self, xml):
+    def fromxml(self, xml: ET._Element):
         succeed = PageObject.fromxml(self, xml)
 
         if succeed:
@@ -1445,7 +1446,7 @@ class GroupObject(PageObject):
 
     def toxml(self):
         """
-        :rtype: lxml._Element
+        :rtype: lxml.etree._Element
         :returns: Table object as LXML element
         """
 
@@ -1481,7 +1482,7 @@ class GroupObject(PageObject):
 
         return False
 
-    def fromxml(self, xml):
+    def fromxml(self, xml: ET._Element):
         succeed = PageObject.fromxml(self, xml)
 
         # TODO Undocumented : @groupClips
@@ -2314,12 +2315,12 @@ class TableCell(xmlc.PyScribusElement):
                 if setting_name == "height":
                     self.box.dims["height"].value = float(setting_value)
 
-    def fromxml(self, xml):
+    def fromxml(self, xml: ET._Element):
         """
         Parses XML of a SLA table cell.
 
-        :type xml: lxml._Element
-        :param xml: SLA table cell as lxml._Element
+        :type xml: lxml.etree._Element
+        :param xml: SLA table cell as lxml.etree._Element
 
         :rtype: bool
         :returns: bool
@@ -2407,7 +2408,7 @@ class TableCell(xmlc.PyScribusElement):
         """
         Return the cell as XML element.
 
-        :rtype: lxml._Element
+        :rtype: lxml.etree._Element
         """
 
         xml = ET.Element("Cell")
@@ -2498,7 +2499,7 @@ class RenderBuffer(xmlc.PyScribusElement):
         # NOTE Standard printing DPI
         self.dpi.value = 300
 
-    def has_package(self, name):
+    def has_package(self, name: str):
         """
         Check if package name exists in the LaTeX preamble.
 
@@ -2518,7 +2519,7 @@ class RenderBuffer(xmlc.PyScribusElement):
             "Property additionalheaders doesn't exists in render buffer object."
         )
 
-    def append_package(self, name, options=""):
+    def append_package(self, name: str, options: str = ""):
         """
         Append a package in the LaTeX preamble.
 
@@ -2575,7 +2576,7 @@ class RenderBuffer(xmlc.PyScribusElement):
 
         return True
 
-    def fromxml(self, xml):
+    def fromxml(self, xml: ET._Element):
         """
         :rtype: boolean
         :returns: True if XML parsing succeed
@@ -2636,6 +2637,7 @@ class RenderBuffer(xmlc.PyScribusElement):
 
         return xml
 
+
 class RenderProperty(xmlc.PyScribusElement):
     """
     Render frame / object property in SLA.
@@ -2654,7 +2656,7 @@ class RenderProperty(xmlc.PyScribusElement):
     .. seealso:: :class:`HeadersRenderProperty`
     """
 
-    def __init__(self, name="", value=False):
+    def __init__(self, name: str = "", value=False):
         xmlc.PyScribusElement.__init__(self)
 
         self.name = name
@@ -2664,12 +2666,12 @@ class RenderProperty(xmlc.PyScribusElement):
         self.raw_value = value
         self.value = copy.deepcopy(value)
 
-    def fromxml(self, xml):
+    def fromxml(self, xml: ET._Element):
         """
         Define render property from lxml element.
 
-        :type xml: lxml._Element
-        :param xml: Render property as lxml._Element
+        :type xml: lxml.etree._Element
+        :param xml: Render property as lxml.etree._Element
         :rtype: boolean
         :returns: True if XML parsing succeed
         """
@@ -2687,14 +2689,15 @@ class RenderProperty(xmlc.PyScribusElement):
 
     def toxml(self):
         """
-        :returns: lxml._Element representation of render frame property
-        :rtype: lxml._Element
+        :returns: lxml.etree._Element representation of render frame property
+        :rtype: lxml.etree._Element
         """
         xml = ET.Element("PROPERTY")
         xml.attrib["name"] = self.name
         xml.attrib["value"] = self.raw_value
 
         return xml
+
 
 class HeadersRenderProperty(RenderProperty):
     """
@@ -2716,7 +2719,7 @@ class HeadersRenderProperty(RenderProperty):
         if value:
             self.packages = value.split("&#10;")
 
-    def fromxml(self, xml):
+    def fromxml(self, xml: ET._Element):
         success = RenderProperty.fromxml(self, xml)
 
         if success:
@@ -2724,7 +2727,7 @@ class HeadersRenderProperty(RenderProperty):
 
         return success
 
-    def has_package(self, name):
+    def has_package(self, name: str):
         """
         Check if package name exists in the LaTeX preamble.
 
@@ -2742,7 +2745,7 @@ class HeadersRenderProperty(RenderProperty):
 
         return False
 
-    def append_package(self, name, options=""):
+    def append_package(self, name: str, options: str = ""):
         """
         Append a package in the LaTeX preamble.
 
@@ -2784,7 +2787,7 @@ class WeldEntry(xmlc.PyScribusElement):
         # TODO Savoir si c’est des Dim
         self.coords = {"x": 0, "y": 0}
 
-    def fromxml(self, xml):
+    def fromxml(self, xml: ET._Element):
         if xml.tag == "WeldEntry":
             wx,wy = xml.get("WX"),xml.get("WY")
 
@@ -2843,7 +2846,7 @@ class RectPath:
 
         return False
 
-    def fromxml(self, xmlstring):
+    def fromxml(self, xmlstring: str):
         # NOTE
         # svg.path library use complex number, which I don’t know anything
         # about, but fortunately, I can check xmlstring for similarities
@@ -2869,7 +2872,7 @@ class RectPath:
 
         return True
 
-    def frombox(self, box):
+    def frombox(self, box: dimensions.DimBox):
         """
         Set the points from a DimBox.
 
@@ -2938,7 +2941,7 @@ class PathPoint:
         from SLA sources.
     """
 
-    def __init__(self, x=0, y=0, fromsla=False):
+    def __init__(self, x: float = 0, y: float = 0, fromsla: bool = False):
 
         if fromsla:
             self.x = x
@@ -2947,7 +2950,7 @@ class PathPoint:
             self.x = self._round_coord(x)
             self.y = self._round_coord(y)
 
-    def _round_coord(self, n):
+    def _round_coord(self, n: float):
         """
         Round up the float n to the third decimal.
 
@@ -2972,6 +2975,7 @@ class PathPoint:
         """
         Returns SVG path @d command version of self.
 
+        :type move: boolean
         :rtype: str
         :returns: SVG path command
         """
@@ -3011,7 +3015,7 @@ po_type_classes = {
 
 # Fonctions =============================================================#
 
-def adjust_path_d(d):
+def adjust_path_d(d: str):
     """
     Adjusts SVG path @d returned by svg.path Path.d() to what Scribus
     actually wrotes in SLA files.
@@ -3027,7 +3031,7 @@ def adjust_path_d(d):
 # classes selections. We just need to modify po_type_xml, po_type_classes
 # and PageObject class to extend page object valid types.
 
-def new_from_type(ptype, sla_parent=False, doc_parent=False, **kwargs):
+def new_from_type(ptype: str, sla_parent=False, doc_parent=False, **kwargs):
     """
     Returns an instance of the correct class of page object according
     to ptype value.

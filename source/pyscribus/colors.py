@@ -107,7 +107,7 @@ class Color(xmlc.PyScribusElement):
 
     #--- Color management --------------------------------------
 
-    def set_space_colors(self, space, colors):
+    def set_space_colors(self, space: str, colors: list):
         """
         Set color space and color inks of the colors.
 
@@ -133,7 +133,13 @@ class Color(xmlc.PyScribusElement):
         if spaced:
             self.set_colors(colors)
 
-    def set_colors(self, colors, space=False):
+    def set_colors(self, colors: list, space=False):
+        """
+        :type colors: list
+        :param colors: List of inks values (float).
+        :type space: string
+        :param space: Optionnal. Color space. Either "cmyk" or "rgb".
+        """
 
         if not space:
             if self.is_cmyk:
@@ -182,7 +188,7 @@ class Color(xmlc.PyScribusElement):
 
         return False
 
-    def set_space(self, space):
+    def set_space(self, space: str):
         """
         Set the color space (CMYK / RGB) of the color.
 
@@ -205,7 +211,7 @@ class Color(xmlc.PyScribusElement):
 
     #--- PyScribus standard methods ----------------------------
 
-    def fromdefault(self, default="Black"):
+    def fromdefault(self, default: str = "Black"):
 
         if default in self.pyscribus_defaults:
 
@@ -223,9 +229,9 @@ class Color(xmlc.PyScribusElement):
 
         return False
 
-    def fromxml(self, xml):
+    def fromxml(self, xml: ET._Element):
         """
-        :type xml: lxml._Element
+        :type xml: lxml.etree._Element
         :param xml: XML source of color
         :rtype: boolean
         :returns: True if XML parsing succeed
@@ -280,7 +286,7 @@ class Color(xmlc.PyScribusElement):
 
     def toxml(self):
         """
-        :rtype: lxml._Element
+        :rtype: lxml.etree._Element
         :returns: Color as XML element
         """
 
@@ -436,7 +442,7 @@ class GradientColorStop(xmlc.PyScribusElement):
 
         return True
 
-    def _quick_setup(self, settings):
+    def _quick_setup(self, settings: dict):
         """
         Method for defining gradient stop settings from class
         instanciation kwargs.
@@ -472,7 +478,7 @@ class GradientColorStop(xmlc.PyScribusElement):
         self.opacity = dimensions.Dim(100, "pc")
         self.position = dimensions.Dim(0, "pcdecim")
 
-    def fromxml(self, xml):
+    def fromxml(self, xml: ET._Element):
         if xml.tag == "CSTOP":
             if (color := xml.get("NAME")) is not None:
                 self.color = color

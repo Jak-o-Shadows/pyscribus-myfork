@@ -113,7 +113,7 @@ class ItemAttribute(PyScribusElement):
 
     #--- PyScribus standard methods ----------------------------
 
-    def fromxml(self, xml):
+    def fromxml(self, xml: ET._Element):
         name = xml.get("Name")
 
         if name is not None:

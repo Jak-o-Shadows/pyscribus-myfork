@@ -667,8 +667,9 @@ class Document(PyScribusElement):
 
     #========================================================================
 
-    def fromxml(self, xml):
+    def fromxml(self, xml: ET._Element):
         # --- DOCUMENT attributes ----------------------------------------
+
         # TODO DOCUMENT many attribs…
 
         # Metadatas
@@ -917,7 +918,7 @@ class Document(PyScribusElement):
 
         return True
 
-    def toxml(self, optional=True):
+    def toxml(self, optional: bool = True):
         xml = ET.Element("DOCUMENT")
 
         # --- DOCUMENT attributes ----------------------------------------
@@ -1160,7 +1161,17 @@ class Document(PyScribusElement):
 
     #========================================================================
 
-    def pageobjects(self, object_type=False, templatable=False):
+    def pageobjects(self, object_type=False, templatable: bool = False):
+        """
+        Return document page objets.
+
+        :type object_type: string,bool
+        :param object_type: Page object type to filter, or do not filter at all.
+            See pageobjects.po_type_classes for valid values.
+        :type templatable: bool
+        :param templatable: Only return templatable page objects.
+        """
+
         pos_ret = []
 
         # If there is a object type filter, we filter before checking
@@ -1578,7 +1589,7 @@ class Profile(PyScribusElement):
         else:
             return False
 
-    def fromxml(self, xml):
+    def fromxml(self, xml: ET._Element):
         name = xml.get("Name")
 
         if name is not None:
@@ -1609,7 +1620,7 @@ class Profile(PyScribusElement):
 
         return True
 
-    def fromdefault(self, name):
+    def fromdefault(self, name: str):
         """
         """
 
@@ -1796,7 +1807,7 @@ class Layer(PyScribusElement):
         self.flow = True
         self.selectable = False
 
-    def fromxml(self, xml):
+    def fromxml(self, xml: ET._Element):
         number = xml.get("NUMMER")
 
         if number is not None:

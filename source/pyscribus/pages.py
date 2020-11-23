@@ -161,7 +161,7 @@ class PageAbstract(PyScribusElement):
         if kwargs:
             self._quick_setup(kwargs)
 
-    def _quick_setup(self, settings):
+    def _quick_setup(self, settings: dict):
         """
         Method for defining (master)page settings from class
         instanciation kwargs.
@@ -249,14 +249,14 @@ class PageAbstract(PyScribusElement):
 
                 # -------------------------------------------------------------
 
-    def set_orientation(self, orientation):
+    def set_orientation(self, orientation: str):
         """
         Set (master) page orientation.
 
-        :param orientation: "portrait" or "landscape"
         :type orientation: string
-        :returns: boolean
+        :param orientation: "portrait" or "landscape"
         :rtype: boolean
+        :returns: boolean
         """
 
         if orientation.lower() in PageAbstract.orientation_xml.keys():
@@ -271,17 +271,18 @@ class PageAbstract(PyScribusElement):
                 "portrait' or 'landscape'"
             )
 
-    def fromxml(self, xml, master=False):
+    def fromxml(self, xml: ET._Element, master: bool = False):
         """
         Set (master) page attributes according to LXML Element
 
+        :type xml: lxml.etree._Element
         :param xml: (Master) page source as XML element
-        :type xml: lxml._Element
-        :param master: If the page is a master page or not
         :type master: boolean
-        :returns: boolean
+        :param master: If the page is a master page or not
         :rtype: boolean
+        :returns: boolean
         """
+
         if master:
             tag = "MASTERPAGE"
         else:
@@ -425,7 +426,6 @@ class PageAbstract(PyScribusElement):
                 # [
                     # "LEFT", "PRESET",
                     # "AGSelection",
-                    # "pageEffectDuration", "pageViewDuration", "effectType", # "Dm", "M", "Di"
                 # ]
             # )
 
@@ -433,14 +433,14 @@ class PageAbstract(PyScribusElement):
 
         return False
 
-    def toxml(self, master=False):
+    def toxml(self, master: bool = False):
         """
         Returns (master) page as LXML Element
 
-        :param master: If the page is a master page or not
         :type master: bool
+        :param master: If the page is a master page or not
+        :rtype: lxml.etree._Element
         :returns: xml
-        :rtype: lxml._Element
         """
 
         #--- Appropriate tag if master page or page -----------
@@ -543,14 +543,14 @@ class PageAbstract(PyScribusElement):
 
         return xml
 
-    def fromdefault(self, master=False, default=False):
+    def fromdefault(self, master: bool = False, default=False):
         """
         Set (master) page attributes according to known defaults.
 
-        :param master: If the page is a master page or not
-        :param default: Name of the set of defaults ("a4", "letter")
         :type master: bool
+        :param master: If the page is a master page or not
         :type default: str
+        :param default: Name of the set of defaults ("a4", "letter")
         """
 
         for border in self.borders.values():
@@ -642,18 +642,18 @@ class Page(PageAbstract):
         Returns page as LXML Element
 
         :returns: xml
-        :rtype: lxml._Element
+        :rtype: lxml.etree._Element
         """
         return PageAbstract.toxml(self, False)
 
-    def fromxml(self, xml):
+    def fromxml(self, xml: ET._Element):
         """
         Set page attributes according to LXML Element
 
+        :type xml: lxml.etree._Element
         :param xml: Page source as XML element
-        :type xml: lxml._Element
-        :returns: bool
         :rtype: bool
+        :returns: bool
         """
         return PageAbstract.fromxml(self, xml, False)
 
@@ -661,19 +661,19 @@ class Page(PageAbstract):
         """
         Set page attributes according to known defaults.
 
-        :param default: Name of the set of defaults ("a4", "letter")
         :type default: str
+        :param default: Name of the set of defaults ("a4", "letter")
         """
         PageAbstract.fromdefault(self, False, default)
 
-    def set_orientation(self, orientation):
+    def set_orientation(self, orientation: str):
         """
         Set page orientation.
 
-        :param orientation: "portrait" or "landscape"
         :type orientation: str
-        :returns: bool
+        :param orientation: "portrait" or "landscape"
         :rtype: bool
+        :returns: bool
         """
         return PageAbstract.set_orientation(self, orientation)
 
@@ -744,18 +744,18 @@ class MasterPage(PageAbstract):
         Returns master page object as LXML Element
 
         :returns: xml
-        :rtype: lxml._Element
+        :rtype: lxml.etree._Element
         """
         return PageAbstract.toxml(self, True)
 
-    def fromxml(self, xml):
+    def fromxml(self, xml: ET._Element):
         """
         Set master page attributes according to LXML Element
 
+        :type xml: lxml.etree._Element
         :param xml: Master page source as XML element
-        :type xml: lxml._Element
-        :returns: bool
         :rtype: bool
+        :returns: bool
         """
         return PageAbstract.fromxml(self, xml, True)
 
@@ -768,14 +768,14 @@ class MasterPage(PageAbstract):
         """
         PageAbstract.fromdefault(self, True, default)
 
-    def set_orientation(self, orientation):
+    def set_orientation(self, orientation: str):
         """
         Set master page orientation.
 
-        :param orientation: "portrait" or "landscape"
         :type orientation: str
-        :returns: bool
+        :param orientation: "portrait" or "landscape"
         :rtype: bool
+        :returns: bool
         """
         return PageAbstract.set_orientation(self, orientation)
 
@@ -816,9 +816,7 @@ class PageSet(PyScribusElement):
         self.columns = 0
         self.pages = []
 
-    def fromdefault(self, default):
-        """
-        """
+    def fromdefault(self, default: str):
 
         if default in self.pyscribus_defaults:
 
@@ -836,8 +834,8 @@ class PageSet(PyScribusElement):
 
     def toxml(self):
         """
+        :rtype: lxml.etree._Element
         :returns: xml
-        :rtype: lxml._Element
         """
 
         xml = ET.Element("Set")
@@ -869,12 +867,12 @@ class PageSet(PyScribusElement):
 
         return xml
 
-    def fromxml(self, xml):
+    def fromxml(self, xml: ET._Element):
         """
+        :type xml: lxml.etree._Element
         :param xml: Page set as XML element
-        :type xml: lxml._Element
-        :returns: bool
         :rtype: bool
+        :returns: bool
         """
 
         if xml.tag == "Set":

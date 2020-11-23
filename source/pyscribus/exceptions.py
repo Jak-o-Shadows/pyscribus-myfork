@@ -58,9 +58,9 @@ class ConflictingLayer(Exception):
 
 class UnknownOrEmptyItemAttributeType(Exception):
     """
-    Exception raised when a itemattribute.ItemAttribute (and inherited
+    Exception raised when a ``itemattribute.ItemAttribute`` (and inherited
     classes) has a unknown or empty type, as it is not in
-    itemattribute.ItemAttribute.attrib_types
+    ``itemattribute.ItemAttribute.attrib_types``
     """
     pass
 
@@ -85,8 +85,8 @@ class InvalidColor(Exception):
     Exception raised when color inks (CMYK or RGB) are invalid, incomplete
     or doesn't even exists.
 
-    RGB inks must range from 0 to 255.
-    CMYK inks must range from 0 to 100.
+    - RGB inks must range from 0 to 255.
+    - CMYK inks must range from 0 to 100.
     """
     pass
 
@@ -105,18 +105,20 @@ class UnknownDimUnit(Exception):
 
 class InvalidDim(Exception):
     """
-    Exception raised if a dimensions.Dim value is impossible according to its
-    unit.
+    Exception raised if a ``dimensions.Dim`` value is impossible according
+    to its unit.
 
-    Pica points must no be inferior to 0.
-    (Ordinary) angle (deg unit) must range from 0 to 180.
-    Calligraphic pen angle (cdeg unit) must range from 0 to 180.
+    - Pica points must no be inferior to 0.
+    - (Ordinary) angle (deg unit) must range from 0 to 180.
+    - Calligraphic pen angle (cdeg unit) must range from 0 to 180.
     """
     pass
 
 
 class IncompatibleDim(Exception):
-    """Exception raised on incompatible dimensions.Dim units conversions."""
+    """
+    Exception raised on incompatible ``dimensions.Dim`` units conversions.
+    """
     pass
 
 # vim:set shiftwidth=4 softtabstop=4 spl=en:

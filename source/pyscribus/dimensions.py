@@ -91,7 +91,9 @@ class Dim:
         "sec": ["s", "sec"]
     }
 
-    def __init__(self, value, unit="pica", is_int=False, original_unit=False):
+    def __init__(
+            self, value, unit: str = "pica", is_int: bool = False,
+            original_unit: bool = False):
         self.is_int = False
 
         if is_int:
@@ -180,7 +182,7 @@ class Dim:
 
         return True
 
-    def set_unit(self, unit="pica"):
+    def set_unit(self, unit: str = "pica"):
         """
         Set the unit used.
 
@@ -232,7 +234,7 @@ class Dim:
 
     #--- XML export ------------------------------------------------------
 
-    def toxmlstr(self, no_useless_decimals=False):
+    def toxmlstr(self, no_useless_decimals: bool = False):
         """
         Returns a XML string of the dimension according to its unit.
 
@@ -284,7 +286,7 @@ class Dim:
 
     #--- Conversion into other units -------------------------------------
 
-    def _ceil(self, value, ceil=False):
+    def _ceil(self, value, ceil: bool = False):
         """
         Ceil value if ceil is True.
 
@@ -301,7 +303,7 @@ class Dim:
         else:
             return value
 
-    def _convertorval(self, obj, value, unit):
+    def _convertorval(self, obj, value, unit: str):
         """
         Returns a Dim object with unit <unit> if <obj>, or <value>.
 
@@ -325,7 +327,7 @@ class Dim:
 
         return True
 
-    def topica(self, ceil=False, obj=False):
+    def topica(self, ceil: bool = False, obj: bool = False):
         """
         Returns the value of Dim in pica point unit.
         Raise ValueError if Dim is not convertable
@@ -351,7 +353,7 @@ class Dim:
                 obj, self._ceil(self.value / Dim.PICA_TO_MM, ceil), "pica"
             )
 
-    def todpi(self, ceil=False, obj=False):
+    def todpi(self, ceil: bool = False, obj: bool = False):
         """
         Returns the value of Dim in DPI unit.
         Raise ValueError if Dim is not convertable
@@ -371,7 +373,7 @@ class Dim:
                 "Can't convert that into DPI"
             )
 
-    def topc(self, ceil, obj=False):
+    def topc(self, ceil: bool, obj: bool = False):
         """
         Returns the value of Dim as integer percentage.
         Raise ValueError if Dim is not convertable
@@ -391,7 +393,7 @@ class Dim:
                 "Can't convert that into percentage"
             )
 
-    def tolpi(self, ceil=False, obj=False):
+    def tolpi(self, ceil: bool = False, obj: bool = False):
         """
         Returns the value of Dim in LPI unit.
         Raise ValueError if Dim is not convertable
@@ -411,7 +413,7 @@ class Dim:
                 "Can't convert that into LPI"
             )
 
-    def tomm(self, ceil=False, obj=False):
+    def tomm(self, ceil: bool = False, obj: bool = False):
         """
         Returns the value of Dim in milimeter unit.
 
@@ -438,7 +440,7 @@ class Dim:
 
     #--- Defaults --------------------------------------------------------
 
-    def fromdefault(self, default):
+    def fromdefault(self, default: str):
         """
         Set Dim attributes according to a named default.
 
@@ -614,7 +616,7 @@ class DimBox:
 
     #--- Shorthands for corners coordinates ------------------------------
 
-    def _setxy(self, corner, value, xy, rotated=False):
+    def _setxy(self, corner, value, xy, rotated: bool = False):
         if corner.lower() in [
                 "top-left", "top-right",
                 "bottom-left", "bottom-right"]:
@@ -634,7 +636,7 @@ class DimBox:
         else:
             raise KeyError()
 
-    def _getxy(self, corner, xy, rotated=False):
+    def _getxy(self, corner, xy, rotated: bool = False):
         if corner.lower() in [
                 "top-left", "top-right",
                 "bottom-left", "bottom-right"]:
@@ -651,21 +653,21 @@ class DimBox:
         else:
             raise KeyError()
 
-    def setx(self, corner, value, rotated=False):
+    def setx(self, corner, value, rotated: bool = False):
         return self._setxy(corner, value, "x", rotated)
 
-    def sety(self, corner, value, rotated=False):
+    def sety(self, corner, value, rotated: bool = False):
         return self._setxy(corner, value, "y", rotated)
 
-    def getx(self, corner, rotated=False):
+    def getx(self, corner, rotated: bool = False):
         return self._getxy(corner, "x", rotated)
 
-    def gety(self, corner, rotated=False):
+    def gety(self, corner, rotated: bool = False):
         return self._getxy(corner, "y", rotated)
 
     #--- Box modification ------------------------------------------------
 
-    def move(self, posx=0, posy=0, refpoint="top-left"):
+    def move(self, posx: float = 0, posy: float = 0, refpoint: str = "top-left"):
         """
         Move the box at posx, posy position.
 
@@ -705,7 +707,9 @@ class DimBox:
 
         return False
 
-    def translate(self, amountx=0, amounty=0, refpoint="top-left"):
+    def translate(
+            self, amountx: float = 0, amounty: float = 0,
+            refpoint: str = "top-left"):
         """
         Move the box by an amount of amountx, amounty
 
@@ -935,7 +939,7 @@ class DimBox:
         else:
             return False
 
-    def resize_side(self, side, value):
+    def resize_side(self, side: str, value: float):
         """
         Resize the box from a side.
 
@@ -978,7 +982,7 @@ class DimBox:
         else:
             return False
 
-    def rotate(self, degree):
+    def rotate(self, degree: float):
         """
         Rotate the box by degree.
 

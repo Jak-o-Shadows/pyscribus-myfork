@@ -76,7 +76,7 @@ class Pattern(PyScribusElement):
             "y": None
         }
 
-    def fromxml(self, xml):
+    def fromxml(self, xml: ET._Element):
         """
         """
 
@@ -164,9 +164,7 @@ class PatternItem(pageobjects.PageObject):
         pageobjects.PageObject.__init__(self, "polygon", sla_parent, doc_parent)
         pageobjects.PageObject._quick_setup(self, kwargs)
 
-    def fromxml(self, xml):
-        """
-        """
+    def fromxml(self, xml: ET._Element):
 
         success = pageobjects.PageObject.fromxml(
             self, xml, arbitrary_tag="PatternItem"

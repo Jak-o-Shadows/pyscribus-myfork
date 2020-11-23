@@ -135,7 +135,8 @@ class SLA(xmlc.PyScribusElement):
         Add the document to SLA Documents and set its sla_parent as self
 
         :type sla_object: pyscribus.document.Document, other
-        :param sla_object: Document or any PyScribus object appendable to a document.
+        :param sla_object: Document or any PyScribus object appendable to a 
+            document.
         :type document_index: int
         :param document_index: Index of document if sla_object is not one
         :rtype: boolean
@@ -153,7 +154,7 @@ class SLA(xmlc.PyScribusElement):
             else:
                 return self.document.append(sla_object)
 
-    def save(self, filepath):
+    def save(self, filepath: str):
         """
         Save SLA file.
 
@@ -177,14 +178,14 @@ class SLA(xmlc.PyScribusElement):
         with open(filepath, "w", encoding="utf8") as slaf:
             slaf.write(xml_string)
 
-    def toxml(self, optional=True):
+    def toxml(self, optional: bool = True):
         """
         Return SLA as lxml.etree._Element
 
         :type optional: bool
         :param optional: Includes optional attributes (True by default)
         :returns: xml
-        :rtype: lxml._Element
+        :rtype: lxml.etree._Element
         """
 
         xml = ET.Element("SCRIBUSUTF8NEW")
@@ -201,7 +202,7 @@ class SLA(xmlc.PyScribusElement):
 
         return xml
 
-    def stories(self, templatable=False):
+    def stories(self, templatable: bool = False):
         """
         Returns all stories from text frames (TextObject) in SLA.
 
@@ -223,8 +224,15 @@ class SLA(xmlc.PyScribusElement):
 
         return stories
 
-    def pageobjects(self, object_type=False, templatable=False):
+    def pageobjects(self, object_type=False, templatable: bool = False):
         """
+        Return document page objets.
+
+        :type object_type: string,bool
+        :param object_type: Page object type to filter, or do not filter at all.
+            See pageobjects.po_type_classes for valid values.
+        :type templatable: bool
+        :param templatable: Only return templatable page objects.
         """
 
         return self.document.pageobjects(object_type, templatable)
@@ -237,7 +245,7 @@ class SLA(xmlc.PyScribusElement):
 
         return self.stories(templatable=True)
 
-    def parse(self, filepath, kwargs):
+    def parse(self, filepath: str, kwargs: dict):
         """
         Import SLA data from a file path.
 
@@ -254,11 +262,14 @@ class SLA(xmlc.PyScribusElement):
 
         return success
 
-    def fromxml(self, xml):
+    def fromxml(self, xml: ET._Element):
         """
-        Set SLA content according to <xml> (lxml.etree._Element).
+        Set SLA content according to an XML tree.
 
         Use SLA.parse() if you want to import from a file path.
+
+        :type xml: lxml.etree._Element
+        :param xml: SLA file XML element
 
         :returns: True if successfull parsing
         :rtype: boolean

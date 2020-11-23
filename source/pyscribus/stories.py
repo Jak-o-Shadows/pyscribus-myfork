@@ -59,7 +59,7 @@ class StoryEnding(PyScribusElement):
 
         return xml
 
-    def fromxml(self, xml):
+    def fromxml(self, xml: ET._Element):
         if xml.tag == "trail":
 
             if (align := xml.get("ALIGN")) is not None:
@@ -132,7 +132,7 @@ class StoryParagraphEnding(PyScribusElement):
     def __repr__(self):
         return "PARAGEND|{}".format(self.parent)
 
-    def fromxml(self, xml, check_style=True):
+    def fromxml(self, xml: ET._Element, check_style: bool = True):
         if (parentpar := xml.get("PARENT")) is None:
             self.parent = False
         else:
@@ -252,7 +252,7 @@ class StoryFragment(PyScribusElement):
         if kwargs:
             self._quick_setup(kwargs)
 
-    def _quick_setup(self, settings):
+    def _quick_setup(self, settings: dict):
         """
         Method for defining story fragment settings from class
         instanciation kwargs.
@@ -372,7 +372,7 @@ class StoryFragment(PyScribusElement):
 
         return xml
 
-    def fromxml(self, xml):
+    def fromxml(self, xml: ET._Element):
         if (fragtext := xml.get("CH")) is not None:
 
             # NOTE Don't do any strip, rstrip to @CH, as it may
@@ -396,7 +396,7 @@ class StoryFragment(PyScribusElement):
         else:
             return False
 
-    def set_features(self, features):
+    def set_features(self, features: str):
         # TODO
 
         features = features.split()
@@ -436,7 +436,7 @@ class StoryVariable(PyScribusElement):
 
         return element
 
-    def fromxml(self, xml):
+    def fromxml(self, xml: ET._Element):
         """
         :rtype: boolean
         :returns: True if XML parsing succeed
@@ -487,7 +487,7 @@ def sequencefromhtml(
             "italic": "Arial Italic",
             "bold": "Arial Bold",
             "bold-italic": "Arial Bold Italic"},
-        alternate_emphasis=False,
+        alternate_emphasis: bool = False,
         sla_document=False):
     """
     :type html: string
@@ -856,7 +856,7 @@ class Story(PyScribusElement):
 
         return True
 
-    def append_paragraphs(self, paragraphs=[]):
+    def append_paragraphs(self, paragraphs: list = []):
         """
         Append multiple paragraphs at the end of the story.
 
@@ -895,7 +895,7 @@ class Story(PyScribusElement):
         else:
             return False
 
-    def _append_paragraph(self, kwargs):
+    def _append_paragraph(self, kwargs: dict):
         """
         Private method to append paragraph.
 
@@ -992,7 +992,7 @@ class Story(PyScribusElement):
         """
         Return the story as XML element.
 
-        :rtype: lxml._Element
+        :rtype: lxml.etree._Element
         """
 
         xml = ET.Element("StoryText")
@@ -1003,12 +1003,12 @@ class Story(PyScribusElement):
 
         return xml
 
-    def fromxml(self, xml, check_style=True):
+    def fromxml(self, xml: ET._Element, check_style: bool = True):
         """
         Parses XML of a SLA Story.
 
-        :type xml: lxml._Element
-        :param xml: SLA Story as lxml._Element
+        :type xml: lxml.etree._Element
+        :param xml: SLA Story as lxml.etree._Element
         :type check_style: bool
         :param check_style: Check if story paragraphs use known paragraph 
             styles of Story.doc_parent Document. True by default.
@@ -1134,7 +1134,7 @@ class Story(PyScribusElement):
 
         return True
 
-    def end_contents(self, no_trailing_paragraph=False):
+    def end_contents(self, no_trailing_paragraph: bool = False):
         """
         Ends the story's content by making sure that the story sequence
         is valid.
@@ -1254,8 +1254,6 @@ class Story(PyScribusElement):
         return contents
 
     def feed_templatable(self, datas={}):
-        """
-        """
 
         elements = self.templatable()
 

@@ -48,9 +48,9 @@ class FloatEnum(enum.Enum):
 
 # Fonctions =============================================================#
 
-def necessary_float(f):
+def necessary_float(f: float):
     """
-    Return integer if float f has no decimals.
+    Return **integer** if float f has no decimals, else returns **float**.
 
     :type f: float
     :param f: Float value
@@ -66,6 +66,9 @@ def necessary_float(f):
 def mm(milimeters):
     """
     Returns milimeters in pica points.
+
+    :type milimeters: int,float
+    :param milimeters: Milimeters
     """
 
     return float(milimeters) / PICA_TO_MM

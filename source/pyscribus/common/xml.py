@@ -77,7 +77,7 @@ class PyScribusElement:
 
     #--- Quick setup ---------------------------------
 
-    def _quick_setup(self, settings):
+    def _quick_setup(self, settings: dict):
         """
         Method for defining style settings from class
         instanciation kwargs.
@@ -151,15 +151,15 @@ class PyScribusElement:
 
     def toxml(self):
         """
-        :rtype: lxml._Element
+        :rtype: lxml.etree._Element
         :returns: SLA element as LXML ElementTree element
         """
 
         return False
 
-    def fromxml(self, xml):
+    def fromxml(self, xml: ET._Element):
         """
-        :type xml: lxml._Element
+        :type xml: lxml.etree._Element
         :param xml: Some XML element
         :rtype: boolean
         :returns: True if XML parsing succeed
@@ -198,15 +198,17 @@ class OrphanElement(PyScribusElement):
     :ivar string tag: XML tag
     """
 
-    def __init__(self, tag):
+    def __init__(self, tag: str):
         PyScribusElement.__init__(self)
         self.tag = tag
 
     def toxml(self):
         """
-        :rtype: lxml._Element
+        :rtype: lxml.etree._Element
         """
+
         xml = ET.Element(self.tag)
+
         return xml
 
     def fromdefault(self):
@@ -215,15 +217,16 @@ class OrphanElement(PyScribusElement):
         # a default.
         return True
 
-    def fromxml(self, xml):
+    def fromxml(self, xml: ET._Element):
         """
         Parse XML element with tag OrphanElement.tag
 
+        :type xml: lxml.etree._Element
         :param xml: XML element
-        :type xml: lxml._Element
         :rtype: bool
         :returns: bool
         """
+
         if xml.tag == self.tag:
             return True
 
@@ -234,18 +237,27 @@ class OrphanElement(PyScribusElement):
 
 # Fonctions =============================================================#
 
+# NOTE
 # We need a better typology of functions here :
 #
-# +---------------------+------------------+---------+---------------------------------+-----------+
-# | Function name       | New name ?       | Returns | Manipulation                    | Side      |
-# +---------------------+------------------+---------+---------------------------------+-----------+
-# | float_or_int_string | out_cleanfloat   | string  | number without useless decimals | xml       |
-# | str_or_nonestr      | out_str_nonestr  | string  | string or "None"                | xml ?     |
-# | bool_to_num         | out_num_boolean  | string  | boolean as "0" or "1"           | xml       |
-# | num_to_bool         | in_num_boolean   | boolean | "0" or "1" as boolean           | pyscribus |
-# | bool_or_else_to_num | out_zero_string  | string  | "0" if not(v) or v              | xml       |
-# | none_or_str         | out_empty_string | string  | "" if v is None or v            | xml ?     |
-# +---------------------+------------------+---------+---------------------------------+-----------+
+# +---------------------+------------------+---------+------------------------+-----------+
+# | Function name       | New name ?       | Returns | Manipulation           | Side      |
+# +=====================+==================+=========+========================+===========+
+# | float_or_int_string | out_cleanfloat   | string  | number without useless | ps -> xml |
+# |                     |                  |         | decimals               |           |
+# +---------------------+------------------+---------+------------------------+-----------+
+# | str_or_nonestr      | out_str_nonestr  | string  | string or "None"       | ps -> xml |
+# +---------------------+------------------+---------+------------------------+-----------+
+# | bool_to_num         | out_num_boolean  | string  | boolean as "0" or "1"  | ps -> xml |
+# +---------------------+------------------+---------+------------------------+-----------+
+# | bool_or_else_to_num | out_zero_string  | string  | "0" if not(v) or v     | ps -> xml |
+# +---------------------+------------------+---------+------------------------+-----------+
+# | none_or_str         | out_empty_string | string  | "" if v is None or v   | ps -> xml |
+# +---------------------+------------------+---------+------------------------+-----------+
+# | num_to_bool         | in_num_boolean   | boolean | "0" or "1" as boolean  | xml -> ps |
+# +---------------------+------------------+---------+------------------------+-----------+
+
+# From PyScribus to XML ========================================#
 
 def float_or_int_string(f):
 
@@ -254,7 +266,7 @@ def float_or_int_string(f):
     else:
         return str(f)
 
-def str_or_nonestr(v):
+def str_or_nonestr(v: str):
     """
     Returns v if v is a non-empty string, else returns 'None'.
 
@@ -266,7 +278,7 @@ def str_or_nonestr(v):
     else:
         return "None"
 
-def bool_to_num(b):
+def bool_to_num(b: bool):
     """
     Returns '1' if b is true, returns '0' if b is false.
 
@@ -277,18 +289,6 @@ def bool_to_num(b):
         return "1"
     else:
         return "0"
-
-def num_to_bool(n):
-    """
-    Return True if n == '1', else returns False.
-
-    :rtype: bool
-    """
-
-    if n == "1":
-        return True
-    else:
-        return False
 
 def bool_or_else_to_num(b):
     """
@@ -308,12 +308,29 @@ def none_or_str(v):
 
     :rtype: str
     """
+
     if v is None:
         return ""
     else:
         return str(v)
 
-def undocumented_to_python(xml, attributes):
+# From XML to PyScribus ========================================#
+
+def num_to_bool(n: str):
+    """
+    Return True if n == '1', else returns False.
+
+    :rtype: bool
+    """
+
+    if n == "1":
+        return True
+    else:
+        return False
+
+# Undocumented attributes ======================================#
+
+def undocumented_to_python(xml: ET._Element, attributes: list):
     """
     Function to manage the import of undocumented
     XML/SLA attributes.
@@ -321,19 +338,20 @@ def undocumented_to_python(xml, attributes):
     Used in PyScribus fromxml() methods until there is
     no attribute undocumented and handled.
 
+    :type xml: lxml.etree._Element
     :param xml: XML element
-    :type xml: lxml._Element
-    :param attributes: List of attributes' names
     :type attributes: list
+    :param attributes: List of attributes' names
     :returns: Dictionnary with attributes names as 
         keys and attribute values as values.
     :rtype: dict
 
-    Use lxml._Element.get() to get attributes values,
+    Use lxml.etree._Element.get() to get attributes values,
     so missing attributes will have None as a value.
 
     .. seealso:: `undocumented_to_xml()`
     """
+
     undocumented = {}
 
     for att_name in attributes:
@@ -341,7 +359,8 @@ def undocumented_to_python(xml, attributes):
 
     return undocumented
 
-def undocumented_to_xml(xml, undocumented, no_none=False):
+def undocumented_to_xml(
+        xml: ET._Element, undocumented: dict, no_none: bool = False):
     """
     Function to manage the export of undocumented
     XML/SLA attributes.
@@ -349,13 +368,15 @@ def undocumented_to_xml(xml, undocumented, no_none=False):
     Used in PyScribus toxml() methods until there is
     no attribute undocumented and handled.
 
+    :type xml: lxml.etree._Element
     :param xml: XML element
-    :type xml: lxml._Element
+    :type undocumented: dict
     :param undocumented: Dictionnary of XML attributes.
         Return of undocumented_to_python()
-    :type undocumented: dict
+    :type no_none: bool
+    :param no_none: Skips attribute if its value is None
     :returns: xml
-    :rtype: lxml._Element
+    :rtype: lxml.etree._Element
 
     Add attributes to a XML element using undocumented
     dictionnary keys as XML attributes' names and
@@ -376,7 +397,7 @@ def undocumented_to_xml(xml, undocumented, no_none=False):
 
     return xml
 
-def all_undocumented_to_python(xml):
+def all_undocumented_to_python(xml: ET._Element):
     """
     Function to manage the import of undocumented
     XML/SLA attributes.
@@ -387,10 +408,8 @@ def all_undocumented_to_python(xml):
     Used instead of undocumented_to_python() if there
     is no defined list of undocumented attributes.
 
+    :type xml: lxml.etree._Element
     :param xml: XML element
-    :type xml: lxml._Element
-    :param attributes: List of attributes' names
-    :type attributes: list
     :returns: Dictionnary with attributes names as
         keys and attribute values as values.
     :rtype: dict
@@ -402,6 +421,7 @@ def all_undocumented_to_python(xml):
 
     .. seealso:: all_undocumented_to_xml()
     """
+
     undocumented = {}
 
     for att_name, att_value in xml.attrib.items():
@@ -409,7 +429,9 @@ def all_undocumented_to_python(xml):
 
     return undocumented
 
-def all_undocumented_to_xml(xml, undocumented, report=True, msg=""):
+def all_undocumented_to_xml(
+        xml: ET._Element, undocumented: dict,
+        report: bool = True, msg: str = ""):
     """
     Function to manage the export of undocumented
     XML/SLA attributes.
@@ -417,11 +439,16 @@ def all_undocumented_to_xml(xml, undocumented, report=True, msg=""):
     Used in PyScribus toxml() methods until there is
     no attribute undocumented and handled.
 
+    :type xml: lxml.etree._Element
     :param xml: XML element
-    :type xml: lxml._Element
+    :type undocumented: dict
     :param undocumented: Dictionnary of XML attributes.
         Return of all_undocumented_to_python()
-    :type undocumented: dict
+    :type report: bool
+    :param report: Print all undocumented attributes found in xml element.
+    :type msg: str
+    :param msg: Human readable name for the xml element when report parameter 
+        is True.
     :returns: List containing LXML element and undocumented attributes
         names list.
     :rtype: list
