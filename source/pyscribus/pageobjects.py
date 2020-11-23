@@ -545,15 +545,6 @@ class PageObject(xmlc.PyScribusElement):
                 if pattern is not None:
                     self.pattern = pattern
 
-            # --- Text object attributes ---------------------------------
-
-            # FIXME FIXME FIXME Gné ? C’est déjà dans TextObject
-            if self.ptype == "text":
-                colsgap = xml.get("COLGAP")
-
-                if colsgap is not None:
-                    self.columns["gap"].value = float(colsgap)
-
             # --- Page objects specific children -------------------------
             # Moved in TableObject
             # Moved in TableObject
@@ -691,21 +682,6 @@ class PageObject(xmlc.PyScribusElement):
         if self.ptype in ["image", "render"]:
             xml.attrib["EMBEDDED"] = xmlc.bool_to_num(self.use_embedded_icc)
 
-        # ------------------------------------------------------------
-
-        if self.ptype == "text":
-
-            xml.attrib["COLUMNS"] = str(self.columns["count"])
-            xml.attrib["COLGAPS"] = self.columns["gap"].toxmlstr()
-
-            if self.alignment is not None:
-                xml.attrib["ALIGN"] = xmlc.alignment[self.alignment]
-
-            if self.have_stories:
-                for story in self.stories:
-                    sx = story.toxml()
-                    xml.append(sx)
-
         # --- Previous / Next item -----------------------------------
 
         # NOTE @NEXTITEM must be the @ItemID of the next EXISTING item
@@ -726,7 +702,7 @@ class PageObject(xmlc.PyScribusElement):
 
         #--- FIXME This exports undocumented attributes -------
 
-        if self.ptype not in ["table", "group"]:
+        if self.ptype not in ["table", "group", "text"]:
 
             try:
                 xml, undoc_attribs = xmlc.all_undocumented_to_xml(
@@ -1618,6 +1594,12 @@ class TextObject(PageObject):
     +------------+-------------------------------+-----------+
     """
 
+    vertical_alignment_xml = {
+        "top": "0",
+        "center": "1",
+        "bottom": "2"
+    }
+
     def __init__(self, sla_parent=False, doc_parent=False, **kwargs):
         PageObject.__init__(self, "text", sla_parent, doc_parent)
 
@@ -1630,7 +1612,17 @@ class TextObject(PageObject):
             "count": 0
         }
 
+        self.is_autotext = False
+
+        self.padding = {
+            "left": dimensions.Dim(0),
+            "right": dimensions.Dim(0),
+            "bottom": dimensions.Dim(0),
+            "top": dimensions.Dim(0),
+        }
+
         self.alignment = None
+        self.vertical_alignment = "top"
 
         #--- Then, quick setup -------------------------------------------
 
@@ -1649,6 +1641,23 @@ class TextObject(PageObject):
             PageObject._quick_setup(self, settings)
 
             for setting_name, setting_value in settings.items():
+
+                if setting_name == "valign":
+                    setting_value = setting_value.lower()
+
+                    if setting_value in TextObject.vertical_alignment_xml:
+                        self.vertical_alignment = setting_value
+                    else:
+                        raise exceptions.QuickSetupInvalidValue(
+                            "valign setting value must be in [{}].".format(
+                                ", ".join(
+                                    [
+                                        "'{}'".format(v)
+                                        for v in TextObject.vertical_alignment_xml.values()
+                                    ]
+                                )
+                            )
+                        )
 
                 if setting_name == "columns":
                     self.columns["count"] = int(setting_value)
@@ -1687,11 +1696,43 @@ class TextObject(PageObject):
 
             # --- Attributes ---------------------------------------------
 
+            # NOTE FIXME
+            # PLTSHOW |(optional) Set to 1 if the path of a Text on a path
+            #         |should be shown 
+            # BASEOF  |(optional) Offset for the text from its path for text
+            #         |on a path 
+
+            # NOTE FIXME
+            # Undocumented :
+            #
+            # textPathType
+            # textPathFlipped
+            # FLOP
+
+            valign = xml.get("VAlign")
+            if valign is not None:
+                for human, code in TextObject.vertical_alignment_xml.items():
+                    if valign == code:
+                        self.vertical_alignment = human
+                        break
+
+            autotext = xml.get("AUTOTEXT")
+            if autotext is not None:
+                self.is_autotext = xmlc.num_to_bool(autotext)
+
+            for case in [
+                ["left", "EXTRA"], ["right", "REXTRA"],
+                ["bottom", "BEXTRA"], ["top", "TEXTRA"]]:
+
+                padding_arg = xml.get(case[1])
+                if padding_arg is not None:
+                    self.padding[case[0]].value = float(padding_arg)
+
             columns = xml.get("COLUMNS")
             if columns is not None:
                 self.columns["count"] = int(columns)
 
-            columnsgap = xml.get("COLGAPS")
+            columnsgap = xml.get("COLGAP")
             if columnsgap is not None:
                 self.columns["gap"].value = float(columnsgap)
 
@@ -1740,6 +1781,59 @@ class TextObject(PageObject):
                         self.stories.append(story)
 
             return True
+
+        return False
+
+    def toxml(self):
+        """
+        :rtype: lxml.etree._Element
+        :returns: Table object as LXML element
+        """
+
+        xml = PageObject.toxml(self)
+
+        if isinstance(xml, ET._Element):
+            #--- Attributes ----------------------------------------------
+
+            xml.attrib["COLUMNS"] = str(self.columns["count"])
+            xml.attrib["COLGAP"] = self.columns["gap"].toxmlstr()
+
+            if self.alignment is not None:
+                xml.attrib["ALIGN"] = xmlc.alignment[self.alignment]
+
+            xml.attrib["VAlign"] = TextObject.vertical_alignment_xml[self.vertical_alignment]
+
+            # Padding
+
+            for case in [
+                ["left", "EXTRA"], ["right", "REXTRA"],
+                ["bottom", "BEXTRA"], ["top", "TEXTRA"]]:
+
+                xml.attrib[case[1]] = self.padding[case[0]].toxmlstr(True)
+
+            xml.attrib["AUTOTEXT"] = xmlc.bool_to_num(self.is_autotext)
+
+            #--- FIXME This exports undocumented attributes --------------
+
+            try:
+                xml, undoc_attribs = xmlc.all_undocumented_to_xml(
+                    xml, self.undocumented, True,
+                    self.ptype + " frame '" + self.name + "'"
+                )
+
+            except AttributeError:
+                # NOTE If fromxml was not used
+                pass
+
+            # --- Children -----------------------------------------------
+
+            if self.have_stories:
+
+                for story in self.stories:
+                    sx = story.toxml()
+                    xml.append(sx)
+
+            return xml
 
         return False
 

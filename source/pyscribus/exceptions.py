@@ -64,6 +64,14 @@ class UnknownOrEmptyItemAttributeType(Exception):
     """
     pass
 
+# --- Quick setup ----------------------------------------------
+
+class QuickSetupInvalidValue(Exception):
+    """
+    Exception raised when a quick setup value is invalid.
+    """
+    pass
+
 # --- Unknown SLA references -----------------------------------
 
 class UnknownLayer(Exception):
