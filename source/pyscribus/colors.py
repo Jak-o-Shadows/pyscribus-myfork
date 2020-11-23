@@ -221,6 +221,28 @@ class Color(xmlc.PyScribusElement):
     #--- PyScribus standard methods ----------------------------
 
     def fromdefault(self, default="Black"):
+        """
+        Set default attributes for this color.
+
+        :Example:
+
+        .. code:: python
+
+           # with fromdefault method :
+           black = Color()
+           black.fromdefault("Black")
+
+           # with quick setup :
+           blue = Color(default="Blue")
+
+        .. seealso::
+            **For fromdefault explanation**: 
+            `pyscribus.common.xml.PyScribusElement.fromdefault`
+
+            **For current class default sets**: 
+            `pyscribus.colors.Color.listdefaults`
+
+        """
 
         if default in self.pyscribus_defaults:
 

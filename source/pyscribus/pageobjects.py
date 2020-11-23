@@ -62,10 +62,11 @@ po_type_xml = {
 
 class PageObject(xmlc.PyScribusElement):
     """
-    Page object in SLA (PAGEOBJECT)
+    Page object in SLA (``/DOCUMENT/PAGEOBJECT``)
 
-    You should rather use TableObject, TextObject, TextOnPathObject,
-    ImageObject, LineObject, PolylineObject, PolygonObject, RenderObject.
+    You should rather use :class:`TableObject`, :class:`TextObject`, 
+    :class:`TextOnPathObject`, :class:`ImageObject`, :class:`LineObject`, 
+    :class:`PolylineObject`, :class:`PolygonObject`, :class:`RenderObject`.
 
     :param ptype: Type of the PageObject. Must be in pageobjects.po_type_xml
         keys.
@@ -2097,17 +2098,17 @@ class RenderObject(PageObject):
         :rtype: boolean
         :returns: True if package appending succeed
 
+        :Example:
+
+        .. code:: python
+
+           # equivalent to: \\usepackage[strict=true]{csquotes}
+           render_buffer.append_package("csquotes", "strict=true")
+
         .. note:: As LaTeX additional headers is managed with 
-            pageobjects.HeadersRenderProperty, it is better to use this method 
-            than editing RenderBuffer.properties.
+            :class:`HeadersRenderProperty`, it is better to use this method 
+            than editing ``RenderBuffer.properties``.
 
-        Example:
-
-          render_buffer.append_package("csquotes", "strict=true")
-
-          is the equivalent of :
-
-          \\usepackage[strict=true]{csquotes}
         """
 
         if self.buffer is not None:
@@ -2121,7 +2122,7 @@ class RenderObject(PageObject):
         :param fontsize: Font size in points
 
         .. note:: As fontsize is a standard render frame property, it is better
-            to use this method than editing RenderBuffer.properties.
+            to use this method than editing ``RenderBuffer.properties``.
         """
 
         if self.buffer is not None:
@@ -2626,6 +2627,11 @@ class TableCell(xmlc.PyScribusElement):
 class RenderBuffer(xmlc.PyScribusElement):
     """
     Object for render frame's (RenderObject) content.
+
+    :ivar list properties: List of properties
+    :ivar string content: Content of the buffer
+
+    .. seealso:: :class:`RenderProperty`, :class:`HeadersRenderProperty`
     """
 
     def __init__(self):
@@ -2690,17 +2696,18 @@ class RenderBuffer(xmlc.PyScribusElement):
         :rtype: boolean
         :returns: True if package appending succeed
 
+        :Example:
+
+        .. code:: python
+
+           # equivalent to: \\usepackage[strict=true]{csquotes}
+           render_buffer.append_package("csquotes", "strict=true")
+
         .. note:: As LaTeX additional headers is managed with 
-            pageobjects.HeadersRenderProperty, it is better to use this method 
-            than editing RenderBuffer.properties.
+            :class:`HeadersRenderProperty`, it is better to use this method 
+            than editing ``RenderBuffer.properties``.
 
-        Example:
 
-          render_buffer.append_package("csquotes", "strict=true")
-
-          is the equivalent of :
-
-          \\usepackage[strict=true]{csquotes}
         """
 
         for prop in properties:
@@ -2720,7 +2727,7 @@ class RenderBuffer(xmlc.PyScribusElement):
         :param fontsize: Font size in points
 
         .. note:: As fontsize is a standard render frame property, it is better
-            to use this method than editing RenderBuffer.properties.
+            to use this method than editing ``RenderBuffer.properties``.
         """
 
         for prop in self.properties:
@@ -2869,7 +2876,8 @@ class HeadersRenderProperty(RenderProperty):
     :type value: str
     :param value: Value of the property
 
-    .. note:: HeadersRenderProperty property name is always additionalheaders.
+    .. note:: :class:`HeadersRenderProperty` property name is always 
+        ``additionalheaders``.
 
     .. seealso:: :class:`RenderProperty`
     """
@@ -2987,9 +2995,9 @@ class RectPath:
 
     Translate SVG path @d strings like :
 
-    M0 0 L515.276 0 L515.276 761.89 L0 761.89 L0 0 Z
+    ``M0 0 L515.276 0 L515.276 761.89 L0 761.89 L0 0 Z``
 
-    Into a list of PathPoint instances.
+    Into a list of :class:`PathPoint` instances.
     """
 
     def __init__(self):
