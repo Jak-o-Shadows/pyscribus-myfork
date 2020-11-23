@@ -1549,17 +1549,28 @@ class TextObject(PageObject):
     :type kwargs: dict
     :param kwargs: Quick setting (see kwargs table)
 
-    +------------+-------------------------------+-----------+
-    | Kwargs     | Setting                       | Type      |
-    +============+===============================+===========+
-    | default    | Equivalent to a fromdefault   | boolean   |
-    |            | call, value being True or the | or string |
-    |            | default name                  |           |
-    +------------+-------------------------------+-----------+
-    | columns    | Column count                  | integer   |
-    +------------+-------------------------------+-----------+
-    | columnsgap | Gap between each column       | float     |
-    +------------+-------------------------------+-----------+
+    :ivar string vertical_alignment: Vertical alignement of the text.
+    :ivar dict padding: Padding(s) of the text frame.
+
+    +------------+---------------------------------+-----------+
+    | Kwargs     | Setting                         | Type      |
+    +============+=================================+===========+
+    | default    | Equivalent to a ``fromdefault`` | boolean   |
+    |            | call.                           | or string |
+    |            |                                 |           |
+    |            | Value being True or the name of |           |
+    |            | the default set.                |           |
+    +------------+---------------------------------+-----------+
+    | columns    | Column count                    | integer   |
+    +------------+---------------------------------+-----------+
+    | columnsgap | Gap between each column         | float     |
+    +------------+---------------------------------+-----------+
+    | valign     | Vertical alignement of the      | string    |
+    |            | text.                           |           |
+    |            |                                 |           |
+    |            | Must be "top", "center",        |           |
+    |            | "center".                       |           |
+    +------------+---------------------------------+-----------+
     """
 
     vertical_alignment_xml = {
@@ -1821,18 +1832,21 @@ class ImageObject(PageObject):
     :type kwargs: dict
     :param kwargs: Quick setting (see kwargs table)
 
-    +----------+-------------------------------+---------------+
-    | Kwargs   | Setting                       | Type          |
-    +==========+===============================+===============+
-    | default  | Equivalent to a fromdefault   | boolean       |
-    |          | call, value being True or the | or string     |
-    |          | default name                  |               |
-    +----------+-------------------------------+---------------+
-    | filepath | Image filepath                | string        |
-    +----------+-------------------------------+---------------+
-    | filedata | Image data                    | Qt compressed |
-    |          |                               | base64 string |
-    +----------+-------------------------------+---------------+
+    +------------+---------------------------------+---------------+
+    | Kwargs     | Setting                         | Type          |
+    +============+=================================+===============+
+    | default    | Equivalent to a ``fromdefault`` | boolean       |
+    |            | call.                           | or string     |
+    |            |                                 |               |
+    |            | Value being True or the name of |               |
+    |            | the default set.                |               |
+    +------------+---------------------------------+---------------+
+    | filepath   | Image filepath                  | string        |
+    +------------+---------------------------------+---------------+
+    | filedata   | Image data                      | Qt compressed |
+    |            |                                 |               |
+    |            |                                 | base64 string |
+    +------------+---------------------------------+---------------+
 
     :ivar string filepath: File path of the image
     :ivar string data: Data if the incorporated image
@@ -2104,97 +2118,103 @@ class TableCell(xmlc.PyScribusElement):
     :ivar integer column: Cell column
     :ivar string align: Cell vertical alignment
 
-    +---------------+--------------------------------+-----------+
-    | Kwargs        | Setting                        | Type      |
-    +===============+================================+===========+
-    | default       | Equivalent to a fromdefault    | boolean   |
-    |               | call, value being True or the  | or string |
-    |               | default name                   |           |
-    +---------------+--------------------------------+-----------+
-    | row           | Row number (ranging from 0)    | integer   |
-    +---------------+--------------------------------+-----------+
-    | column        | Column number (ranging from 0) | integer   |
-    +---------------+--------------------------------+-----------+
-    | posx          | X position of the page         | float     |
-    +---------------+--------------------------------+-----------+
-    | posy          | Y position of the page         | float     |
-    +---------------+--------------------------------+-----------+
-    | width         | Page width                     | float     |
-    +---------------+--------------------------------+-----------+
-    | height        | Page height                    | float     |
-    +---------------+--------------------------------+-----------+
-    | style         | Cell story paragraph style     | string    |
-    |               | name                           |           |
-    +---------------+--------------------------------+-----------+
-    | fillcolor     | Filling color name             | string    |
-    +---------------+--------------------------------+-----------+
-    | fillshade     | Filling color shade            | float     |
-    |               | percentage                     |           |
-    +---------------+--------------------------------+-----------+
-    | alignment     |                                |           |
-    +---------------+--------------------------------+-----------+
-    | borders       | Shorthand for rightborder,     | List of   |
-    |               | leftborder, topborder,         | floats    |
-    |               | bottomborder.                  |           |
-    |               |                                |           |
-    |               | Read like the CSS margin       |           |
-    |               | property:                      |           |
-    |               |                                |           |
-    |               | **With 1 float in the list :** |           |
-    |               |                                |           |
-    |               | [top & right & bottom & left]  |           |
-    |               |                                |           |
-    |               | **With 2 float in the list :** |           |
-    |               |                                |           |
-    |               | [top & bottom, right & left]   |           |
-    |               |                                |           |
-    |               | **With 3 float in the list :** |           |
-    |               |                                |           |
-    |               | [top, right & left, bottom]    |           |
-    |               |                                |           |
-    |               | **With 4 float in the list :** |           |
-    |               |                                |           |
-    |               | [top, right, bottom, left]     |           |
-    +---------------+--------------------------------+-----------+
-    | rightborder   |                                | float     |
-    +---------------+--------------------------------+-----------+
-    | leftborder    |                                | float     |
-    +---------------+--------------------------------+-----------+
-    | topborder     |                                | float     |
-    +---------------+--------------------------------+-----------+
-    | bottomborder  |                                | float     |
-    +---------------+--------------------------------+-----------+
-    | padding       | Shorthand for rightpadding,    | List of   |
-    |               | leftpadding, toppadding,       | floats    |
-    |               | bottompadding.                 |           |
-    |               |                                |           |
-    |               | Read like the CSS margin       |           |
-    |               | property:                      |           |
-    |               |                                |           |
-    |               | **With 1 float in the list :** |           |
-    |               |                                |           |
-    |               | [top & right & bottom & left]  |           |
-    |               |                                |           |
-    |               | **With 2 float in the list :** |           |
-    |               |                                |           |
-    |               | [top & bottom, right & left]   |           |
-    |               |                                |           |
-    |               | **With 3 float in the list :** |           |
-    |               |                                |           |
-    |               | [top, right & left, bottom]    |           |
-    |               |                                |           |
-    |               | **With 4 float in the list :** |           |
-    |               |                                |           |
-    |               | [top, right, bottom, left]     |           |
-    +---------------+--------------------------------+-----------+
-    | rightpadding  |                                | float     |
-    +---------------+--------------------------------+-----------+
-    | leftpadding   |                                | float     |
-    +---------------+--------------------------------+-----------+
-    | toppadding    |                                | float     |
-    +---------------+--------------------------------+-----------+
-    | bottompadding |                                | float     |
-    +---------------+--------------------------------+-----------+
+    +---------------+---------------------------------+-----------+
+    | Kwargs        | Setting                         | Type      |
+    +===============+=================================+===========+
+    | default       | Equivalent to a ``fromdefault`` | boolean   |
+    |               | call.                           | or string |
+    |               |                                 |           |
+    |               | Value being True or the name of |           |
+    |               | the default set.                |           |
+    +---------------+---------------------------------+-----------+
+    | row           | Row number (ranging from 0)     | integer   |
+    +---------------+---------------------------------+-----------+
+    | column        | Column number (ranging from 0)  | integer   |
+    +---------------+---------------------------------+-----------+
+    | posx          | X position of the page          | float     |
+    +---------------+---------------------------------+-----------+
+    | posy          | Y position of the page          | float     |
+    +---------------+---------------------------------+-----------+
+    | width         | Page width                      | float     |
+    +---------------+---------------------------------+-----------+
+    | height        | Page height                     | float     |
+    +---------------+---------------------------------+-----------+
+    | style         | Cell story paragraph style      | string    |
+    |               | name                            |           |
+    +---------------+---------------------------------+-----------+
+    | fillcolor     | Filling color name              | string    |
+    +---------------+---------------------------------+-----------+
+    | fillshade     | Filling color shade             | float     |
+    |               | percentage                      |           |
+    +---------------+---------------------------------+-----------+
+    | alignment     |                                 |           |
+    +---------------+---------------------------------+-----------+
+    | borders       | Shorthand for :                 | List of   |
+    |               |                                 | floats    |
+    |               | *rightborder*, *leftborder*,    |           |
+    |               |                                 |           |
+    |               | *topborder*, *bottomborder*     |           |
+    |               |                                 |           |
+    |               | Read like the CSS margin        |           |
+    |               | property:                       |           |
+    |               |                                 |           |
+    |               | **With 1 float in the list :**  |           |
+    |               |                                 |           |
+    |               | [top & right & bottom & left]   |           |
+    |               |                                 |           |
+    |               | **With 2 float in the list :**  |           |
+    |               |                                 |           |
+    |               | [top & bottom, right & left]    |           |
+    |               |                                 |           |
+    |               | **With 3 float in the list :**  |           |
+    |               |                                 |           |
+    |               | [top, right & left, bottom]     |           |
+    |               |                                 |           |
+    |               | **With 4 float in the list :**  |           |
+    |               |                                 |           |
+    |               | [top, right, bottom, left]      |           |
+    +---------------+---------------------------------+-----------+
+    | rightborder   |                                 | float     |
+    +---------------+---------------------------------+-----------+
+    | leftborder    |                                 | float     |
+    +---------------+---------------------------------+-----------+
+    | topborder     |                                 | float     |
+    +---------------+---------------------------------+-----------+
+    | bottomborder  |                                 | float     |
+    +---------------+---------------------------------+-----------+
+    | padding       | Shorthand for :                 | List of   |
+    |               |                                 | floats    |
+    |               | *rightpadding*, *leftpadding*,  |           |
+    |               |                                 |           |
+    |               | *toppadding*, *bottompadding*.  |           |
+    |               |                                 |           |
+    |               | Read like the CSS margin        |           |
+    |               | property:                       |           |
+    |               |                                 |           |
+    |               | **With 1 float in the list :**  |           |
+    |               |                                 |           |
+    |               | [top & right & bottom & left]   |           |
+    |               |                                 |           |
+    |               | **With 2 float in the list :**  |           |
+    |               |                                 |           |
+    |               | [top & bottom, right & left]    |           |
+    |               |                                 |           |
+    |               | **With 3 float in the list :**  |           |
+    |               |                                 |           |
+    |               | [top, right & left, bottom]     |           |
+    |               |                                 |           |
+    |               | **With 4 float in the list :**  |           |
+    |               |                                 |           |
+    |               | [top, right, bottom, left]      |           |
+    +---------------+---------------------------------+-----------+
+    | rightpadding  |                                 | float     |
+    +---------------+---------------------------------+-----------+
+    | leftpadding   |                                 | float     |
+    +---------------+---------------------------------+-----------+
+    | toppadding    |                                 | float     |
+    +---------------+---------------------------------+-----------+
+    | bottompadding |                                 | float     |
+    +---------------+---------------------------------+-----------+
     """
 
     # TextColumns="1" 

@@ -585,52 +585,55 @@ class Page(PageAbstract):
     :type kwargs: dict
     :param kwargs: Quick setting (see kwargs table)
 
-    +--------------+--------------------------------+------------+
-    | Kwargs       | Setting                        | Value type |
-    +==============+================================+============+
-    | default      | Equivalent to a fromdefault    | boolean or |
-    |              | call, value being the default  | string     |
-    |              | name or True                   |            |
-    +--------------+--------------------------------+------------+
-    | posx         | X position of the page         | float      |
-    +--------------+--------------------------------+------------+
-    | posy         | Y position of the page         | float      |
-    +--------------+--------------------------------+------------+
-    | width        | Page width                     | float      |
-    +--------------+--------------------------------+------------+
-    | height       | Page height                    | float      |
-    +--------------+--------------------------------+------------+
-    | borders      | Shorthand for rightborder,     | List of    |
-    |              | leftborder, topborder,         | floats     |
-    |              | bottomborder.                  |            |
-    |              |                                |            |
-    |              | Read like the CSS margin       |            |
-    |              | property:                      |            |
-    |              |                                |            |
-    |              | **With 1 float in the list :** |            |
-    |              |                                |            |
-    |              | [top & right & bottom & left]  |            |
-    |              |                                |            |
-    |              | **With 2 float in the list :** |            |
-    |              |                                |            |
-    |              | [top & bottom, right & left]   |            |
-    |              |                                |            |
-    |              | **With 3 float in the list :** |            |
-    |              |                                |            |
-    |              | [top, right & left, bottom]    |            |
-    |              |                                |            |
-    |              | **With 4 float in the list :** |            |
-    |              |                                |            |
-    |              | [top, right, bottom, left]     |            |
-    +--------------+--------------------------------+------------+
-    | rightborder  |                                | float      |
-    +--------------+--------------------------------+------------+
-    | leftborder   |                                | float      |
-    +--------------+--------------------------------+------------+
-    | topborder    |                                | float      |
-    +--------------+--------------------------------+------------+
-    | bottomborder |                                | float      |
-    +--------------+--------------------------------+------------+
+    +--------------+---------------------------------+------------+
+    | Kwargs       | Setting                         | Value type |
+    +==============+=================================+============+
+    | default      | Equivalent to a ``fromdefault`` | boolean    |
+    |              | call.                           | or string  |
+    |              |                                 |            |
+    |              | Value being True or the name of |            |
+    |              | the default set.                |            |
+    +--------------+---------------------------------+------------+
+    | posx         | X position of the page          | float      |
+    +--------------+---------------------------------+------------+
+    | posy         | Y position of the page          | float      |
+    +--------------+---------------------------------+------------+
+    | width        | Page width                      | float      |
+    +--------------+---------------------------------+------------+
+    | height       | Page height                     | float      |
+    +--------------+---------------------------------+------------+
+    | borders      | Shorthand for :                 | List of    |
+    |              |                                 | floats     |
+    |              | *rightborder*, *leftborder*,    |            |
+    |              | *topborder*, *bottomborder*     |            |
+    |              |                                 |            |
+    |              | Read like the CSS margin        |            |
+    |              | property:                       |            |
+    |              |                                 |            |
+    |              | **With 1 float in the list :**  |            |
+    |              |                                 |            |
+    |              | [top & right & bottom & left]   |            |
+    |              |                                 |            |
+    |              | **With 2 float in the list :**  |            |
+    |              |                                 |            |
+    |              | [top & bottom, right & left]    |            |
+    |              |                                 |            |
+    |              | **With 3 float in the list :**  |            |
+    |              |                                 |            |
+    |              | [top, right & left, bottom]     |            |
+    |              |                                 |            |
+    |              | **With 4 float in the list :**  |            |
+    |              |                                 |            |
+    |              | [top, right, bottom, left]      |            |
+    +--------------+---------------------------------+------------+
+    | rightborder  | Right border                    | float      |
+    +--------------+---------------------------------+------------+
+    | leftborder   | Left border                     | float      |
+    +--------------+---------------------------------+------------+
+    | topborder    | Top border                      | float      |
+    +--------------+---------------------------------+------------+
+    | bottomborder | Bottom border                   | float      |
+    +--------------+---------------------------------+------------+
     """
 
     def __init__(self, **kwargs):
@@ -687,52 +690,55 @@ class MasterPage(PageAbstract):
     :type kwargs: dict
     :param kwargs: Quick setting (see kwargs table)
 
-    +--------------+--------------------------------+------------+
-    | Kwargs       | Setting                        | Value type |
-    +==============+================================+============+
-    | default      | Equivalent to a fromdefault    | boolean or |
-    |              | call, value being the default  | string     |
-    |              | name or True                   |            |
-    +--------------+--------------------------------+------------+
-    | posx         | X position of the page         | float      |
-    +--------------+--------------------------------+------------+
-    | posy         | Y position of the page         | float      |
-    +--------------+--------------------------------+------------+
-    | width        | Page width                     | float      |
-    +--------------+--------------------------------+------------+
-    | height       | Page height                    | float      |
-    +--------------+--------------------------------+------------+
-    | borders      | Shorthand for rightborder,     | List of    |
-    |              | leftborder, topborder,         | floats     |
-    |              | bottomborder.                  |            |
-    |              |                                |            |
-    |              | Read like the CSS margin       |            |
-    |              | property:                      |            |
-    |              |                                |            |
-    |              | **With 1 float in the list :** |            |
-    |              |                                |            |
-    |              | [top & right & bottom & left]  |            |
-    |              |                                |            |
-    |              | **With 2 float in the list :** |            |
-    |              |                                |            |
-    |              | [top & bottom, right & left]   |            |
-    |              |                                |            |
-    |              | **With 3 float in the list :** |            |
-    |              |                                |            |
-    |              | [top, right & left, bottom]    |            |
-    |              |                                |            |
-    |              | **With 4 float in the list :** |            |
-    |              |                                |            |
-    |              | [top, right, bottom, left]     |            |
-    +--------------+--------------------------------+------------+
-    | rightborder  |                                | float      |
-    +--------------+--------------------------------+------------+
-    | leftborder   |                                | float      |
-    +--------------+--------------------------------+------------+
-    | topborder    |                                | float      |
-    +--------------+--------------------------------+------------+
-    | bottomborder |                                | float      |
-    +--------------+--------------------------------+------------+
+    +--------------+---------------------------------+------------+
+    | Kwargs       | Setting                         | Value type |
+    +==============+=================================+============+
+    | default      | Equivalent to a ``fromdefault`` | boolean    |
+    |              | call.                           | or string  |
+    |              |                                 |            |
+    |              | Value being True or the name of |            |
+    |              | the default set.                |            |
+    +--------------+---------------------------------+------------+
+    | posx         | X position of the page          | float      |
+    +--------------+---------------------------------+------------+
+    | posy         | Y position of the page          | float      |
+    +--------------+---------------------------------+------------+
+    | width        | Page width                      | float      |
+    +--------------+---------------------------------+------------+
+    | height       | Page height                     | float      |
+    +--------------+---------------------------------+------------+
+    | borders      | Shorthand for :                 | List of    |
+    |              |                                 | floats     |
+    |              | *rightborder*, *leftborder*,    |            |
+    |              | *topborder*, *bottomborder*     |            |
+    |              |                                 |            |
+    |              | Read like the CSS margin        |            |
+    |              | property:                       |            |
+    |              |                                 |            |
+    |              | **With 1 float in the list :**  |            |
+    |              |                                 |            |
+    |              | [top & right & bottom & left]   |            |
+    |              |                                 |            |
+    |              | **With 2 float in the list :**  |            |
+    |              |                                 |            |
+    |              | [top & bottom, right & left]    |            |
+    |              |                                 |            |
+    |              | **With 3 float in the list :**  |            |
+    |              |                                 |            |
+    |              | [top, right & left, bottom]     |            |
+    |              |                                 |            |
+    |              | **With 4 float in the list :**  |            |
+    |              |                                 |            |
+    |              | [top, right, bottom, left]      |            |
+    +--------------+---------------------------------+------------+
+    | rightborder  | Right border                    | float      |
+    +--------------+---------------------------------+------------+
+    | leftborder   | Left border                     | float      |
+    +--------------+---------------------------------+------------+
+    | topborder    | Top border                      | float      |
+    +--------------+---------------------------------+------------+
+    | bottomborder | Bottom border                   | float      |
+    +--------------+---------------------------------+------------+
     """
 
     def __init__(self, **kwargs):

@@ -40,6 +40,19 @@ __author__ = "Etienne Nadji <etnadji@eml.cc>"
 class Color(xmlc.PyScribusElement):
     """
     SLA Color (COLOR)
+
+    :type kwargs: dict
+    :param kwargs: Quick setting (see kwargs table)
+
+    +------------+---------------------------------+-----------+
+    | Kwargs     | Setting                         | Type      |
+    +============+=================================+===========+
+    | default    | Equivalent to a ``fromdefault`` | boolean   |
+    |            | call.                           | or string |
+    |            |                                 |           |
+    |            | Value being True or the name of |           |
+    |            | the default set.                |           |
+    +------------+---------------------------------+-----------+
     """
 
     defaults = {
@@ -96,7 +109,7 @@ class Color(xmlc.PyScribusElement):
 
     def __init__(
             self, name="Black", space="CMYK", colors=[0,0,0,100],
-            register="0"):
+            register="0", **kwargs):
         super().__init__()
 
         self.pyscribus_defaults = [k for k in Color.defaults.keys()]
@@ -104,6 +117,8 @@ class Color(xmlc.PyScribusElement):
         self.name = name
         self.register = register
         self.set_space_colors(space, colors)
+
+        self._quick_setup(kwargs)
 
     #--- Color management --------------------------------------
 
@@ -312,6 +327,21 @@ class Color(xmlc.PyScribusElement):
 
         return xml
 
+    def _quick_setup(self, settings: dict):
+        """
+        Method for defining gradient stop settings from class
+        instanciation kwargs.
+
+        :type settings: dict
+        :param settings: Kwargs dictionnary
+        """
+
+        if settings:
+            xmlc.PyScribusElement._quick_setup(self, settings)
+
+            for setting_name, setting_value in settings.items():
+                pass
+
     #--- Python __ methods -------------------------------------
 
     def __eq__(self, other):
@@ -376,21 +406,24 @@ class GradientColorStop(xmlc.PyScribusElement):
     :type kwargs: dict
     :param kwargs: Quick setting (see kwargs table)
 
-    +------------+-------------------------------+-----------+
-    | Kwargs     | Setting                       | Type      |
-    +============+===============================+===========+
-    | default    | Equivalent to a fromdefault   | boolean   |
-    |            | call, value being True or the | or string |
-    |            | default name                  |           |
-    +------------+-------------------------------+-----------+
-    | position   |                               |           |
-    +------------+-------------------------------+-----------+
-    | color      |                               |           |
-    +------------+-------------------------------+-----------+
-    | shade      |                               |           |
-    +------------+-------------------------------+-----------+
-    | opacity    |                               |           |
-    +------------+-------------------------------+-----------+
+    +------------+---------------------------------+-----------+
+    | Kwargs     | Setting                         | Type      |
+    +============+=================================+===========+
+    | default    | Equivalent to a ``fromdefault`` | boolean   |
+    |            | call.                           | or string |
+    |            |                                 |           |
+    |            | Value being True or the name of |           |
+    |            | the default set.                |           |
+    +------------+---------------------------------+-----------+
+    | opacity    | Percentage of opacity,          | float     |
+    |            | from 0 to 1.                    |           |
+    +------------+---------------------------------+-----------+
+    | color      | Color name                      | string    |
+    +------------+---------------------------------+-----------+
+    | position   |                                 |           |
+    +------------+---------------------------------+-----------+
+    | shade      |                                 |           |
+    +------------+---------------------------------+-----------+
 
     :Example:
 
