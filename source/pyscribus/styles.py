@@ -418,37 +418,44 @@ class StyleAbstract(xmlc.PyScribusElement):
                 if features is not None:
                     self.features = features
 
-                if (strike_width := xml.get("TXTSTW")) is not None:
+                strike_width = xml.get("TXTSTW")
+                if strike_width is not None:
                     self.font["strike"]["width"] = dimensions.Dim(
                         float(strike_width), "pcdecim"
                     )
 
-                if (strike_offset := xml.get("TXTSTP")) is not None:
+                strike_offset = xml.get("TXTSTP")
+                if strike_offset is not None:
                     self.font["strike"]["offset"] = dimensions.Dim(
                         float(strike_offset), "pcdecim"
                     )
 
-                if (underline_width := xml.get("TXTULW")) is not None:
+                underline_width = xml.get("TXTULW")
+                if underline_width is not None:
                     self.font["underline"]["width"] = dimensions.Dim(
                         float(underline_width), "pcdecim"
                     )
 
-                if (underline_offset := xml.get("TXTULP")) is not None:
+                underline_offset = xml.get("TXTULP")
+                if underline_offset is not None:
                     self.font["underline"]["offset"] = dimensions.Dim(
                         float(underline_offset), "pcdecim"
                     )
 
-                if (shadow_hoffset := xml.get("TXTSHX")) is not None:
+                shadow_hoffset = xml.get("TXTSHX")
+                if shadow_hoffset is not None:
                     self.font["shadow"]["hoffset"] = dimensions.Dim(
                         float(shadow_hoffset), "pcdecim"
                     )
 
-                if (shadow_voffset := xml.get("TXTSHY")) is not None:
+                shadow_voffset = xml.get("TXTSHY")
+                if shadow_voffset is not None:
                     self.font["shadow"]["voffset"] = dimensions.Dim(
                         float(shadow_voffset), "pcdecim"
                     )
 
-                if (outline_width := xml.get("TXTOUT")) is not None:
+                outline_width = xml.get("TXTOUT")
+                if outline_width is not None:
                     self.font["outline"]["width"] = dimensions.Dim(
                         float(outline_width), "pcdecim"
                     )
