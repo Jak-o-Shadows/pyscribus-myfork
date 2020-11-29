@@ -1005,10 +1005,30 @@ class CharacterStyle(StyleAbstract):
         self.font["space_width"] = dimensions.Dim(1, "pcdecim")
         self.font["kerning"] = None
 
+        self.hyphen_word_min = None
+
     def fromxml(self, xml):
         is_character = StyleAbstract.fromxml(self, xml, True)
 
         if is_character:
+            #--- Hyphenation ------------------------------------------------
+
+            if (hyphen_word := xml.get("HyphenWordMin")) is not None:
+                try:
+                    word_length = int(hyphen_word)
+
+                    if word_length < 3:
+                        raise InsaneSLAValue(
+                            "HyphenWordMin in '{}' character style must be an integer >= 3.".format(self.name)
+                        )
+
+                    self.hyphen_word_min = word_length
+
+                except ValueError:
+                    raise InsaneSLAValue(
+                        "HyphenWordMin in '{}' character style must be an integer >= 3.".format(self.name)
+                    )
+
             #--- Font settings ----------------------------------------------
 
             if (wordtrack := xml.get("wordTrack")) is not None:
@@ -1038,6 +1058,11 @@ class CharacterStyle(StyleAbstract):
 
     def toxml(self):
         xml = StyleAbstract.toxml(self)
+
+        #--- Hyphenation ------------------------------------------------
+
+        if self.hyphen_word_min is not None:
+            xml.attrib["HyphenWordMin"] = str(self.hyphen_word_min)
 
         #--- Font settings ----------------------------------------------
 
