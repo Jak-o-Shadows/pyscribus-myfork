@@ -516,6 +516,11 @@ class PageObject(xmlc.PyScribusElement):
 
             if self.ptype in ["polyline", "polygon"]:
 
+                # TODO FIXME Undocumented in polyline, polygon
+                fillrule = xml.get("fillRule")
+                if fillrule is not None:
+                    pass
+
                 line_end = xml.get("PLINEEND")
                 if line_end is not None:
                     for human, code in PageObject.line_endcap_xml.items():
@@ -708,7 +713,9 @@ class PageObject(xmlc.PyScribusElement):
             try:
                 xml, undoc_attribs = xmlc.all_undocumented_to_xml(
                     xml, self.undocumented, True,
-                    self.ptype + " frame '" + self.name + "'"
+                    self.ptype + " frame '" + self.name + "'",
+                    # FIXME This disable debug for path, copath attributes
+                    # ["path", "copath"]
                 )
 
             except AttributeError:

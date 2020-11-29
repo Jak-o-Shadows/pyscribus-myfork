@@ -409,7 +409,7 @@ def all_undocumented_to_python(xml):
 
     return undocumented
 
-def all_undocumented_to_xml(xml, undocumented, report=True, msg=""):
+def all_undocumented_to_xml(xml, undocumented, report=True, msg="", passattr=[]):
     """
     Function to manage the export of undocumented
     XML/SLA attributes.
@@ -422,6 +422,13 @@ def all_undocumented_to_xml(xml, undocumented, report=True, msg=""):
     :param undocumented: Dictionnary of XML attributes.
         Return of all_undocumented_to_python()
     :type undocumented: dict
+    :type report: bool
+    :param report: Print all undocumented attributes found in xml element.
+    :type msg: str
+    :param msg: Human readable name for the xml element when report parameter 
+        is True.
+    :type passattr: list
+    :param passattr: List of SLA attributes names to not report. For debug.
     :returns: List containing LXML element and undocumented attributes
         names list.
     :rtype: list
@@ -438,10 +445,12 @@ def all_undocumented_to_xml(xml, undocumented, report=True, msg=""):
 
         if att_name not in xml.attrib:
             xml.attrib[att_name] = att_value
-            undoc_attribs.append(att_name)
+
+            if not passattr or att_name not in passattr:
+                undoc_attribs.append(att_name)
 
     if report and undoc_attribs:
-        print("Undocumented XML attributes in {} :".format(msg))
+        print("Undocumented XML attributes in {} :".format(msg.strip()))
         pprint.pprint(undoc_attribs, width=80, compact=True)
 
     return [xml, undoc_attribs]
