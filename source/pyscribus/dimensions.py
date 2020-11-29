@@ -201,7 +201,8 @@ class Dim:
         +-------------------------+---------------+
         | Percentage (0 to 100)   | perc, pc      |
         +-------------------------+---------------+
-        | Percentage (0.0 to 1)   | pcdecim, pcd  |
+        | Percentage (0.0 to 1,   | pcdecim, pcd  |
+        | also negative)          |               |
         +-------------------------+---------------+
         | Calligraphic pen degree | cdeg          |
         +-------------------------+---------------+
