@@ -1043,7 +1043,8 @@ class CharacterStyle(StyleAbstract):
         if is_character:
             #--- Hyphenation ------------------------------------------------
 
-            if (hyphen_word := xml.get("HyphenWordMin")) is not None:
+            hyphen_word = xml.get("HyphenWordMin")
+            if hyphen_word is not None:
                 try:
                     word_length = int(hyphen_word)
 
