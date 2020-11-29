@@ -10,7 +10,7 @@ Read, create and update Scribus .sla files.
 
 **For older Python versions**
 
-``pip install -i https://test.pypi.org/simple/ pyscribus-backported``
+``pip install pyscribus-backported``
 
 -------------------
 
