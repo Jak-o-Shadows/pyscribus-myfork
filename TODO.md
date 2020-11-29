@@ -80,7 +80,7 @@ That should be implemented :
 - [ ] `SSHADE` Stroke shade *(foreground opacity 100)*
 - [ ] `BGCOLOR` **undocumented**
 - [ ] `BGSHADE` **undocumented**
-- [ ] `HyphenWordMin` **undocumented**
+- [x] `HyphenWordMin` **undocumented**
 
 ##### Without GUI elements to modify them
 
