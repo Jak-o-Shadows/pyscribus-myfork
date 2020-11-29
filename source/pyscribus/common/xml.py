@@ -431,7 +431,7 @@ def all_undocumented_to_python(xml: ET._Element):
 
 def all_undocumented_to_xml(
         xml: ET._Element, undocumented: dict,
-        report: bool = True, msg: str = ""):
+        report: bool = True, msg: str = "", passattr: list = []):
     """
     Function to manage the export of undocumented
     XML/SLA attributes.
@@ -449,6 +449,8 @@ def all_undocumented_to_xml(
     :type msg: str
     :param msg: Human readable name for the xml element when report parameter 
         is True.
+    :type passattr: list
+    :param passattr: List of SLA attributes names to not report. For debug.
     :returns: List containing LXML element and undocumented attributes
         names list.
     :rtype: list
@@ -465,10 +467,12 @@ def all_undocumented_to_xml(
 
         if att_name not in xml.attrib:
             xml.attrib[att_name] = att_value
-            undoc_attribs.append(att_name)
+
+            if not passattr or att_name not in passattr:
+                undoc_attribs.append(att_name)
 
     if report and undoc_attribs:
-        print("Undocumented XML attributes in {} :".format(msg))
+        print("Undocumented XML attributes in {} :".format(msg.strip()))
         pprint.pprint(undoc_attribs, width=80, compact=True)
 
     return [xml, undoc_attribs]
