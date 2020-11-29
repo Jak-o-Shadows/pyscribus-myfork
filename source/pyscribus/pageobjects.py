@@ -32,6 +32,7 @@ import lxml.etree as ET
 import svg.path as svg
 
 import pyscribus.common.xml as xmlc
+import pyscribus.logs as logs
 import pyscribus.exceptions as exceptions
 import pyscribus.dimensions as dimensions
 import pyscribus.itemattribute as itemattribute
@@ -694,6 +695,7 @@ class PageObject(xmlc.PyScribusElement):
                     self.ptype + " frame '" + self.name + "'",
                     # FIXME This disable debug for path, copath attributes
                     # ["path", "copath"]
+                    logger=logs.getLogger()
                 )
 
             except AttributeError:
@@ -1255,7 +1257,8 @@ class TableObject(PageObject):
             try:
                 xml, undoc_attribs = xmlc.all_undocumented_to_xml(
                     xml, self.undocumented, True,
-                    self.ptype + " frame '" + self.name + "'"
+                    self.ptype + " frame '" + self.name + "'",
+                    logger=logs.getLogger()
                 )
 
             except AttributeError:
@@ -1446,7 +1449,8 @@ class GroupObject(PageObject):
             try:
                 xml, undoc_attribs = xmlc.all_undocumented_to_xml(
                     xml, self.undocumented, True,
-                    self.ptype + " frame '" + self.name + "'"
+                    self.ptype + " frame '" + self.name + "'",
+                    logger=logs.getLogger()
                 )
 
             except AttributeError:
@@ -1796,7 +1800,8 @@ class TextObject(PageObject):
             try:
                 xml, undoc_attribs = xmlc.all_undocumented_to_xml(
                     xml, self.undocumented, True,
-                    self.ptype + " frame '" + self.name + "'"
+                    self.ptype + " frame '" + self.name + "'",
+                    logger=logs.getLogger()
                 )
 
             except AttributeError:

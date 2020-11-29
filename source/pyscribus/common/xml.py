@@ -25,9 +25,8 @@ Most of them are annoyingly simple, but necessary.
 
 # Imports ===============================================================#
 
-import pprint
-
 import copy
+import pprint
 
 import lxml
 import lxml.etree as ET
@@ -431,7 +430,7 @@ def all_undocumented_to_python(xml: ET._Element):
 
 def all_undocumented_to_xml(
         xml: ET._Element, undocumented: dict,
-        report: bool = True, msg: str = "", passattr: list = []):
+        report: bool = True, msg: str = "", passattr: list = [], logger=False):
     """
     Function to manage the export of undocumented
     XML/SLA attributes.
@@ -451,6 +450,9 @@ def all_undocumented_to_xml(
         is True.
     :type passattr: list
     :param passattr: List of SLA attributes names to not report. For debug.
+    :type logger: logging.Logger, bool
+    :param logger: Logger object to use if report. If False, report is printed 
+        in STDOUT.
     :returns: List containing LXML element and undocumented attributes
         names list.
     :rtype: list
@@ -472,8 +474,19 @@ def all_undocumented_to_xml(
                 undoc_attribs.append(att_name)
 
     if report and undoc_attribs:
-        print("Undocumented XML attributes in {} :".format(msg.strip()))
-        pprint.pprint(undoc_attribs, width=80, compact=True)
+
+        msg = msg.strip()
+
+        undocstr = "Undoc. XML attributes in {} : ".format(msg)
+
+        if logger:
+            logger.debug(
+                undocstr + pprint.pformat(undoc_attribs, compact=True)
+            )
+        else:
+            print(undocstr)
+            pprint.pprint(undoc_attribs, width=80, compact=True)
+
 
     return [xml, undoc_attribs]
 

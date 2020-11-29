@@ -26,6 +26,7 @@ import math
 
 from pyscribus.common.math import PICA_TO_MM,INCH_TO_MM
 
+import pyscribus.logs as logs
 import pyscribus.exceptions as exceptions
 
 import pyscribus.papers.ansi as ansipaper
@@ -1007,9 +1008,18 @@ class DimBox:
         # XML, only original box coords and rotation angle value
         # are saved.
 
-        # FIXME Remove that after implementation
-        print("PyScribus - Box rotation not implemented.")
-        # print("Rotation degree :", degree)
+        # FIXME Remove that after implementation -------
+
+        logger=logs.getLogger()
+
+        if logger:
+            logger.debug("Box rotation not implemented.")
+            # logger.debug("Rotation degree : {}".format(degree))
+        else:
+            print("PyScribus - Box rotation not implemented.")
+            # print("Rotation degree :", degree)
+
+        # ----------------------------------------------
 
         valid = True
 
