@@ -962,7 +962,7 @@ class CharacterStyle(StyleAbstract):
         StyleAbstract._quick_setup(self, kwargs)
 
         self.font["space_width"] = dimensions.Dim(1, "pcdecim")
-        self.font["kerning"] = dimensions.Dim(0, "pc")
+        self.font["kerning"] = None
 
     def fromxml(self, xml):
         is_character = StyleAbstract.fromxml(self, xml, True)
@@ -1009,8 +1009,7 @@ class CharacterStyle(StyleAbstract):
                 xml.attrib["wordTrack"] = self.font["space_width"].toxmlstr()
 
         if self.font["kerning"] is not None:
-            if self.font["kerning"].value:
-                xml.attrib["KERN"] = self.font["kerning"].toxmlstr(True)
+            xml.attrib["KERN"] = self.font["kerning"].toxmlstr(True)
 
         #--- Scales -----------------------------------------------------
 
