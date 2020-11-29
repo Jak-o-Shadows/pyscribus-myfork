@@ -4,7 +4,7 @@
 
 ### Layer
 
-- [ ] `groupClips` **<undocumented>**
+- [ ] `groupClips` **undocumented**
 
 ### Page
 
@@ -21,27 +21,27 @@
 
 #### Text
 
-- [ ] `FLOP` **<undocumented>**
-- [ ] `textPathType` **<undocumented>**
-- [ ] `textPathFlipped` **<undocumented>**
+- [ ] `FLOP` **undocumented**
+- [ ] `textPathType` **undocumented**
+- [ ] `textPathFlipped` **undocumented**
 - [ ] `PLTSHOW` (optional) Set to 1 if the path of a Text on a path should be shown
 - [ ] `BASEOF` (optional) Offset for the text from its path for text on a path **(not the same as character style BASEO)**
 
 #### Image
 
-- [ ] `Pagenumber` **<undocumented>**
+- [ ] `Pagenumber` **undocumented**
 - [ ] `IRENDER` (optional) Rendering Intent for Images. 0 = Perceptual; 1 = Relative Colorimetric; 2 = Saturation; 3 = Absolute Colorimetric
 
 #### Polygon, Polyline
 
-- [ ] `fillRule` **<undocumented>**
+- [ ] `fillRule` **undocumented**
 
 #### Polyline
 
 - [ ] `NUMDASH` Number of entries in DASH *(int)*
 - [ ] `DASHOFF` (optional) Offset for the first dash *(float)*
 - [ ] `DASHS` List of dash values, see the PostScript manual for details *(list of floats separated by spaces)*
-- [ ] `TEXTFLOWMODE` **<undocumented>**
+- [ ] `TEXTFLOWMODE` **undocumented**
 - [ ] `TransValue` (optional) Transparency value for fill 
 - [ ] `TransValueS` (optional) Transparency value for stroke
 
@@ -51,7 +51,7 @@
 
 - [ ] `DROP` Has drop cap *(bool 0 or 1)*
 - [ ] `DROPLIN` Number of lines for a drop cap *(int)*
-- [ ] `ParagraphEffectOffset` **<undocumented>**
+- [ ] `ParagraphEffectOffset` **undocumented**
 
 #### Character style
 
