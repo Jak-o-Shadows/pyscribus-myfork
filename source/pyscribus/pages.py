@@ -32,6 +32,7 @@ Classes for SLA Pages / Master pages.
 import lxml
 import lxml.etree as ET
 
+import pyscribus.logs as logs
 import pyscribus.exceptions as exceptions
 import pyscribus.dimensions as dimensions
 
@@ -543,7 +544,8 @@ class PageAbstract(PyScribusElement):
         try:
             # xml = undocumented_to_xml(xml, self.undocumented)
             xml, undoc_attribs = all_undocumented_to_xml(
-                xml, self.undocumented, True, tag
+                xml, self.undocumented, True, tag,
+                logger=logs.getLogger()
             )
 
         except AttributeError:

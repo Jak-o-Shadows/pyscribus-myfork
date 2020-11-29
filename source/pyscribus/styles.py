@@ -27,6 +27,7 @@ import lxml
 import lxml.etree as ET
 
 import pyscribus.common.xml as xmlc
+import pyscribus.logs as logs
 import pyscribus.exceptions as exceptions
 import pyscribus.dimensions as dimensions
 
@@ -560,7 +561,8 @@ class StyleAbstract(xmlc.PyScribusElement):
             if self.style_type not in ["paragraph", "character"]:
                 xml, undoc_attribs = xmlc.all_undocumented_to_xml(
                     xml, self.undocumented, True,
-                    self.style_type + " style " + self.name
+                    self.style_type + " style " + self.name,
+                    logger=logs.getLogger()
                 )
 
         except AttributeError:
@@ -851,7 +853,8 @@ class ParagraphStyle(StyleAbstract):
         try:
             xml, undoc_attribs = xmlc.all_undocumented_to_xml(
                 xml, self.undocumented, True,
-                self.style_type + " style " + self.name
+                self.style_type + " style " + self.name,
+                logger=logs.getLogger()
             )
 
         except AttributeError:
@@ -1021,7 +1024,8 @@ class CharacterStyle(StyleAbstract):
         try:
             xml, undoc_attribs = xmlc.all_undocumented_to_xml(
                 xml, self.undocumented, True,
-                self.style_type + " style " + self.name
+                self.style_type + " style " + self.name,
+                logger=logs.getLogger()
             )
 
         except AttributeError:

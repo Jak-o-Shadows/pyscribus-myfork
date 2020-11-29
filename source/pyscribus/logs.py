@@ -23,58 +23,40 @@ Logging for PyScribus
 
 # Imports ===============================================================#
 
+import os
 import logging
 
 # Variables globales ====================================================#
 
 __author__ = "Etienne Nadji <etnadji@eml.cc>"
 
-# Classes ===============================================================#
+USE_LOG = False
 
-class Logger(logging.Logger):
+# Fonctions =============================================================#
 
-    def __init__(self):
-        super().__init__()
+def init_logging(
+        filepath="test.log",
+        formatstr="%(asctime)s:%(levelname)s:%(message)s"):
+    global USE_LOG
 
-        self.sub_levels = {
-            "omitting_pageobjects": logging.INFO
-        }
+    logger = getLogger()
 
-    def setLevel(self, level):
-        logging.Logger.setLevel(level)
+    filepath = os.path.realpath(filepath)
 
-        for k in self.sub_levels.keys():
-            self.sub_levels[k] = level
+    logging.basicConfig(
+        filename=filepath,
+        level=logging.DEBUG,
+        format=formatstr
+    )
 
-    def setSubLevel(self, sublevel, level):
-        self.sub_levels[sublevel] = level
+    USE_LOG = True
 
-    def _valid_level(self, la_name, lb):
-        if self.sub_levels[la_name] >= lb:
-            return True
-        else:
-            return False
+def getLogger():
+    global USE_LOG
 
-    def debug(self, msg, *args, **kwargs):
-
-        if "logsublevel" in kwargs:
-
-            if self._valid_level(kwargs["logsublevel"], logging.DEBUG):
-                logging.Logger.debug(msg, args, kwargs)
-
-        else:
-            logging.Logger.debug(msg, args, kwargs)
-
-    def info(self, msg, *args, **kwargs):
-        pass
-
-    def warning(self, msg, *args, **kwargs):
-        pass
-
-    def error(self, msg, *args, **kwargs):
-        pass
-
-    def critical(self, msg, *args, **kwargs):
-        pass
+    if USE_LOG:
+        return logging.getLogger('pyscribus')
+    else:
+        return False
 
 # vim:set shiftwidth=4 softtabstop=4 spl=en:
