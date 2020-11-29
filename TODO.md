@@ -66,13 +66,13 @@ That should be implemented :
 
 ##### Common with character style
 
-- [ ] `TXTSHX` Text shadow offset horizontally
-- [ ] `TXTSHY` Text shadow offset vertically
-- [ ] `TXTOUT` Outline width
-- [ ] `TXTULP` Underline offset
-- [ ] `TXTULW` Underline width
-- [ ] `TXTSTP` Strikethrough offset
-- [ ] `TXTSTW` Strikethrough width
+- [x] `TXTSHX` Text shadow offset horizontally
+- [x] `TXTSHY` Text shadow offset vertically
+- [x] `TXTOUT` Outline width
+- [x] `TXTULP` Underline offset
+- [x] `TXTULW` Underline width
+- [x] `TXTSTP` Strikethrough offset
+- [x] `TXTSTW` Strikethrough width
 
 #### Character style
 
@@ -85,12 +85,12 @@ That should be implemented :
 ##### Without GUI elements to modify them
 
 - [ ] `BASEO ` Offset from baseline *(dim, pica, 0 ?)*
-- [ ] `TXTSHX` Text shadow offset horizontally
-- [ ] `TXTSHY` Text shadow offset vertically
-- [ ] `TXTOUT` Outline width
-- [ ] `TXTULP` Underline offset
-- [ ] `TXTULW` Underline width
-- [ ] `TXTSTP` Strikethrough offset
-- [ ] `TXTSTW` Strikethrough width
+- [x] `TXTSHX` Text shadow offset horizontally
+- [x] `TXTSHY` Text shadow offset vertically
+- [x] `TXTOUT` Outline width
+- [x] `TXTULP` Underline offset
+- [x] `TXTULW` Underline width
+- [x] `TXTSTP` Strikethrough offset
+- [x] `TXTSTW` Strikethrough width
 
 <!-- vim:set spl=en: -->
