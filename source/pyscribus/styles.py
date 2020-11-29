@@ -238,7 +238,12 @@ class StyleAbstract(xmlc.PyScribusElement):
                 "size": 0,
                 "features": [],
                 "color": "",
-                "alignment": "left"
+                "alignment": "left",
+                "strike": {"width": None, "offset": None},
+                "underline": {"width": None, "offset": None},
+                "shadow": {"hoffset": None, "voffset": None},
+                # NOTE There is no offset setting for outline, obviously
+                "outline": {"width": None},
             }
 
             # NOTE Weird, but FONTFEATURES is not the same as FEATURES
@@ -406,6 +411,41 @@ class StyleAbstract(xmlc.PyScribusElement):
                 if (features := xml.get("FEATURES")) is not None:
                     self.features = features
 
+                if (strike_width := xml.get("TXTSTW")) is not None:
+                    self.font["strike"]["width"] = dimensions.Dim(
+                        float(strike_width), "pcdecim"
+                    )
+
+                if (strike_offset := xml.get("TXTSTP")) is not None:
+                    self.font["strike"]["offset"] = dimensions.Dim(
+                        float(strike_offset), "pcdecim"
+                    )
+
+                if (underline_width := xml.get("TXTULW")) is not None:
+                    self.font["underline"]["width"] = dimensions.Dim(
+                        float(underline_width), "pcdecim"
+                    )
+
+                if (underline_offset := xml.get("TXTULP")) is not None:
+                    self.font["underline"]["offset"] = dimensions.Dim(
+                        float(underline_offset), "pcdecim"
+                    )
+
+                if (shadow_hoffset := xml.get("TXTSHX")) is not None:
+                    self.font["shadow"]["hoffset"] = dimensions.Dim(
+                        float(shadow_hoffset), "pcdecim"
+                    )
+
+                if (shadow_voffset := xml.get("TXTSHY")) is not None:
+                    self.font["shadow"]["voffset"] = dimensions.Dim(
+                        float(shadow_voffset), "pcdecim"
+                    )
+
+                if (outline_width := xml.get("TXTOUT")) is not None:
+                    self.font["outline"]["width"] = dimensions.Dim(
+                        float(outline_width), "pcdecim"
+                    )
+
                 #--- Lang ------------------------------------------------
 
                 if (lang := xml.get("LANGUAGE")) is not None:
@@ -510,6 +550,27 @@ class StyleAbstract(xmlc.PyScribusElement):
 
             if self.font["color"]:
                 xml.attrib["FCOLOR"] = self.font["color"]
+
+            if self.font["strike"]["width"] is not None:
+                xml.attrib["TXTSTW"] = self.font["strike"]["width"].toxmlstr(True)
+
+            if self.font["strike"]["offset"] is not None:
+                xml.attrib["TXTSTP"] = self.font["strike"]["offset"].toxmlstr(True)
+
+            if self.font["shadow"]["hoffset"] is not None:
+                xml.attrib["TXTSHX"] = self.font["shadow"]["hoffset"].toxmlstr(True)
+
+            if self.font["shadow"]["voffset"] is not None:
+                xml.attrib["TXTSHY"] = self.font["shadow"]["voffset"].toxmlstr(True)
+
+            if self.font["outline"]["width"] is not None:
+                xml.attrib["TXTOUT"] = self.font["outline"]["width"].toxmlstr(True)
+
+            if self.font["underline"]["width"] is not None:
+                xml.attrib["TXTULW"] = self.font["underline"]["width"].toxmlstr(True)
+
+            if self.font["underline"]["offset"] is not None:
+                xml.attrib["TXTULP"] = self.font["underline"]["offset"].toxmlstr(True)
 
             if self.features:
                 xml.attrib["FEATURES"] = self.features
@@ -948,7 +1009,6 @@ class CharacterStyle(StyleAbstract):
         is_character = StyleAbstract.fromxml(self, xml, True)
 
         if is_character:
-
             #--- Font settings ----------------------------------------------
 
             if (wordtrack := xml.get("wordTrack")) is not None:
