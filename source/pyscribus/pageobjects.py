@@ -692,7 +692,7 @@ class PageObject(xmlc.PyScribusElement):
             try:
                 xml, undoc_attribs = xmlc.all_undocumented_to_xml(
                     xml, self.undocumented, True,
-                    self.ptype + " frame '" + self.name + "'",
+                    self.ptype + " '{}'".format(self.name.strip()),
                     # FIXME This disable debug for path, copath attributes
                     # ["path", "copath"]
                     logger=logs.getLogger()
@@ -1257,7 +1257,7 @@ class TableObject(PageObject):
             try:
                 xml, undoc_attribs = xmlc.all_undocumented_to_xml(
                     xml, self.undocumented, True,
-                    self.ptype + " frame '" + self.name + "'",
+                    self.ptype + " '{}'".format(self.name.strip()),
                     logger=logs.getLogger()
                 )
 
@@ -1449,7 +1449,7 @@ class GroupObject(PageObject):
             try:
                 xml, undoc_attribs = xmlc.all_undocumented_to_xml(
                     xml, self.undocumented, True,
-                    self.ptype + " frame '" + self.name + "'",
+                    self.ptype + " '{}'".format(self.name.strip()),
                     logger=logs.getLogger()
                 )
 
@@ -1800,7 +1800,7 @@ class TextObject(PageObject):
             try:
                 xml, undoc_attribs = xmlc.all_undocumented_to_xml(
                     xml, self.undocumented, True,
-                    self.ptype + " frame '" + self.name + "'",
+                    self.ptype + " '{}'".format(self.name.strip()),
                     logger=logs.getLogger()
                 )
 
