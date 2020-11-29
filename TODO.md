@@ -30,9 +30,10 @@
 #### Image
 
 - [ ] `IRENDER` (optional) Rendering Intent for Images. 0 = Perceptual; 1 = Relative Colorimetric; 2 = Saturation; 3 = Absolute Colorimetric
-- [ ] `EPROF` (optional) Embedded ICC-Profile for images *(str, name of the profile)*
+- [x] `EPROF` (optional) Embedded ICC-Profile for images *(str, name of the profile)*
 - [ ] `Pagenumber` **undocumented**
 - [ ] `COMPRESSIONMETHOD` **undocumented**
+- [ ] `PRFILE` (optional) ICC-Profile for the image 
 
 #### Polygon, Polyline
 
@@ -84,7 +85,7 @@ That should be implemented :
 
 ##### Without GUI elements to modify them
 
-- [ ] `BASEO ` Offset from baseline *(dim, pica, 0 ?)*
+- [ ] `BASEO` Offset from baseline *(dim, pica, 0 ?)*
 - [x] `TXTSHX` Text shadow offset horizontally
 - [x] `TXTSHY` Text shadow offset vertically
 - [x] `TXTOUT` Outline width

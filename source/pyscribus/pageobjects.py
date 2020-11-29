@@ -159,7 +159,7 @@ class PageObject(xmlc.PyScribusElement):
         # Undocumented box from gXpos, gYpos, gWidth, gHeight
         self.gbox = dimensions.DimBox()
 
-        self.use_embedded_icc = False
+        self.embedded_icc = {"use": False, "profile": False}
 
         # --- Page object own_page and linking/id --------------------
 
@@ -542,7 +542,11 @@ class PageObject(xmlc.PyScribusElement):
 
                 embedded = xml.get("EMBEDDED")
                 if embedded is not None:
-                    self.use_embedded_icc = xmlc.num_to_bool(embedded)
+                    self.embedded_icc["use"] = xmlc.num_to_bool(embedded)
+
+                img_embedded_icc = xml.get("EPROF")
+                if img_embedded_icc is not None:
+                    self.embedded_icc["profile"] = img_embedded_icc
 
             # --- Symbol attributes --------------------------------------
 
@@ -687,7 +691,10 @@ class PageObject(xmlc.PyScribusElement):
         # ------------------------------------------------------------
 
         if self.ptype in ["image", "render"]:
-            xml.attrib["EMBEDDED"] = xmlc.bool_to_num(self.use_embedded_icc)
+            xml.attrib["EMBEDDED"] = xmlc.bool_to_num(self.embedded_icc["use"])
+
+            if self.embedded_icc["profile"]:
+                xml.attrib["EPROF"] = self.embedded_icc["profile"]
 
         # --- Previous / Next item -----------------------------------
 
