@@ -539,7 +539,7 @@ class GradientColorStop(xmlc.PyScribusElement):
                 self.color = color
 
             if (shade := xml.get("SHADE")) is not None:
-                self.shade = dimensions.Dim(float(opacity), "pc")
+                self.shade = dimensions.Dim(float(shade), "pc")
 
             if (ramp := xml.get("RAMP")) is not None:
                 self.position = dimensions.Dim(float(ramp), "pcdecim")
