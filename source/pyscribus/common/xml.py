@@ -457,7 +457,7 @@ def all_undocumented_to_xml(
 
         msg = msg.strip()
 
-        undocstr = "Undoc. XML attributes in {} : ".format(msg)
+        undocstr = "Undoc. XML attributes: {}: ".format(msg)
 
         if logger:
             logger.debug(
