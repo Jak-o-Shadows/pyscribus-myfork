@@ -24,6 +24,7 @@ User Guide
    guide/fr/general.rst
    guide/en/psm.rst
    guide/en/templating.rst
+   guide/en/logging.rst
    examples/index.rst
    forhumans.rst
 
