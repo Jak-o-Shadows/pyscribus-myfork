@@ -1,5 +1,5 @@
-PyScribus templating
-====================
+Templating
+==========
 
 What you can do with PyScribus templating
 -----------------------------------------

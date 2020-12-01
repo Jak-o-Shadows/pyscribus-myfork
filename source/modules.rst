@@ -1,6 +1,6 @@
-*******************
-PyScribus reference
-*******************
+*********
+Reference
+*********
 
 .. toctree::
    :maxdepth: 4

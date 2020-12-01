@@ -1,8 +1,9 @@
-PyScribus logging
-=================
+*******
+Logging
+*******
 
 Activation
-----------
+==========
 
   ::
 
@@ -18,7 +19,7 @@ Activation
    logger = logs.getLogger()
 
 Configuration
-----------
+=============
 
 The logger used by PyScribus is a standard library logger (from ``logging`` 
 module). By default, this logger is verbose, as its logs every level of 

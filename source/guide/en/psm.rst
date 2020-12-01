@@ -4,10 +4,11 @@ PyScribus Story Markup
 
 PyScribus Story Markup is a mix between HTML and new elements of markup.
 
-It is possible to use only HTML markup through ``<span>`` ``@style`` and ``@class`` attributes.
+It is possible to use only HTML markup through ``<span>`` ``@style`` 
+and ``@class`` attributes.
 
 Main elements
-*************
+=============
 
 +---------------+---------------------------------+----------------+
 | Tag(s)        | Usage                           | HTML status    |
@@ -40,10 +41,10 @@ Main elements
 +---------------+---------------------------------+----------------+
 
 Span element
-************
+============
 
 @style
-======
+------
 
 +---------------------+-----------------------+-----------------------+
 | @style property     | Property value        | Usage                 |
@@ -58,7 +59,7 @@ Span element
 +---------------------+-----------------------+-----------------------+
 
 @class
-======
+------
 
 +-----------------+-------------------------------+
 | @class property | Usage                         |
