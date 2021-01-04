@@ -1,3 +1,5 @@
+# THIS IS A FORK - See https://framagit.org/etnadji/pyscribus
+
 # PyScribus
 
 **Branche principale, >= Python 3.8** | 
